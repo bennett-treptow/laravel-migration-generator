@@ -10,8 +10,7 @@ use LaravelMigrationGenerator\GeneratorManagers\MySQLGeneratorManager;
 class MigrationsGenerationCommand extends Command {
     protected $signature = 'migrate:generate {path} {--table=} {--connection=default}';
 
-    public function handle(){
-        $basePath = $this->argument('path');
+    public function getConnection(){
         $connection = $this->option('connection');
 
         if($connection === 'default'){
@@ -19,14 +18,26 @@ class MigrationsGenerationCommand extends Command {
         }
 
         if(!Config::has('database.connections.'.$connection)){
-            $this->error('Could not find connection `'.$connection.'` in your config.');
+            throw new \Exception('Could not find connection `'.$connection.'` in your config.');
+        }
+        return $connection;
+    }
 
+    public function handle(){
+        $basePath = $this->argument('path');
+
+        try {
+            $connection = $this->getConnection();
+        } catch(\Exception $e){
+            $this->error($e->getMessage());
             return 1;
         }
 
         $this->info('Using connection '.$connection);
+        DB::setDefaultConnection($connection);
 
         $driver = Config::get('database.connections.'.$connection)['driver'];
+
 
         $manager = $this->resolveGeneratorManager($driver);
         if($manager === false){

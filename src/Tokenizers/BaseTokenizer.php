@@ -21,6 +21,10 @@ abstract class BaseTokenizer
         return new static($line);
     }
 
+    /**
+     * @param string $line
+     * @return static
+     */
     public static function parse(string $line){
         return (new static($line))->tokenize();
     }
@@ -57,8 +61,12 @@ abstract class BaseTokenizer
             }
 
             return '[' . collect($value)->map(fn ($item) => "'$item'")->implode(', ') . ']';
-        } elseif (is_numeric($value)) {
+        } elseif (is_integer($value) || is_float($value)) {
             return $value;
+        }
+
+        if(Str::startsWith($value, 'float$:')){
+            return str_replace('float$:', '', $value);
         }
 
         if (Str::startsWith($value, '\'') && Str::endsWith($value, '\'')) {

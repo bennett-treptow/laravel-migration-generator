@@ -9,25 +9,28 @@ use LaravelMigrationGenerator\Tokenizers\MySQL\IndexTokenizer;
 
 class MySQLTableGenerator extends BaseTableGenerator
 {
-    public function __construct(string $tableName)
+    public function __construct(string $tableName, array $rows = [])
     {
         $this->tableName = $tableName;
+        $this->rows = $rows;
 
-        $structure = DB::select('SHOW CREATE TABLE `' . $tableName . '`');
-        $structure = $structure[0];
-        $structure = (array) $structure;
-        if (isset($structure['Create Table'])) {
-            $lines = explode("\n", $structure['Create Table']);
+        if(count($this->rows) === 0){
+            $structure = DB::select('SHOW CREATE TABLE `' . $this->tableName . '`');
+            $structure = $structure[0];
+            $structure = (array) $structure;
+            if (isset($structure['Create Table'])) {
+                $lines = explode("\n", $structure['Create Table']);
 
-            array_shift($lines); //get rid of first line
-            array_pop($lines); //get rid of last line
+                array_shift($lines); //get rid of first line
+                array_pop($lines); //get rid of last line
 
-            $lines = array_map(fn ($item) => trim($item), $lines);
-            $this->rows = $lines;
-        } else {
-            //might be a view
-            $this->markAsWritable(false);
-            $this->rows = [];
+                $lines = array_map(fn ($item) => trim($item), $lines);
+                $this->rows = $lines;
+            } else {
+                //might be a view
+                $this->markAsWritable(false);
+                $this->rows = [];
+            }
         }
     }
 
@@ -52,6 +55,13 @@ class MySQLTableGenerator extends BaseTableGenerator
     public function finalPass()
     {
         foreach ($this->indices as &$index) {
+            $index->finalPass($this);
+        }
+
+        foreach ($this->indices as &$index) {
+            if(!$index->isWritable()){
+                continue;
+            }
             $columns = $index->getIndexColumns();
 
             foreach ($columns as $indexColumn) {
@@ -66,9 +76,32 @@ class MySQLTableGenerator extends BaseTableGenerator
             $column->finalPass($this);
         }
 
-        foreach ($this->indices as &$index) {
-            $index->finalPass($this);
-        }
+
+    }
+
+    public function getSchema($tab = ''){
+        $schema = collect($this->columns)
+            ->filter(fn ($col) => $col->isWritable())
+            ->map(function ($column) use ($tab){
+                return $tab.$column->toMethod() . ';';
+            })
+            ->implode("\n");
+
+        $schema .= "\n";
+
+        $schema .= collect($this->indices)
+            ->filter(fn ($index) => $index->isWritable())
+            ->map(function ($index) use ($tab){
+                return $tab.$index->toMethod() . ';';
+            })
+            ->implode("\n");
+
+        return $schema;
+    }
+
+    public function getIndices()
+    {
+        return $this->indices;
     }
 
     public function write(string $basePath)
@@ -77,23 +110,10 @@ class MySQLTableGenerator extends BaseTableGenerator
             return;
         }
         $tab = str_repeat('    ', 3);
-        $schema = collect($this->columns)
-            ->filter(fn ($col) => $col->isWritable())
-            ->map(function ($column) use ($tab) {
-                return $tab . $column->toMethod() . ';';
-            })
-            ->implode("\n");
 
-        $schema .= "\n";
+        $schema = $this->getSchema($tab);
 
-        $schema .= collect($this->indices)
-            ->filter(fn ($index) => $index->isWritable())
-            ->map(function ($index) use ($tab) {
-                return $tab . $index->toMethod() . ';';
-            })
-            ->implode("\n");
-
-        $stub = file_get_contents(__DIR__ . '/../../Stubs/MigrationStub.stub');
+        $stub = file_get_contents(__DIR__ . '/../Stubs/MigrationStub.stub');
         $stub = str_replace('[TableName]', Str::studly($this->tableName), $stub);
         $stub = str_replace('[Table]', $this->tableName, $stub);
         $stub = str_replace('[Schema]', $schema, $stub);

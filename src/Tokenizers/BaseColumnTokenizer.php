@@ -22,6 +22,8 @@ abstract class BaseColumnTokenizer extends BaseTokenizer implements ColumnTokeni
 
     protected $primaryKey = false;
 
+    protected $useCurrent = false;
+
     public function getColumnName(): string
     {
         return $this->columnName;
@@ -39,11 +41,21 @@ abstract class BaseColumnTokenizer extends BaseTokenizer implements ColumnTokeni
         return $this->nullable;
     }
     public function getDefaultValue(){
-        return $this->defaultValue;
+        $value = $this->defaultValue;
+
+        if($value !== null && Str::contains($value, 'float$:')){
+            $value = str_replace('float$:', '', $value);
+        }
+
+        return $value;
     }
     public function getUnsigned(): bool
     {
         return $this->unsigned;
+    }
+
+    public function getUseCurrent(): bool{
+        return $this->useCurrent;
     }
 
     public function getMethodParameters(): array {
@@ -61,27 +73,31 @@ abstract class BaseColumnTokenizer extends BaseTokenizer implements ColumnTokeni
     public function toMethod(): string
     {
         $finalMethod = $this->method;
+        $finalParameters = $this->methodParameters;
         if ($this->unsigned) {
             $finalMethod = 'unsigned' . Str::ucfirst($this->method);
         }
 
         if ($finalMethod === 'unsignedBigInteger' && $this->primaryKey) {
             $finalMethod = 'id';
+            $finalParameters = [];
         }
         if ($finalMethod === 'unsignedInteger' && $this->primaryKey) {
             $finalMethod = 'increments';
+            $finalParameters = [];
         }
 
         if ($finalMethod === 'tinyInteger' && ($this->defaultValue == '1' || $this->defaultValue == '0')) {
             $finalMethod = 'boolean';
+            $finalParameters = [];
         }
 
         $initialString = '$table->' . $finalMethod . '(';
         if ($this->columnName !== null) {
             $initialString .= $this->valueToString($this->columnName);
         }
-        if (count($this->methodParameters) > 0) {
-            foreach ($this->methodParameters as $param) {
+        if (count($finalParameters) > 0) {
+            foreach ($finalParameters as $param) {
                 $initialString .= ', ' . $this->valueToString($param);
             }
         }
@@ -95,8 +111,11 @@ abstract class BaseColumnTokenizer extends BaseTokenizer implements ColumnTokeni
         }
         if (($this->nullable && $this->defaultValue !== null) || $this->defaultValue !== null) {
             $initialString .= '->default(';
-            $initialString .= $this->valueToString($this->defaultValue);
+            $initialString .= $this->valueToString($this->defaultValue, false);
             $initialString .= ')';
+        }
+        if($this->useCurrent){
+            $initialString .= '->useCurrent()';
         }
 
         if ($this->primaryKey && ! in_array($finalMethod, ['increments', 'bigIncrements', 'id'])) {

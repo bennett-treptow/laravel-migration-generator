@@ -96,20 +96,19 @@ class IndexTokenizer extends BaseIndexTokenizer
     public function finalPass(TableGeneratorInterface $table)
     {
         if ($this->getIndexType() === 'index') {
+            //look for corresponding foreign key for this index
             $columns = $this->indexColumns;
-            if (Str::contains($this->getIndexName(), 'foreign')) {
-                $table->indexIterator(function ($index) use ($columns) {
-                    if ($index->getIndexType() === 'foreign') {
-                        $cols = $index->getIndexColumns();
-                        if (count(array_intersect($columns, $cols)) === count($columns)) {
-                            //has same columns
-                            $this->markAsWritable(false);
+            $table->indexIterator(function ($index) use ($columns) {
+                if ($index->getIndexType() === 'foreign') {
+                    $cols = $index->getIndexColumns();
+                    if (count(array_intersect($columns, $cols)) === count($columns)) {
+                        //has same columns
+                        $this->markAsWritable(false);
 
-                            return false;
-                        }
+                        return false;
                     }
-                });
-            }
+                }
+            });
         }
     }
 }

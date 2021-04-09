@@ -58,7 +58,7 @@ abstract class BaseIndexTokenizer extends BaseTokenizer implements IndexTokenize
     public function toMethod(): string
     {
         if ($this->indexType === 'foreign') {
-            $base = '$table->foreign(' . $this->valueToString($this->indexColumns, true) . ')->references(' . $this->valueToString($this->foreignReferencedColumns, true) . ')->on(' . $this->valueToString($this->foreignReferencedTable) . ')';
+            $base = '$table->foreign(' . $this->valueToString($this->indexColumns, true) . ', '.$this->valueToString($this->indexName).')->references(' . $this->valueToString($this->foreignReferencedColumns, true) . ')->on(' . $this->valueToString($this->foreignReferencedTable) . ')';
             foreach ($this->constraintActions as $type => $action) {
                 $base .= '->on' . ucfirst($type) . '(' . $this->valueToString($action) . ')';
             }

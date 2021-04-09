@@ -22,6 +22,8 @@ interface ColumnTokenizerInterface {
 
     public function getPrimaryKey(): bool;
 
+    public function getUseCurrent(): bool;
+
     public function toMethod(): string;
 
     public function tokenize(): self;

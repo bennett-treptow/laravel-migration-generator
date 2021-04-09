@@ -15,6 +15,8 @@ class ColumnTokenizer extends BaseColumnTokenizer
     /** @var IndexTokenizer[] */
     protected $indices = [];
 
+    protected $indexed = false;
+
     public function index(IndexTokenizer $index)
     {
         $this->indices[] = $index;
@@ -51,6 +53,9 @@ class ColumnTokenizer extends BaseColumnTokenizer
                 if ($index->getIndexType() === 'primary' && ! $index->isMultiColumnIndex()) {
                     $this->primaryKey = true;
                     $index->markAsWritable(false);
+                } elseif($index->getIndexType() === 'index' && !$index->isMultiColumnIndex()){
+                    $this->indexed = true;
+                    $index->markAsWritable(false);
                 }
             }
         }
@@ -73,6 +78,8 @@ class ColumnTokenizer extends BaseColumnTokenizer
         if ($this->columnName === 'id' && $this->primaryKey && $this->columnType === 'bigint') {
             $this->columnName = null;
         }
+
+        return null;
     }
 
     protected function consumeColumnName()
@@ -87,7 +94,7 @@ class ColumnTokenizer extends BaseColumnTokenizer
 
     protected function isNumberType()
     {
-        return Str::contains($this->columnType, ['int', 'decimal', 'float']);
+        return Str::contains($this->columnType, ['int', 'decimal', 'float', 'double']);
     }
 
     protected function consumeColumnType()
@@ -131,7 +138,8 @@ class ColumnTokenizer extends BaseColumnTokenizer
             'tinytext'   => 'tinyText',
             'mediumtext' => 'mediumText',
             'longtext'   => 'longText',
-            'blob'       => 'binary'
+            'blob'       => 'binary',
+            'datetime'   => 'dateTime'
         ];
         if (isset($mapped[$this->columnType])) {
             $this->method = $mapped[$this->columnType];
@@ -163,6 +171,20 @@ class ColumnTokenizer extends BaseColumnTokenizer
             if (strtoupper($this->defaultValue) === 'NULL') {
                 $this->nullable = true;
                 $this->defaultValue = null;
+            } elseif(strtoupper($this->defaultValue === 'CURRENT_TIMESTAMP')){
+                $this->defaultValue = null;
+                $this->useCurrent = true;
+            }
+            if($this->isNumberType()){
+                if(Str::contains(strtoupper($this->columnType), 'INT')){
+                    $this->defaultValue = (int) $this->defaultValue;
+                } else {
+                    $this->defaultValue = 'float$:'.$this->defaultValue;
+                }
+            } else {
+                if($this->defaultValue !== null) {
+                    $this->defaultValue = (string)$this->defaultValue;
+                }
             }
         } else {
             //put it back
@@ -193,11 +215,19 @@ class ColumnTokenizer extends BaseColumnTokenizer
 
     private function resolveColumnConstraints(array $constraints)
     {
-        if ($this->columnType === 'decimal' || Str::contains($this->columnType, ['char','int'])) {
-            $this->methodParameters = $constraints;
-        }
         if ($this->columnType === 'enum') {
             $this->methodParameters = [array_map(fn ($item) => trim($item, '\''), $constraints)];
+        } else {
+            $this->methodParameters = array_map(fn($item) => (int)$item, $constraints);
         }
+    }
+
+    public function toMethod(): string
+    {
+        $initialString = parent::toMethod();
+        if($this->indexed){
+            $initialString .= '->index()';
+        }
+        return $initialString;
     }
 }
