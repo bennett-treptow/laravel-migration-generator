@@ -5,12 +5,12 @@
   "license": "MIT License",
   "authors": [
     {
-      "name": "bennett",
-      "email": "email@example.com"
+      "name": "Bennett Treptow",
+      "email": "me@btreptow.com"
     }
   ],
   "require": {
-    "php": "^7.4",
+    "php": "^7.4|^8.0",
     "illuminate/support": "^8.36",
     "illuminate/console": "^8.36",
     "illuminate/database": "^8.36",
