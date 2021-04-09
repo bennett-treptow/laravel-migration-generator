@@ -10,7 +10,7 @@ use LaravelMigrationGenerator\GeneratorManagers\GeneratorManagerInterface;
 
 class MigrationsGenerationCommand extends Command
 {
-    protected $signature = 'migrate:generate {path} {--table=} {--connection=default}';
+    protected $signature = 'migrate:generate {--path=default} {--table=} {--connection=default}';
 
     public function getConnection()
     {
@@ -27,10 +27,17 @@ class MigrationsGenerationCommand extends Command
         return $connection;
     }
 
+    public function getPath(){
+        $basePath = $this->option('path');
+        if($basePath === 'default'){
+            $basePath = base_path('tests/database/migrations');
+        }
+
+        return $basePath;
+    }
+
     public function handle()
     {
-        $basePath = $this->argument('path');
-
         try {
             $connection = $this->getConnection();
         } catch (\Exception $e) {
@@ -50,6 +57,10 @@ class MigrationsGenerationCommand extends Command
 
             return 1;
         }
+
+        $basePath = $this->getPath();
+
+        $this->info('Using '.$basePath.' as the output path..');
 
         $singleTableName = $this->option('table');
 
