@@ -1,0 +1,37 @@
+{
+  "name": "bennett-treptow/laravel-migration-generator",
+  "description": "Generate migrations from existing database structures",
+  "minimum-stability": "stable",
+  "license": "MIT License",
+  "authors": [
+    {
+      "name": "bennett",
+      "email": "email@example.com"
+    }
+  ],
+  "require": {
+    "php": "^7.4",
+    "illuminate/support": "^8.36",
+    "illuminate/console": "^8.36",
+    "illuminate/database": "^8.36",
+    "illuminate/config": "^8.36"
+  },
+  "autoload": {
+    "psr-4": {
+      "LaravelMigrationGenerator\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "require-dev": {
+    "orchestra/testbench": "^6.17"
+  },
+  "scripts": {
+    "post-autoload-dump": [
+      "@php ./vendor/bin/testbench package:discover --ansi"
+    ]
+  }
+}
