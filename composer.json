@@ -2,7 +2,7 @@
   "name": "bennett-treptow/laravel-migration-generator",
   "description": "Generate migrations from existing database structures",
   "minimum-stability": "stable",
-  "license": "MIT License",
+  "license": "MIT",
   "authors": [
     {
       "name": "Bennett Treptow",
