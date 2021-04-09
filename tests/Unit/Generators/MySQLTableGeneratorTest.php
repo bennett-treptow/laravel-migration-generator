@@ -23,7 +23,7 @@ class MySQLTableGeneratorTest extends TestCase
         ]);
 
         $generator->parse();
-        $generator->finalPass();
+        $generator->cleanUp();
         $schema = $generator->getSchema();
         $this->assertSchemaHas('$table->increments(\'id\');', $schema);
         $this->assertSchemaHas('$table->unsignedInteger(\'user_id\', 9);', $schema);
@@ -50,7 +50,7 @@ class MySQLTableGeneratorTest extends TestCase
         ]);
 
         $generator->parse();
-        $generator->finalPass();
+        $generator->cleanUp();
 
         $path = __DIR__ . '/../../migrations';
 
