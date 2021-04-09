@@ -35,5 +35,14 @@
       "@php ./vendor/bin/testbench package:discover --ansi"
     ],
     "test": ["vendor/bin/phpunit"]
-  }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "LaravelMigrationGenerator\\LaravelMigrationGeneratorProvider"
+      ]
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }
