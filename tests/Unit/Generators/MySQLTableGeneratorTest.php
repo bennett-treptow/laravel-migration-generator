@@ -1,16 +1,19 @@
 <?php
+
 namespace Tests\Unit\Generators;
 
-use Illuminate\Support\Str;
-use LaravelMigrationGenerator\Generators\MySQLTableGenerator;
 use Tests\TestCase;
+use LaravelMigrationGenerator\Generators\MySQLTableGenerator;
 
-class MySQLTableGeneratorTest extends TestCase {
-    private function assertSchemaHas($str, $schema){
+class MySQLTableGeneratorTest extends TestCase
+{
+    private function assertSchemaHas($str, $schema)
+    {
         $this->assertStringContainsString($str, $schema);
     }
 
-    public function test_runs_correctly(){
+    public function test_runs_correctly()
+    {
         $generator = new MySQLTableGenerator('table', [
             '`id` int(9) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY',
             '`user_id` int(9) unsigned NOT NULL',
@@ -28,8 +31,9 @@ class MySQLTableGeneratorTest extends TestCase {
         $this->assertSchemaHas('$table->foreign(\'user_id\', \'fk_user_id\')->references(\'id\')->on(\'users\')->onDelete(\'cascade\')->onUpdate(\'cascade\');', $schema);
     }
 
-    private function cleanUpMigrations($path){
-        foreach(glob($path.'/*.php') as $file){
+    private function cleanUpMigrations($path)
+    {
+        foreach (glob($path . '/*.php') as $file) {
             unlink($file);
         }
         rmdir($path);
@@ -48,14 +52,14 @@ class MySQLTableGeneratorTest extends TestCase {
         $generator->parse();
         $generator->finalPass();
 
-        $path = __DIR__.'/../../migrations';
+        $path = __DIR__ . '/../../migrations';
 
-        if(!is_dir($path)){
+        if (! is_dir($path)) {
             mkdir($path);
         }
         $generator->write($path);
 
-        $this->assertFileExists($path.'/0000_00_00_000000_create_test_table_table.php');
+        $this->assertFileExists($path . '/0000_00_00_000000_create_test_table_table.php');
 
         $this->cleanUpMigrations($path);
     }

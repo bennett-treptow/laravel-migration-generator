@@ -1,11 +1,11 @@
 <?php
+
 namespace Tests;
 
 use LaravelMigrationGenerator\LaravelMigrationGeneratorProvider;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
-
     protected function defineEnvironment($app)
     {
         // Setup default database to use sqlite :memory:

@@ -1,7 +1,9 @@
 <?php
+
 namespace LaravelMigrationGenerator\Tokenizers;
 
-interface IndexTokenizerInterface {
+interface IndexTokenizerInterface
+{
     public function getIndexType(): string;
 
     public function getIndexName(): string;

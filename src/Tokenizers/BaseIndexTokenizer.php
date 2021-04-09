@@ -1,7 +1,9 @@
 <?php
+
 namespace LaravelMigrationGenerator\Tokenizers;
 
-abstract class BaseIndexTokenizer extends BaseTokenizer implements IndexTokenizerInterface {
+abstract class BaseIndexTokenizer extends BaseTokenizer implements IndexTokenizerInterface
+{
     protected string $indexType;
 
     protected string $indexName;
@@ -16,15 +18,18 @@ abstract class BaseIndexTokenizer extends BaseTokenizer implements IndexTokenize
 
     protected $relatedColumns = [];
 
-    public function getIndexType(): string{
+    public function getIndexType(): string
+    {
         return $this->indexType;
     }
 
-    public function getIndexName(): string{
+    public function getIndexName(): string
+    {
         return $this->indexName;
     }
 
-    public function getIndexColumns(){
+    public function getIndexColumns()
+    {
         return $this->indexColumns;
     }
 
@@ -58,7 +63,7 @@ abstract class BaseIndexTokenizer extends BaseTokenizer implements IndexTokenize
     public function toMethod(): string
     {
         if ($this->indexType === 'foreign') {
-            $base = '$table->foreign(' . $this->valueToString($this->indexColumns, true) . ', '.$this->valueToString($this->indexName).')->references(' . $this->valueToString($this->foreignReferencedColumns, true) . ')->on(' . $this->valueToString($this->foreignReferencedTable) . ')';
+            $base = '$table->foreign(' . $this->valueToString($this->indexColumns, true) . ', ' . $this->valueToString($this->indexName) . ')->references(' . $this->valueToString($this->foreignReferencedColumns, true) . ')->on(' . $this->valueToString($this->foreignReferencedTable) . ')';
             foreach ($this->constraintActions as $type => $action) {
                 $base .= '->on' . ucfirst($type) . '(' . $this->valueToString($action) . ')';
             }

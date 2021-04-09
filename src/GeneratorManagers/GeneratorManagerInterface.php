@@ -1,6 +1,8 @@
 <?php
+
 namespace LaravelMigrationGenerator\GeneratorManagers;
 
-interface GeneratorManagerInterface {
+interface GeneratorManagerInterface
+{
     public function handle(string $basePath, ?string $singleTable = null);
 }

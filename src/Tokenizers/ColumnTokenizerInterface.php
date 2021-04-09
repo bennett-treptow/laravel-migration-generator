@@ -1,9 +1,11 @@
 <?php
+
 namespace LaravelMigrationGenerator\Tokenizers;
 
 use LaravelMigrationGenerator\Generators\TableGeneratorInterface;
 
-interface ColumnTokenizerInterface {
+interface ColumnTokenizerInterface
+{
     public function getColumnName(): string;
 
     public function getColumnType(): string;

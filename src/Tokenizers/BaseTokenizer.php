@@ -25,7 +25,8 @@ abstract class BaseTokenizer
      * @param string $line
      * @return static
      */
-    public static function parse(string $line){
+    public static function parse(string $line)
+    {
         return (new static($line))->tokenize();
     }
 
@@ -65,7 +66,7 @@ abstract class BaseTokenizer
             return $value;
         }
 
-        if(Str::startsWith($value, 'float$:')){
+        if (Str::startsWith($value, 'float$:')) {
             return str_replace('float$:', '', $value);
         }
 

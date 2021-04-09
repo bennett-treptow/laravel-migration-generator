@@ -27,7 +27,8 @@
     }
   },
   "require-dev": {
-    "orchestra/testbench": "^6.17"
+    "orchestra/testbench": "^6.17",
+    "friendsofphp/php-cs-fixer": "^2.16"
   },
   "scripts": {
     "post-autoload-dump": [

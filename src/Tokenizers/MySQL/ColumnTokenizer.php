@@ -3,10 +3,9 @@
 namespace LaravelMigrationGenerator\Tokenizers\MySQL;
 
 use Illuminate\Support\Str;
-use LaravelMigrationGenerator\Generators\MySQLTableGenerator;
-use LaravelMigrationGenerator\Generators\TableGeneratorInterface;
-use LaravelMigrationGenerator\Tokenizers\BaseColumnTokenizer;
 use LaravelMigrationGenerator\Tokenizers\WritableTokenizer;
+use LaravelMigrationGenerator\Tokenizers\BaseColumnTokenizer;
+use LaravelMigrationGenerator\Generators\TableGeneratorInterface;
 
 class ColumnTokenizer extends BaseColumnTokenizer
 {
@@ -53,7 +52,7 @@ class ColumnTokenizer extends BaseColumnTokenizer
                 if ($index->getIndexType() === 'primary' && ! $index->isMultiColumnIndex()) {
                     $this->primaryKey = true;
                     $index->markAsWritable(false);
-                } elseif($index->getIndexType() === 'index' && !$index->isMultiColumnIndex()){
+                } elseif ($index->getIndexType() === 'index' && ! $index->isMultiColumnIndex()) {
                     $this->indexed = true;
                     $index->markAsWritable(false);
                 }
@@ -171,19 +170,19 @@ class ColumnTokenizer extends BaseColumnTokenizer
             if (strtoupper($this->defaultValue) === 'NULL') {
                 $this->nullable = true;
                 $this->defaultValue = null;
-            } elseif(strtoupper($this->defaultValue === 'CURRENT_TIMESTAMP')){
+            } elseif (strtoupper($this->defaultValue === 'CURRENT_TIMESTAMP')) {
                 $this->defaultValue = null;
                 $this->useCurrent = true;
             }
-            if($this->isNumberType()){
-                if(Str::contains(strtoupper($this->columnType), 'INT')){
+            if ($this->isNumberType()) {
+                if (Str::contains(strtoupper($this->columnType), 'INT')) {
                     $this->defaultValue = (int) $this->defaultValue;
                 } else {
-                    $this->defaultValue = 'float$:'.$this->defaultValue;
+                    $this->defaultValue = 'float$:' . $this->defaultValue;
                 }
             } else {
-                if($this->defaultValue !== null) {
-                    $this->defaultValue = (string)$this->defaultValue;
+                if ($this->defaultValue !== null) {
+                    $this->defaultValue = (string) $this->defaultValue;
                 }
             }
         } else {
@@ -218,16 +217,17 @@ class ColumnTokenizer extends BaseColumnTokenizer
         if ($this->columnType === 'enum') {
             $this->methodParameters = [array_map(fn ($item) => trim($item, '\''), $constraints)];
         } else {
-            $this->methodParameters = array_map(fn($item) => (int)$item, $constraints);
+            $this->methodParameters = array_map(fn ($item) => (int) $item, $constraints);
         }
     }
 
     public function toMethod(): string
     {
         $initialString = parent::toMethod();
-        if($this->indexed){
+        if ($this->indexed) {
             $initialString .= '->index()';
         }
+
         return $initialString;
     }
 }

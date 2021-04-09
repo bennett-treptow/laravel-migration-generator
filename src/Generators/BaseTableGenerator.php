@@ -1,11 +1,13 @@
 <?php
+
 namespace LaravelMigrationGenerator\Generators;
 
-use LaravelMigrationGenerator\Tokenizers\ColumnTokenizerInterface;
-use LaravelMigrationGenerator\Tokenizers\IndexTokenizerInterface;
 use LaravelMigrationGenerator\Tokenizers\WritableTokenizer;
+use LaravelMigrationGenerator\Tokenizers\IndexTokenizerInterface;
+use LaravelMigrationGenerator\Tokenizers\ColumnTokenizerInterface;
 
-abstract class BaseTableGenerator implements TableGeneratorInterface {
+abstract class BaseTableGenerator implements TableGeneratorInterface
+{
     use WritableTokenizer;
 
     protected $tableName;
@@ -27,7 +29,6 @@ abstract class BaseTableGenerator implements TableGeneratorInterface {
 
         return $instance;
     }
-
 
     public function columnIterator(callable $callback)
     {

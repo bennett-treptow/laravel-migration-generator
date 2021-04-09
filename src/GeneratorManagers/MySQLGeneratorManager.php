@@ -2,9 +2,9 @@
 
 namespace LaravelMigrationGenerator\GeneratorManagers;
 
-use App\Services\ViewTokenizer;
 use Illuminate\Support\Facades\DB;
 use LaravelMigrationGenerator\Generators\MySQLTableGenerator;
+use LaravelMigrationGenerator\Tokenizers\MySQL\ViewTokenizer;
 
 class MySQLGeneratorManager implements GeneratorManagerInterface
 {

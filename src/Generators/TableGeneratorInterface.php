@@ -1,9 +1,13 @@
 <?php
+
 namespace LaravelMigrationGenerator\Generators;
 
-interface TableGeneratorInterface {
+interface TableGeneratorInterface
+{
     public function parse();
-    public function finalPass();
+
+    public function cleanUp();
+
     public function write(string $basePath);
 
     public function getIndices();

@@ -2,10 +2,9 @@
 
 namespace LaravelMigrationGenerator\Tokenizers\MySQL;
 
-use Illuminate\Support\Str;
-use LaravelMigrationGenerator\Generators\TableGeneratorInterface;
-use LaravelMigrationGenerator\Tokenizers\BaseIndexTokenizer;
 use LaravelMigrationGenerator\Tokenizers\WritableTokenizer;
+use LaravelMigrationGenerator\Tokenizers\BaseIndexTokenizer;
+use LaravelMigrationGenerator\Generators\TableGeneratorInterface;
 
 class IndexTokenizer extends BaseIndexTokenizer
 {

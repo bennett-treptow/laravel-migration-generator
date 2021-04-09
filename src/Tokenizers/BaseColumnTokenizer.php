@@ -1,9 +1,11 @@
 <?php
+
 namespace LaravelMigrationGenerator\Tokenizers;
 
 use Illuminate\Support\Str;
 
-abstract class BaseColumnTokenizer extends BaseTokenizer implements ColumnTokenizerInterface {
+abstract class BaseColumnTokenizer extends BaseTokenizer implements ColumnTokenizerInterface
+{
     protected $columnName;
 
     protected $columnType;
@@ -34,34 +36,44 @@ abstract class BaseColumnTokenizer extends BaseTokenizer implements ColumnTokeni
         return $this->columnType;
     }
 
-    public function getMethod(): string {
+    public function getMethod(): string
+    {
         return $this->method;
     }
-    public function getNullable(): bool {
+
+    public function getNullable(): bool
+    {
         return $this->nullable;
     }
-    public function getDefaultValue(){
+
+    public function getDefaultValue()
+    {
         $value = $this->defaultValue;
 
-        if($value !== null && Str::contains($value, 'float$:')){
+        if ($value !== null && Str::contains($value, 'float$:')) {
             $value = str_replace('float$:', '', $value);
         }
 
         return $value;
     }
+
     public function getUnsigned(): bool
     {
         return $this->unsigned;
     }
 
-    public function getUseCurrent(): bool{
+    public function getUseCurrent(): bool
+    {
         return $this->useCurrent;
     }
 
-    public function getMethodParameters(): array {
+    public function getMethodParameters(): array
+    {
         return $this->methodParameters;
     }
-    public function getCollation(): ?string {
+
+    public function getCollation(): ?string
+    {
         return $this->collation;
     }
 
@@ -114,7 +126,7 @@ abstract class BaseColumnTokenizer extends BaseTokenizer implements ColumnTokeni
             $initialString .= $this->valueToString($this->defaultValue, false);
             $initialString .= ')';
         }
-        if($this->useCurrent){
+        if ($this->useCurrent) {
             $initialString .= '->useCurrent()';
         }
 

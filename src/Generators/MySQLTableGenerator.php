@@ -2,10 +2,10 @@
 
 namespace LaravelMigrationGenerator\Generators;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use LaravelMigrationGenerator\Tokenizers\MySQL\ColumnTokenizer;
+use Illuminate\Support\Facades\DB;
 use LaravelMigrationGenerator\Tokenizers\MySQL\IndexTokenizer;
+use LaravelMigrationGenerator\Tokenizers\MySQL\ColumnTokenizer;
 
 class MySQLTableGenerator extends BaseTableGenerator
 {
@@ -14,7 +14,7 @@ class MySQLTableGenerator extends BaseTableGenerator
         $this->tableName = $tableName;
         $this->rows = $rows;
 
-        if(count($this->rows) === 0){
+        if (count($this->rows) === 0) {
             $structure = DB::select('SHOW CREATE TABLE `' . $this->tableName . '`');
             $structure = $structure[0];
             $structure = (array) $structure;
@@ -52,14 +52,14 @@ class MySQLTableGenerator extends BaseTableGenerator
         }
     }
 
-    public function finalPass()
+    public function cleanUp()
     {
         foreach ($this->indices as &$index) {
             $index->finalPass($this);
         }
 
         foreach ($this->indices as &$index) {
-            if(!$index->isWritable()){
+            if (! $index->isWritable()) {
                 continue;
             }
             $columns = $index->getIndexColumns();
@@ -75,15 +75,14 @@ class MySQLTableGenerator extends BaseTableGenerator
         foreach ($this->columns as &$column) {
             $column->finalPass($this);
         }
-
-
     }
 
-    public function getSchema($tab = ''){
+    public function getSchema($tab = '')
+    {
         $schema = collect($this->columns)
             ->filter(fn ($col) => $col->isWritable())
-            ->map(function ($column) use ($tab){
-                return $tab.$column->toMethod() . ';';
+            ->map(function ($column) use ($tab) {
+                return $tab . $column->toMethod() . ';';
             })
             ->implode("\n");
 
@@ -91,8 +90,8 @@ class MySQLTableGenerator extends BaseTableGenerator
 
         $schema .= collect($this->indices)
             ->filter(fn ($index) => $index->isWritable())
-            ->map(function ($index) use ($tab){
-                return $tab.$index->toMethod() . ';';
+            ->map(function ($index) use ($tab) {
+                return $tab . $index->toMethod() . ';';
             })
             ->implode("\n");
 
@@ -117,6 +116,6 @@ class MySQLTableGenerator extends BaseTableGenerator
         $stub = str_replace('[TableName]', Str::studly($this->tableName), $stub);
         $stub = str_replace('[Table]', $this->tableName, $stub);
         $stub = str_replace('[Schema]', $schema, $stub);
-        file_put_contents($basePath.'/0000_00_00_000000_create_test_' . $this->tableName . '_table.php', $stub);
+        file_put_contents($basePath . '/0000_00_00_000000_create_test_' . $this->tableName . '_table.php', $stub);
     }
 }

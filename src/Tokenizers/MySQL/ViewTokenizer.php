@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Services;
+namespace LaravelMigrationGenerator\Tokenizers\MySQL;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class ViewTokenizer
 {
@@ -50,10 +50,10 @@ class ViewTokenizer
     public function write(string $basePath, string $tabCharacter = '    ')
     {
         $tab = str_repeat($tabCharacter, 3);
-        $stub = file_get_contents(__DIR__.'/../../Stubs/ViewStub.stub');
+        $stub = file_get_contents(__DIR__ . '/../../Stubs/ViewStub.stub');
         $stub = str_replace('[ViewName]', Str::studly($this->viewName), $stub);
         $stub = str_replace('[View]', $this->viewName, $stub);
         $stub = str_replace('[Schema]', $tab . $this->schema, $stub);
-        file_put_contents($basePath.'/0000_00_00_000000_create_test_' . $this->viewName . '_view.php', $stub);
+        file_put_contents($basePath . '/0000_00_00_000000_create_test_' . $this->viewName . '_view.php', $stub);
     }
 }
