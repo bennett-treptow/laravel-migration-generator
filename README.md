@@ -17,7 +17,10 @@ You can specify the connection to use as the database with the `--connection` op
 
 # Currently Supported DBMS's
 
-[x] MySQL
-[] Postgres
-[] SQLite
-[] SQL Server
+ :green_circle: MySQL
+ 
+ :red_circle: Postgres
+ 
+ :red_circle: SQLite
+ 
+ :red_circle: SQL Server
