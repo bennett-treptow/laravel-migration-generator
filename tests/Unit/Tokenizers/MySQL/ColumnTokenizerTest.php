@@ -27,6 +27,22 @@ class ColumnTokenizerTest extends TestCase
 
     //endregion
 
+    //region Soft Deletes
+    public function test_it_tokenizes_a_deleted_at_column_to_soft_deletes(){
+        $columnTokenizer = ColumnTokenizer::parse('`deleted_at` timestamp DEFAULT NULL');
+
+        $this->assertEquals('deleted_at', $columnTokenizer->getColumnName());
+        $this->assertEquals('timestamp', $columnTokenizer->getColumnType());
+        $this->assertEquals('timestamp', $columnTokenizer->getMethod());
+        $this->assertCount(0, $columnTokenizer->getMethodParameters());
+        $this->assertTrue($columnTokenizer->getNullable());
+        $this->assertNull($columnTokenizer->getDefaultValue());
+        $this->assertEquals('$table->timestamp(\'deleted_at\')->nullable()', $columnTokenizer->toMethod());
+        $columnTokenizer->finalPass(new MySQLTableGenerator('table', ['`deleted_at` timestamp DEFAULT NULL']));
+        $this->assertEquals('$table->softDeletes()', $columnTokenizer->toMethod());
+    }
+    //endregion
+
     //region VARCHAR
     public function test_it_tokenizes_a_not_null_varchar_column()
     {
@@ -232,6 +248,20 @@ class ColumnTokenizerTest extends TestCase
         $this->assertTrue($columnTokenizer->getUnsigned());
         $this->assertNull($columnTokenizer->getCollation());
         $this->assertEquals('$table->unsignedSmallInteger(\'cats\', 6)', $columnTokenizer->toMethod());
+    }
+
+    public function test_it_tokenizes_a_nullable_big_int_column(){
+        $columnTokenizer = ColumnTokenizer::parse('`template_id` bigint(20) unsigned DEFAULT NULL');
+
+        $this->assertEquals('template_id', $columnTokenizer->getColumnName());
+        $this->assertEquals('bigint', $columnTokenizer->getColumnType());
+        $this->assertEquals('bigInteger', $columnTokenizer->getMethod());
+        $this->assertCount(0, $columnTokenizer->getMethodParameters());//20 is default
+        $this->assertTrue($columnTokenizer->getNullable());
+        $this->assertTrue($columnTokenizer->getUnsigned());
+        $this->assertNull($columnTokenizer->getCollation());
+        $this->assertNull($columnTokenizer->getDefaultValue());
+        $this->assertEquals('$table->unsignedBigInteger(\'template_id\')->nullable()', $columnTokenizer->toMethod());
     }
 
     public function test_it_tokenizes_a_primary_auto_inc_int_column()
@@ -726,6 +756,6 @@ class ColumnTokenizerTest extends TestCase
 
         $columnTokenizer->finalPass($table);
 
-        $this->assertEquals('$table->unsignedInteger(\'user_id\', 10)->index()', $columnTokenizer->toMethod());
+        $this->assertEquals('$table->unsignedInteger(\'user_id\')->index()', $columnTokenizer->toMethod());
     }
 }

@@ -31,6 +31,35 @@ class MySQLTableGeneratorTest extends TestCase
         $this->assertSchemaHas('$table->foreign(\'user_id\', \'fk_user_id\')->references(\'id\')->on(\'users\')->onDelete(\'cascade\')->onUpdate(\'cascade\');', $schema);
     }
 
+    public function test_works_with_morph_columns(){
+        $structure = ['`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT',
+          '`business_id` int(10) unsigned NOT NULL',
+          '`trigger` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL',
+          '`trigger_at` timestamp NULL DEFAULT NULL',
+          '`assignable_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL',
+         '`assignable_id` bigint(20) unsigned DEFAULT NULL',
+          '`action_template_id` bigint(20) unsigned DEFAULT NULL',
+          '`delay_interval` int(10) unsigned NOT NULL DEFAULT \'0\'',
+          '`due_interval` int(10) unsigned NOT NULL DEFAULT \'0\'',
+          '`created_at` timestamp NULL DEFAULT NULL',
+          '`updated_at` timestamp NULL DEFAULT NULL',
+          '`deleted_at` timestamp NULL DEFAULT NULL',
+          'PRIMARY KEY (`id`)',
+          'KEY `action_automations_assignable_type_assignable_id_index` (`assignable_type`,`assignable_id`)',
+          'KEY `action_automations_business_id_foreign` (`business_id`)',
+          'KEY `action_automations_action_template_id_foreign` (`action_template_id`)',
+          'CONSTRAINT `action_automations_action_template_id_foreign` FOREIGN KEY (`action_template_id`) REFERENCES `action_templates` (`id`)',
+          'CONSTRAINT `action_automations_business_id_foreign` FOREIGN KEY (`business_id`) REFERENCES `businesses` (`id`)'
+        ];
+
+        $generator = new MySQLTableGenerator('table', $structure);
+        $generator->parse();
+        $generator->cleanUp();
+
+        $schema = $generator->getSchema();
+        dd($schema);
+    }
+
     private function cleanUpMigrations($path)
     {
         foreach (glob($path . '/*.php') as $file) {

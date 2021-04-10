@@ -16,6 +16,12 @@ class ColumnTokenizer extends BaseColumnTokenizer
 
     protected $indexed = false;
 
+    /**
+     * MySQL provides a ZEROFILL property for ints which is not an ANSI compliant modifier
+     * @var bool
+     */
+    protected $zeroFill = false;
+
     public function index(IndexTokenizer $index)
     {
         $this->indices[] = $index;
@@ -29,6 +35,7 @@ class ColumnTokenizer extends BaseColumnTokenizer
         $this->consumeColumnType();
         if ($this->isNumberType()) {
             $this->consumeUnsigned();
+            $this->consumeZeroFill();
         }
         if ($this->isTextType()) {
             //has collation data most likely
@@ -74,6 +81,11 @@ class ColumnTokenizer extends BaseColumnTokenizer
             });
         }
 
+        if($this->columnName === 'deleted_at' && $this->columnType === 'timestamp'){
+            $this->columnName = null;
+            $this->method = 'softDeletes';
+        }
+
         if ($this->columnName === 'id' && $this->primaryKey && $this->columnType === 'bigint') {
             $this->columnName = null;
         }
@@ -94,6 +106,16 @@ class ColumnTokenizer extends BaseColumnTokenizer
     protected function isNumberType()
     {
         return Str::contains($this->columnType, ['int', 'decimal', 'float', 'double']);
+    }
+
+    protected function consumeZeroFill(){
+        $nextPiece = $this->consume();
+
+        if(strtoupper($nextPiece) === 'ZEROFILL'){
+            $this->zeroFill = true;
+        } else {
+            $this->putBack($nextPiece);
+        }
     }
 
     protected function consumeColumnType()
@@ -174,15 +196,15 @@ class ColumnTokenizer extends BaseColumnTokenizer
                 $this->defaultValue = null;
                 $this->useCurrent = true;
             }
-            if ($this->isNumberType()) {
-                if (Str::contains(strtoupper($this->columnType), 'INT')) {
-                    $this->defaultValue = (int) $this->defaultValue;
+            if($this->defaultValue !== null) {
+                if ($this->isNumberType()) {
+                    if (Str::contains(strtoupper($this->columnType), 'INT')) {
+                        $this->defaultValue = (int)$this->defaultValue;
+                    } else {
+                        $this->defaultValue = 'float$:' . $this->defaultValue;
+                    }
                 } else {
-                    $this->defaultValue = 'float$:' . $this->defaultValue;
-                }
-            } else {
-                if ($this->defaultValue !== null) {
-                    $this->defaultValue = (string) $this->defaultValue;
+                    $this->defaultValue = (string)$this->defaultValue;
                 }
             }
         } else {
@@ -218,6 +240,21 @@ class ColumnTokenizer extends BaseColumnTokenizer
             $this->methodParameters = [array_map(fn ($item) => trim($item, '\''), $constraints)];
         } else {
             $this->methodParameters = array_map(fn ($item) => (int) $item, $constraints);
+
+            $columnType = strtoupper($this->columnType);
+
+            $defaultFieldWidths = [
+                'TINYINT' => 3,
+                'SMALLINT' => 5,
+                'MEDIUMINT' => 8,
+                'INT' => 10,
+                'BIGINT' => 20
+            ];
+            if(isset($defaultFieldWidths[$columnType])) {
+                if ($this->methodParameters[0] === $defaultFieldWidths[$columnType]) {
+                    array_shift($this->methodParameters);
+                }
+            }
         }
     }
 

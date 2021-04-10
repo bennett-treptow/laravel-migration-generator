@@ -114,7 +114,7 @@ abstract class BaseColumnTokenizer extends BaseTokenizer implements ColumnTokeni
             }
         }
         $initialString .= ')';
-        if ($this->nullable) {
+        if ($this->nullable && $this->method !== 'softDeletes') {
             $initialString .= '->nullable()';
         }
         if ($this->defaultValue === 'NULL') {
