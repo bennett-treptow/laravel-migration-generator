@@ -4,11 +4,9 @@ namespace LaravelMigrationGenerator\Tokenizers\MySQL;
 
 use Illuminate\Support\Str;
 use Illuminate\Database\Schema\Builder;
-use LaravelMigrationGenerator\Definitions\ColumnDefinition;
 use LaravelMigrationGenerator\Helpers\ValueToString;
 use LaravelMigrationGenerator\Tokenizers\BaseColumnTokenizer;
 use LaravelMigrationGenerator\Tokenizers\Traits\WritableTokenizer;
-use LaravelMigrationGenerator\Generators\Interfaces\TableGeneratorInterface;
 
 class ColumnTokenizer extends BaseColumnTokenizer
 {
@@ -16,21 +14,11 @@ class ColumnTokenizer extends BaseColumnTokenizer
 
     protected $columnType;
 
-    /** @var IndexTokenizer[] */
-    protected $indices = [];
-
     /**
      * MySQL provides a ZEROFILL property for ints which is not an ANSI compliant modifier
      * @var bool
      */
     protected $zeroFill = false;
-
-    public function index(IndexTokenizer $index)
-    {
-        $this->indices[] = $index;
-
-        return $this;
-    }
 
     public function tokenize(): self
     {
@@ -53,26 +41,6 @@ class ColumnTokenizer extends BaseColumnTokenizer
         }
 
         return $this;
-    }
-
-    public function finalPass(TableGeneratorInterface $table): ?bool
-    {
-        if (count($this->indices) > 0) {
-            foreach ($this->indices as $index) {
-                if ($index->definition()->getIndexType() === 'primary' && ! $index->definition()->isMultiColumnIndex()) {
-                    $this->definition->setPrimary(true);
-                    $index->markAsWritable(false);
-                } elseif ($index->definition()->getIndexType() === 'index' && ! $index->definition()->isMultiColumnIndex()) {
-                    $this->definition->setIndex(true);
-                    $index->markAsWritable(false);
-                } elseif ($index->definition()->getIndexType() === 'unique' && ! $index->definition()->isMultiColumnIndex()) {
-                    $this->definition->setUnique(true);
-                    $index->markAsWritable(false);
-                }
-            }
-        }
-
-        return null;
     }
 
     protected function consumeColumnName()
@@ -240,11 +208,6 @@ class ColumnTokenizer extends BaseColumnTokenizer
                 $this->definition->setMethodParameters(array_map(fn ($item) => (int) $item, $constraints));
             }
         }
-    }
-
-    public function definition(): ColumnDefinition
-    {
-        return $this->definition;
     }
 
     /**

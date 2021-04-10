@@ -4,7 +4,6 @@ namespace LaravelMigrationGenerator\Tokenizers\MySQL;
 
 use LaravelMigrationGenerator\Tokenizers\BaseIndexTokenizer;
 use LaravelMigrationGenerator\Tokenizers\Traits\WritableTokenizer;
-use LaravelMigrationGenerator\Generators\Interfaces\TableGeneratorInterface;
 
 class IndexTokenizer extends BaseIndexTokenizer
 {
@@ -92,26 +91,5 @@ class IndexTokenizer extends BaseIndexTokenizer
                 break;
             }
         }
-    }
-
-    public function finalPass(TableGeneratorInterface $table): ?bool
-    {
-        if ($this->definition->getIndexType() === 'index') {
-            //look for corresponding foreign key for this index
-            $columns = $this->definition->getIndexColumns();
-            $table->indexIterator(function ($index) use ($columns) {
-                if ($index->definition()->getIndexType() === 'foreign') {
-                    $cols = $index->definition()->getIndexColumns();
-                    if (count(array_intersect($columns, $cols)) === count($columns)) {
-                        //has same columns
-                        $this->markAsWritable(false);
-
-                        return false;
-                    }
-                }
-            });
-        }
-
-        return null;
     }
 }

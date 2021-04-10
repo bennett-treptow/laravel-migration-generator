@@ -59,26 +59,33 @@ class TableGenerator extends BaseTableGenerator
         }
     }
 
-    public function cleanUp()
+    protected function findForeignKeyIndices()
     {
-        foreach ($this->indices as &$index) {
-            $index->finalPass($this);
-        }
+        foreach ($this->indices as $index) {
+            if ($index->definition()->getIndexType() === 'index') {
+                //look for corresponding foreign key for this index
+                $columns = $index->definition()->getIndexColumns();
+                $indexName = $index->definition()->getIndexName();
 
-        foreach ($this->indices as &$index) {
-            if (! $index->isWritable()) {
-                continue;
-            }
-            $columns = $index->definition()->getIndexColumns();
+                foreach ($this->indices as $innerIndex) {
+                    if ($innerIndex->definition()->getIndexName() !== $indexName) {
+                        if ($innerIndex->definition()->getIndexType() === 'foreign') {
+                            $cols = $innerIndex->definition()->getIndexColumns();
+                            if (count(array_intersect($columns, $cols)) === count($columns)) {
+                                //has same columns
+                                $index->markAsWritable(false);
 
-            foreach ($columns as $indexColumn) {
-                foreach ($this->columns as $column) {
-                    if ($column->definition()->getColumnName() === $indexColumn) {
-                        $column->index($index);
+                                break;
+                            }
+                        }
                     }
                 }
             }
         }
+    }
+
+    protected function findMorphColumns()
+    {
         $morphColumns = [];
 
         foreach ($this->columns as &$column) {
@@ -109,28 +116,67 @@ class TableGenerator extends BaseTableGenerator
                 }
             }
         }
+    }
 
+    protected function findTimestampsColumn()
+    {
         $timestampColumns = [];
-        foreach($this->columns as &$column){
+        foreach ($this->columns as &$column) {
             $columnName = $column->definition()->getColumnName();
-            if($columnName === 'created_at'){
+            if ($columnName === 'created_at') {
                 $timestampColumns['created_at'] = $column;
-            } elseif($columnName === 'updated_at'){
+            } elseif ($columnName === 'updated_at') {
                 $timestampColumns['updated_at'] = $column;
             }
-            if(count($timestampColumns) === 2){
+            if (count($timestampColumns) === 2) {
                 $timestampColumns['created_at']->definition()
                     ->setColumnName(null)
                     ->setMethodName('timestamps')
                     ->setNullable(false);
                 $timestampColumns['updated_at']->markAsWritable(false);
+
                 break;
             }
         }
+    }
 
-        foreach ($this->columns as &$column) {
-            $column->finalPass($this);
+    protected function findColumnsWithIndices()
+    {
+        foreach ($this->indices as &$index) {
+            if (! $index->isWritable()) {
+                continue;
+            }
+            $columns = $index->definition()->getIndexColumns();
+
+            foreach ($columns as $indexColumn) {
+                foreach ($this->columns as $column) {
+                    if ($column->definition()->getColumnName() === $indexColumn) {
+                        $indexType = $index->definition()->getIndexType();
+                        $isMultiColumnIndex = $index->definition()->isMultiColumnIndex();
+                        if ($indexType === 'primary' && ! $isMultiColumnIndex) {
+                            $column->definition()->setPrimary(true);
+                            $index->markAsWritable(false);
+                        } elseif ($indexType === 'index' && ! $isMultiColumnIndex) {
+                            $column->definition()->setIndex(true);
+                            $index->markAsWritable(false);
+                        } elseif ($indexType === 'unique' && ! $isMultiColumnIndex) {
+                            $column->definition()->setUnique(true);
+                            $index->markAsWritable(false);
+                        }
+                    }
+                }
+            }
         }
+    }
+
+    public function cleanUp()
+    {
+        $this->findForeignKeyIndices();
+
+        $this->findMorphColumns();
+        $this->findTimestampsColumn();
+
+        $this->findColumnsWithIndices();
     }
 
     public function getSchema($tab = '')

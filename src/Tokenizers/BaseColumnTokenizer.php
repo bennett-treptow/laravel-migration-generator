@@ -16,4 +16,9 @@ abstract class BaseColumnTokenizer extends BaseTokenizer implements ColumnTokeni
 
         $this->definition = new ColumnDefinition();
     }
+
+    public function definition(): ColumnDefinition
+    {
+        return $this->definition;
+    }
 }

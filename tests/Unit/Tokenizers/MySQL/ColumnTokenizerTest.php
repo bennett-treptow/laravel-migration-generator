@@ -753,21 +753,4 @@ class ColumnTokenizerTest extends TestCase
     }
 
     //endregion
-
-    public function test_adding_index_to_column()
-    {
-        $columnTokenizer = ColumnTokenizer::parse('`user_id` int(10) unsigned NOT NULL');
-        $columnDefinition = $columnTokenizer->definition();
-        $indexTokenizer = IndexTokenizer::parse('KEY `fk_user_id_idx` (`user_id`)');
-        $columnTokenizer->index($indexTokenizer);
-
-        $table = new TableGenerator('test', [
-            '`user_id` int(10) unsigned NOT NULL',
-            'KEY `fk_user_id_idx` (`user_id`)'
-        ]);
-
-        $columnTokenizer->finalPass($table);
-
-        $this->assertEquals('$table->integer(\'user_id\')->unsigned()->index()', $columnDefinition->render());
-    }
 }
