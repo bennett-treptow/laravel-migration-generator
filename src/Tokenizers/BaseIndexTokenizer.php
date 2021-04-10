@@ -14,8 +14,8 @@ abstract class BaseIndexTokenizer extends BaseTokenizer implements IndexTokenize
 
     public function __construct(string $value)
     {
-        parent::__construct($value);
         $this->definition = new IndexDefinition();
+        parent::__construct($value);
     }
 
     public function column(ColumnTokenizerInterface $column)

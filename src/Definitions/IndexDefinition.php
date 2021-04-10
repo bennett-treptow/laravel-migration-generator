@@ -8,7 +8,7 @@ class IndexDefinition
 {
     protected string $indexType;
 
-    protected string $indexName;
+    protected ?string $indexName = null; //primary keys usually don't have a name
 
     protected array $indexColumns = [];
 
@@ -17,6 +17,15 @@ class IndexDefinition
     protected string $foreignReferencedTable;
 
     protected array $constraintActions = [];
+
+    public function __construct($attributes = [])
+    {
+        foreach ($attributes as $attribute => $value) {
+            if (property_exists($this, $attribute)) {
+                $this->$attribute = $value;
+            }
+        }
+    }
 
     //region Getters
 
@@ -29,9 +38,9 @@ class IndexDefinition
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getIndexName(): string
+    public function getIndexName(): ?string
     {
         return $this->indexName;
     }
@@ -144,7 +153,8 @@ class IndexDefinition
         return count($this->indexColumns) > 1;
     }
 
-    public function render(): string{
+    public function render(): string
+    {
         if ($this->indexType === 'foreign') {
             $base = '$table->foreign(' . ValueToString::make($this->indexColumns, true) . ', ' . ValueToString::make($this->indexName) . ')->references(' . ValueToString::make($this->foreignReferencedColumns, true) . ')->on(' . ValueToString::make($this->foreignReferencedTable) . ')';
             foreach ($this->constraintActions as $type => $action) {

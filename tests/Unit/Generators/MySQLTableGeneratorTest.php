@@ -14,7 +14,7 @@ class MySQLTableGeneratorTest extends TestCase
 
     public function test_runs_correctly()
     {
-        $generator = new TableGenerator('table', [
+        $generator = TableGenerator::init('table', [
             '`id` int(9) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY',
             '`user_id` int(9) unsigned NOT NULL',
             '`note` varchar(255) NOT NULL',
@@ -22,8 +22,6 @@ class MySQLTableGeneratorTest extends TestCase
             'CONSTRAINT `fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE'
         ]);
 
-        $generator->parse();
-        $generator->cleanUp();
         $schema = $generator->getSchema();
         $this->assertSchemaHas('$table->increments(\'id\');', $schema);
         $this->assertSchemaHas('$table->integer(\'user_id\')->unsigned();', $schema);
@@ -41,16 +39,13 @@ class MySQLTableGeneratorTest extends TestCase
 
     public function test_writes()
     {
-        $generator = new TableGenerator('table', [
+        $generator = TableGenerator::init('table', [
             '`id` int(9) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY',
             '`user_id` int(9) unsigned NOT NULL',
             '`note` varchar(255) NOT NULL',
             'KEY `fk_user_id_idx` (`user_id`)',
             'CONSTRAINT `fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE'
         ]);
-
-        $generator->parse();
-        $generator->cleanUp();
 
         $path = __DIR__ . '/../../migrations';
 

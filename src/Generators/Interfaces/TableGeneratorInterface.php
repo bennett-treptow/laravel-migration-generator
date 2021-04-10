@@ -8,6 +8,8 @@ interface TableGeneratorInterface
 
     public function resolveStructure();
 
+    public function getSchema($tab = ''): string;
+
     public function parse();
 
     public function cleanUp();
