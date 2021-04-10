@@ -17,8 +17,7 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('has_cats', $columnTokenizer->getColumnName());
         $this->assertEquals('tinyint', $columnTokenizer->getColumnType());
         $this->assertEquals('tinyInteger', $columnTokenizer->getMethod());
-        $this->assertCount(1, $columnTokenizer->getMethodParameters());
-        $this->assertEquals(1, $columnTokenizer->getMethodParameters()[0]);
+        $this->assertCount(0, $columnTokenizer->getMethodParameters());
         $this->assertFalse($columnTokenizer->getNullable());
         $this->assertFalse($columnTokenizer->getUnsigned());
         $this->assertNull($columnTokenizer->getCollation());
@@ -228,11 +227,10 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('cats', $columnTokenizer->getColumnName());
         $this->assertEquals('smallint', $columnTokenizer->getColumnType());
         $this->assertEquals('smallInteger', $columnTokenizer->getMethod());
-        $this->assertCount(1, $columnTokenizer->getMethodParameters());
-        $this->assertEquals(6, $columnTokenizer->getMethodParameters()[0]);
+        $this->assertCount(0, $columnTokenizer->getMethodParameters());
         $this->assertFalse($columnTokenizer->getNullable());
         $this->assertNull($columnTokenizer->getCollation());
-        $this->assertEquals('$table->smallInteger(\'cats\', 6)', $columnTokenizer->toMethod());
+        $this->assertEquals('$table->smallInteger(\'cats\')', $columnTokenizer->toMethod());
     }
 
     public function test_it_tokenizes_a_not_null_unsigned_smallint_column()
@@ -242,12 +240,11 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('cats', $columnTokenizer->getColumnName());
         $this->assertEquals('smallint', $columnTokenizer->getColumnType());
         $this->assertEquals('smallInteger', $columnTokenizer->getMethod());
-        $this->assertCount(1, $columnTokenizer->getMethodParameters());
-        $this->assertEquals(6, $columnTokenizer->getMethodParameters()[0]);
+        $this->assertCount(0, $columnTokenizer->getMethodParameters());
         $this->assertFalse($columnTokenizer->getNullable());
         $this->assertTrue($columnTokenizer->getUnsigned());
         $this->assertNull($columnTokenizer->getCollation());
-        $this->assertEquals('$table->unsignedSmallInteger(\'cats\', 6)', $columnTokenizer->toMethod());
+        $this->assertEquals('$table->unsignedSmallInteger(\'cats\')', $columnTokenizer->toMethod());
     }
 
     public function test_it_tokenizes_a_nullable_big_int_column(){
@@ -256,7 +253,7 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('template_id', $columnTokenizer->getColumnName());
         $this->assertEquals('bigint', $columnTokenizer->getColumnType());
         $this->assertEquals('bigInteger', $columnTokenizer->getMethod());
-        $this->assertCount(0, $columnTokenizer->getMethodParameters());//20 is default
+        $this->assertCount(0, $columnTokenizer->getMethodParameters());
         $this->assertTrue($columnTokenizer->getNullable());
         $this->assertTrue($columnTokenizer->getUnsigned());
         $this->assertNull($columnTokenizer->getCollation());
@@ -271,8 +268,7 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('id', $columnTokenizer->getColumnName());
         $this->assertEquals('int', $columnTokenizer->getColumnType());
         $this->assertEquals('integer', $columnTokenizer->getMethod());
-        $this->assertCount(1, $columnTokenizer->getMethodParameters());
-        $this->assertEquals(9, $columnTokenizer->getMethodParameters()[0]);
+        $this->assertCount(0, $columnTokenizer->getMethodParameters());
         $this->assertFalse($columnTokenizer->getNullable());
         $this->assertTrue($columnTokenizer->getUnsigned());
         $this->assertNull($columnTokenizer->getCollation());

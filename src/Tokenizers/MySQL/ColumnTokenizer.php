@@ -239,21 +239,10 @@ class ColumnTokenizer extends BaseColumnTokenizer
         if ($this->columnType === 'enum') {
             $this->methodParameters = [array_map(fn ($item) => trim($item, '\''), $constraints)];
         } else {
-            $this->methodParameters = array_map(fn ($item) => (int) $item, $constraints);
-
-            $columnType = strtoupper($this->columnType);
-
-            $defaultFieldWidths = [
-                'TINYINT' => 3,
-                'SMALLINT' => 5,
-                'MEDIUMINT' => 8,
-                'INT' => 10,
-                'BIGINT' => 20
-            ];
-            if(isset($defaultFieldWidths[$columnType])) {
-                if ($this->methodParameters[0] === $defaultFieldWidths[$columnType]) {
-                    array_shift($this->methodParameters);
-                }
+            if(Str::contains(strtoupper($this->columnType), 'INT')){
+                $this->methodParameters = []; //laravel does not like display field widths
+            } else {
+                $this->methodParameters = array_map(fn ($item) => (int) $item, $constraints);
             }
         }
     }

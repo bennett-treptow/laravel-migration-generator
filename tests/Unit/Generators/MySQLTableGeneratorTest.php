@@ -26,7 +26,7 @@ class MySQLTableGeneratorTest extends TestCase
         $generator->cleanUp();
         $schema = $generator->getSchema();
         $this->assertSchemaHas('$table->increments(\'id\');', $schema);
-        $this->assertSchemaHas('$table->unsignedInteger(\'user_id\', 9);', $schema);
+        $this->assertSchemaHas('$table->unsignedInteger(\'user_id\');', $schema);
         $this->assertSchemaHas('$table->string(\'note\', 255);', $schema);
         $this->assertSchemaHas('$table->foreign(\'user_id\', \'fk_user_id\')->references(\'id\')->on(\'users\')->onDelete(\'cascade\')->onUpdate(\'cascade\');', $schema);
     }
