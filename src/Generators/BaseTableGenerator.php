@@ -25,7 +25,7 @@ abstract class BaseTableGenerator implements TableGeneratorInterface
         $instance = (new static($tableName));
 
         $instance->parse();
-        $instance->finalPass();
+        $instance->cleanUp();
 
         return $instance;
     }
