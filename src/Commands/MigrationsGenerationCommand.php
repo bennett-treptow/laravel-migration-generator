@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
 use LaravelMigrationGenerator\GeneratorManagers\MySQLGeneratorManager;
-use LaravelMigrationGenerator\GeneratorManagers\GeneratorManagerInterface;
+use LaravelMigrationGenerator\GeneratorManagers\Interfaces\GeneratorManagerInterface;
 
 class MigrationsGenerationCommand extends Command
 {

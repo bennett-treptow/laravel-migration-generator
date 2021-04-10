@@ -3,13 +3,16 @@
 namespace LaravelMigrationGenerator\GeneratorManagers;
 
 use Illuminate\Support\Facades\DB;
-use LaravelMigrationGenerator\Generators\MySQLTableGenerator;
-use LaravelMigrationGenerator\Tokenizers\MySQL\ViewTokenizer;
+use LaravelMigrationGenerator\Generators\MySQL\ViewGenerator;
+use LaravelMigrationGenerator\Generators\MySQL\TableGenerator;
+use LaravelMigrationGenerator\GeneratorManagers\Interfaces\GeneratorManagerInterface;
 
-class MySQLGeneratorManager implements GeneratorManagerInterface
+class MySQLGeneratorManager extends BaseGeneratorManager implements GeneratorManagerInterface
 {
     public function handle(string $basePath, ?string $singleTable = null)
     {
+        $this->createMissingDirectory($basePath);
+
         if ($singleTable === null) {
             $tables = DB::select('SHOW FULL TABLES');
             $skippableTables = [
@@ -25,15 +28,15 @@ class MySQLGeneratorManager implements GeneratorManagerInterface
                         continue;
                     }
 
-                    $generator = MySQLTableGenerator::init($table);
+                    $generator = TableGenerator::init($table);
                     $generator->write($basePath);
                 } elseif ($tableType === 'VIEW') {
-                    $generator = ViewTokenizer::init($table);
+                    $generator = ViewGenerator::init($table);
                     $generator->write($basePath);
                 }
             }
         } else {
-            $generator = MySQLTableGenerator::init($singleTable);
+            $generator = TableGenerator::init($singleTable);
             $generator->write($basePath);
         }
     }

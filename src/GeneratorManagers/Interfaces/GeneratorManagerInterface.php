@@ -1,6 +1,6 @@
 <?php
 
-namespace LaravelMigrationGenerator\GeneratorManagers;
+namespace LaravelMigrationGenerator\GeneratorManagers\Interfaces;
 
 interface GeneratorManagerInterface
 {

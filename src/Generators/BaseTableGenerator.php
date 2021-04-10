@@ -2,9 +2,10 @@
 
 namespace LaravelMigrationGenerator\Generators;
 
-use LaravelMigrationGenerator\Tokenizers\WritableTokenizer;
-use LaravelMigrationGenerator\Tokenizers\IndexTokenizerInterface;
-use LaravelMigrationGenerator\Tokenizers\ColumnTokenizerInterface;
+use LaravelMigrationGenerator\Tokenizers\Traits\WritableTokenizer;
+use LaravelMigrationGenerator\Generators\Interfaces\TableGeneratorInterface;
+use LaravelMigrationGenerator\Tokenizers\Interfaces\IndexTokenizerInterface;
+use LaravelMigrationGenerator\Tokenizers\Interfaces\ColumnTokenizerInterface;
 
 abstract class BaseTableGenerator implements TableGeneratorInterface
 {
@@ -24,10 +25,19 @@ abstract class BaseTableGenerator implements TableGeneratorInterface
     {
         $instance = (new static($tableName));
 
+        if ($instance->shouldResolveStructure()) {
+            $instance->resolveStructure();
+        }
+
         $instance->parse();
         $instance->cleanUp();
 
         return $instance;
+    }
+
+    public function shouldResolveStructure(): bool
+    {
+        return count($this->rows) === 0;
     }
 
     public function columnIterator(callable $callback)
@@ -48,5 +58,10 @@ abstract class BaseTableGenerator implements TableGeneratorInterface
                 break;
             }
         }
+    }
+
+    public function getIndices()
+    {
+        return $this->indices;
     }
 }

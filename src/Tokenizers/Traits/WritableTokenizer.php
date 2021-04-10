@@ -1,6 +1,6 @@
 <?php
 
-namespace LaravelMigrationGenerator\Tokenizers;
+namespace LaravelMigrationGenerator\Tokenizers\Traits;
 
 trait WritableTokenizer
 {

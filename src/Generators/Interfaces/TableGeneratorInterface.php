@@ -1,9 +1,13 @@
 <?php
 
-namespace LaravelMigrationGenerator\Generators;
+namespace LaravelMigrationGenerator\Generators\Interfaces;
 
 interface TableGeneratorInterface
 {
+    public function shouldResolveStructure(): bool;
+
+    public function resolveStructure();
+
     public function parse();
 
     public function cleanUp();

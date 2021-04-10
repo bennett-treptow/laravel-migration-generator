@@ -3,7 +3,7 @@
 namespace Tests\Unit\Generators;
 
 use Tests\TestCase;
-use LaravelMigrationGenerator\Generators\MySQLTableGenerator;
+use LaravelMigrationGenerator\Generators\MySQL\TableGenerator;
 
 class MySQLTableGeneratorTest extends TestCase
 {
@@ -14,7 +14,7 @@ class MySQLTableGeneratorTest extends TestCase
 
     public function test_runs_correctly()
     {
-        $generator = new MySQLTableGenerator('table', [
+        $generator = new TableGenerator('table', [
             '`id` int(9) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY',
             '`user_id` int(9) unsigned NOT NULL',
             '`note` varchar(255) NOT NULL',
@@ -26,8 +26,8 @@ class MySQLTableGeneratorTest extends TestCase
         $generator->cleanUp();
         $schema = $generator->getSchema();
         $this->assertSchemaHas('$table->increments(\'id\');', $schema);
-        $this->assertSchemaHas('$table->unsignedInteger(\'user_id\');', $schema);
-        $this->assertSchemaHas('$table->string(\'note\', 255);', $schema);
+        $this->assertSchemaHas('$table->integer(\'user_id\')->unsigned();', $schema);
+        $this->assertSchemaHas('$table->string(\'note\');', $schema);
         $this->assertSchemaHas('$table->foreign(\'user_id\', \'fk_user_id\')->references(\'id\')->on(\'users\')->onDelete(\'cascade\')->onUpdate(\'cascade\');', $schema);
     }
 
@@ -41,7 +41,7 @@ class MySQLTableGeneratorTest extends TestCase
 
     public function test_writes()
     {
-        $generator = new MySQLTableGenerator('table', [
+        $generator = new TableGenerator('table', [
             '`id` int(9) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY',
             '`user_id` int(9) unsigned NOT NULL',
             '`note` varchar(255) NOT NULL',

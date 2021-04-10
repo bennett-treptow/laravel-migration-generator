@@ -3,18 +3,21 @@
 namespace LaravelMigrationGenerator\Tokenizers\MySQL;
 
 use Illuminate\Support\Str;
-use LaravelMigrationGenerator\Tokenizers\WritableTokenizer;
+use Illuminate\Database\Schema\Builder;
+use LaravelMigrationGenerator\Definitions\ColumnDefinition;
+use LaravelMigrationGenerator\Helpers\ValueToString;
 use LaravelMigrationGenerator\Tokenizers\BaseColumnTokenizer;
-use LaravelMigrationGenerator\Generators\TableGeneratorInterface;
+use LaravelMigrationGenerator\Tokenizers\Traits\WritableTokenizer;
+use LaravelMigrationGenerator\Generators\Interfaces\TableGeneratorInterface;
 
 class ColumnTokenizer extends BaseColumnTokenizer
 {
     use WritableTokenizer;
 
+    protected $columnType;
+
     /** @var IndexTokenizer[] */
     protected $indices = [];
-
-    protected $indexed = false;
 
     /**
      * MySQL provides a ZEROFILL property for ints which is not an ANSI compliant modifier
@@ -56,38 +59,17 @@ class ColumnTokenizer extends BaseColumnTokenizer
     {
         if (count($this->indices) > 0) {
             foreach ($this->indices as $index) {
-                if ($index->getIndexType() === 'primary' && ! $index->isMultiColumnIndex()) {
-                    $this->primaryKey = true;
+                if ($index->definition()->getIndexType() === 'primary' && ! $index->definition()->isMultiColumnIndex()) {
+                    $this->definition->setPrimary(true);
                     $index->markAsWritable(false);
-                } elseif ($index->getIndexType() === 'index' && ! $index->isMultiColumnIndex()) {
-                    $this->indexed = true;
+                } elseif ($index->definition()->getIndexType() === 'index' && ! $index->definition()->isMultiColumnIndex()) {
+                    $this->definition->setIndex(true);
+                    $index->markAsWritable(false);
+                } elseif ($index->definition()->getIndexType() === 'unique' && ! $index->definition()->isMultiColumnIndex()) {
+                    $this->definition->setUnique(true);
                     $index->markAsWritable(false);
                 }
             }
-        }
-
-        if ($this->columnName === 'created_at' && $this->columnType === 'timestamp') {
-            //let's look for an updated_at
-            $table->columnIterator(function ($column) {
-                if ($column->getColumnName() === 'updated_at' && $column->getColumnType() === 'timestamp') {
-                    $column->markAsWritable(false);
-
-                    $this->method = 'timestamps';
-                    $this->columnName = null;
-                    $this->nullable = false;
-
-                    return false;
-                }
-            });
-        }
-
-        if($this->columnName === 'deleted_at' && $this->columnType === 'timestamp'){
-            $this->columnName = null;
-            $this->method = 'softDeletes';
-        }
-
-        if ($this->columnName === 'id' && $this->primaryKey && $this->columnType === 'bigint') {
-            $this->columnName = null;
         }
 
         return null;
@@ -95,7 +77,7 @@ class ColumnTokenizer extends BaseColumnTokenizer
 
     protected function consumeColumnName()
     {
-        $this->columnName = $this->parseColumn($this->consume());
+        $this->definition->setColumnName($this->parseColumn($this->consume()));
     }
 
     protected function isTextType()
@@ -108,10 +90,11 @@ class ColumnTokenizer extends BaseColumnTokenizer
         return Str::contains($this->columnType, ['int', 'decimal', 'float', 'double']);
     }
 
-    protected function consumeZeroFill(){
+    protected function consumeZeroFill()
+    {
         $nextPiece = $this->consume();
 
-        if(strtoupper($nextPiece) === 'ZEROFILL'){
+        if (strtoupper($nextPiece) === 'ZEROFILL') {
             $this->zeroFill = true;
         } else {
             $this->putBack($nextPiece);
@@ -141,7 +124,7 @@ class ColumnTokenizer extends BaseColumnTokenizer
     {
         $piece = $this->consume();
         if (strtoupper($piece) === 'AUTO_INCREMENT') {
-            $this->primaryKey = true;
+            $this->definition->setPrimary(true);
         } else {
             $this->putBack($piece);
         }
@@ -163,10 +146,10 @@ class ColumnTokenizer extends BaseColumnTokenizer
             'datetime'   => 'dateTime'
         ];
         if (isset($mapped[$this->columnType])) {
-            $this->method = $mapped[$this->columnType];
+            $this->definition->setMethodName($mapped[$this->columnType]);
         } else {
             //do some custom resolution
-            $this->method = $this->columnType;
+            $this->definition->setMethodName($this->columnType);
         }
     }
 
@@ -175,9 +158,9 @@ class ColumnTokenizer extends BaseColumnTokenizer
         $piece = $this->consume();
         if (strtoupper($piece) === 'NOT') {
             $this->consume(); //next is NULL
-            $this->nullable = false;
+            $this->definition->setNullable(false);
         } elseif (strtoupper($piece) === 'NULL') {
-            $this->nullable = true;
+            $this->definition->setNullable(true);
         } else {
             //something else
             $this->putBack($piece);
@@ -188,23 +171,25 @@ class ColumnTokenizer extends BaseColumnTokenizer
     {
         $piece = $this->consume();
         if (strtoupper($piece) === 'DEFAULT') {
-            $this->defaultValue = $this->consume();
-            if (strtoupper($this->defaultValue) === 'NULL') {
-                $this->nullable = true;
-                $this->defaultValue = null;
-            } elseif (strtoupper($this->defaultValue === 'CURRENT_TIMESTAMP')) {
-                $this->defaultValue = null;
-                $this->useCurrent = true;
+            $this->definition->setDefaultValue($this->consume());
+            if (strtoupper($this->definition->getDefaultValue()) === 'NULL') {
+                $this->definition
+                    ->setNullable(true)
+                    ->setDefaultValue(null);
+            } elseif (strtoupper($this->definition->getDefaultValue()) === 'CURRENT_TIMESTAMP') {
+                $this->definition
+                    ->setDefaultValue(null)
+                    ->setUseCurrent(true);
             }
-            if($this->defaultValue !== null) {
+            if ($this->definition->getDefaultValue() !== null) {
                 if ($this->isNumberType()) {
                     if (Str::contains(strtoupper($this->columnType), 'INT')) {
-                        $this->defaultValue = (int)$this->defaultValue;
+                        $this->definition->setDefaultValue((int) $this->definition->getDefaultValue());
                     } else {
-                        $this->defaultValue = 'float$:' . $this->defaultValue;
+                        $this->definition->setDefaultValue(ValueToString::castFloat($this->definition->getDefaultValue()));
                     }
                 } else {
-                    $this->defaultValue = (string)$this->defaultValue;
+                    $this->definition->setDefaultValue((string) $this->definition->getDefaultValue());
                 }
             }
         } else {
@@ -218,7 +203,7 @@ class ColumnTokenizer extends BaseColumnTokenizer
         $piece = $this->consume();
         if (strtoupper($piece) === 'COLLATE') {
             //next piece is the collation type
-            $this->collation = $this->consume();
+            $this->definition->setCollation($this->consume());
         } else {
             $this->putBack($piece);
         }
@@ -228,7 +213,7 @@ class ColumnTokenizer extends BaseColumnTokenizer
     {
         $piece = $this->consume();
         if (strtoupper($piece) === 'UNSIGNED') {
-            $this->unsigned = true;
+            $this->definition->setUnsigned(true);
         } else {
             $this->putBack($piece);
         }
@@ -237,23 +222,36 @@ class ColumnTokenizer extends BaseColumnTokenizer
     private function resolveColumnConstraints(array $constraints)
     {
         if ($this->columnType === 'enum') {
-            $this->methodParameters = [array_map(fn ($item) => trim($item, '\''), $constraints)];
+            $this->definition->setMethodParameters([array_map(fn ($item) => trim($item, '\''), $constraints)]);
         } else {
-            if(Str::contains(strtoupper($this->columnType), 'INT')){
-                $this->methodParameters = []; //laravel does not like display field widths
+            if (Str::contains(strtoupper($this->columnType), 'INT')) {
+                $this->definition->setMethodParameters([]); //laravel does not like display field widths
             } else {
-                $this->methodParameters = array_map(fn ($item) => (int) $item, $constraints);
+                if ($this->definition->getMethodName() === 'string') {
+                    if (count($constraints) === 1) {
+                        //has a width set
+                        if ($constraints[0] == Builder::$defaultStringLength) {
+                            $this->definition->setMethodParameters([]);
+
+                            return;
+                        }
+                    }
+                }
+                $this->definition->setMethodParameters(array_map(fn ($item) => (int) $item, $constraints));
             }
         }
     }
 
-    public function toMethod(): string
+    public function definition(): ColumnDefinition
     {
-        $initialString = parent::toMethod();
-        if ($this->indexed) {
-            $initialString .= '->index()';
-        }
+        return $this->definition;
+    }
 
-        return $initialString;
+    /**
+     * @return mixed
+     */
+    public function getColumnType()
+    {
+        return $this->columnType;
     }
 }

@@ -1,11 +1,12 @@
 <?php
 
-namespace LaravelMigrationGenerator\Tokenizers\MySQL;
+namespace LaravelMigrationGenerator\Generators\MySQL;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use LaravelMigrationGenerator\Generators\Interfaces\ViewGeneratorInterface;
 
-class ViewTokenizer
+class ViewGenerator implements ViewGeneratorInterface
 {
     protected string $viewName;
 
@@ -26,12 +27,12 @@ class ViewTokenizer
     public static function init(string $viewName)
     {
         $obj = new static($viewName);
-        $obj->firstPass();
+        $obj->parse();
 
         return $obj;
     }
 
-    public function firstPass()
+    public function parse()
     {
         if (preg_match('/CREATE(.*?)VIEW/', $this->schema, $matches)) {
             $this->schema = str_replace($matches[1], ' ', $this->schema);
