@@ -26,7 +26,7 @@ abstract class BaseColumnTokenizer extends BaseTokenizer implements ColumnTokeni
 
     protected $useCurrent = false;
 
-    public function getColumnName(): string
+    public function getColumnName(): ?string
     {
         return $this->columnName;
     }

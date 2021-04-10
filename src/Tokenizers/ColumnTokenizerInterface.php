@@ -6,7 +6,12 @@ use LaravelMigrationGenerator\Generators\TableGeneratorInterface;
 
 interface ColumnTokenizerInterface
 {
-    public function getColumnName(): string;
+    /**
+     * Get the column name for this instance
+     * Should only be null if the corresponding Blueprint method
+     * does not require an argument, such as id(), timestamps()
+     */
+    public function getColumnName(): ?string;
 
     public function getColumnType(): string;
 
