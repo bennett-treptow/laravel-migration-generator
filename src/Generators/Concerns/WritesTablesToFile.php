@@ -50,11 +50,11 @@ trait WritesTablesToFile
     {
         $driver = static::driver();
 
-        if (file_exists($overridden = resource_path('views/vendor/laravel-migration-generator/' . $driver . '-table.stub'))) {
+        if (file_exists($overridden = resource_path('stubs/vendor/laravel-migration-generator/' . $driver . '-table.stub'))) {
             return $overridden;
         }
 
-        if (file_exists($overridden = resource_path('views/vendor/laravel-migration-generator/table.stub'))) {
+        if (file_exists($overridden = resource_path('stubs/vendor/laravel-migration-generator/table.stub'))) {
             return $overridden;
         }
 

@@ -51,11 +51,11 @@ trait WritesViewsToFile
     {
         $driver = static::driver();
 
-        if (file_exists($overridden = resource_path('views/vendor/laravel-migration-generator/' . $driver . '-view.stub'))) {
+        if (file_exists($overridden = resource_path('stubs/vendor/laravel-migration-generator/' . $driver . '-view.stub'))) {
             return $overridden;
         }
 
-        if (file_exists($overridden = resource_path('views/vendor/laravel-migration-generator/view.stub'))) {
+        if (file_exists($overridden = resource_path('subs/vendor/laravel-migration-generator/view.stub'))) {
             return $overridden;
         }
 

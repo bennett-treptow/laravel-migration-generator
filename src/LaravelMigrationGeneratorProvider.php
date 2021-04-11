@@ -15,7 +15,7 @@ class LaravelMigrationGeneratorProvider extends ServiceProvider
         );
 
         $this->publishes([
-            __DIR__ . '/../stubs'                                  => resource_path('views/vendor/laravel-migration-generator'),
+            __DIR__ . '/../stubs'                                  => resource_path('stubs/vendor/laravel-migration-generator'),
             __DIR__ . '/../config/laravel-migration-generator.php' => config_path('laravel-migration-generator.php')
         ]);
 
