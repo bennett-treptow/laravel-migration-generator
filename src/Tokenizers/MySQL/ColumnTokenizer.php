@@ -60,7 +60,7 @@ class ColumnTokenizer extends BaseColumnTokenizer
 
     protected function consumeColumnType()
     {
-        $originalColumnType = $columnType = $this->consume();
+        $originalColumnType = $columnType = strtolower($this->consume());
         $hasConstraints = Str::contains($columnType, '(');
 
         if ($hasConstraints) {
@@ -171,7 +171,11 @@ class ColumnTokenizer extends BaseColumnTokenizer
             'longtext'           => 'longText',
             'blob'               => 'binary',
             'datetime'           => 'dateTime',
-            'geometrycollection' => 'geometryCollection'
+            'geometrycollection' => 'geometryCollection',
+            'linestring'         => 'lineString',
+            'multilinestring'    => 'multiLineString',
+            'multipolygon'       => 'multiPolygon',
+            'multipoint'         => 'multiPoint'
         ];
         if (isset($mapped[$this->columnDataType])) {
             $this->definition->setMethodName($mapped[$this->columnDataType]);
@@ -186,6 +190,7 @@ class ColumnTokenizer extends BaseColumnTokenizer
         if ($this->columnDataType === 'char' && count($constraints) === 1 && $constraints[0] == 36) {
             //uuid for mysql
             $this->definition->setIsUUID(true);
+
             return;
         }
         if ($this->isArrayType()) {

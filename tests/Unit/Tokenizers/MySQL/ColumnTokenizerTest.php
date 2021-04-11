@@ -752,7 +752,7 @@ class ColumnTokenizerTest extends TestCase
 
     //endregion
 
-    //region POINT
+    //region POINT, MULTIPOINT
     public function test_it_tokenizes_point_column()
     {
         $columnTokenizer = ColumnTokenizer::parse('`point` point NOT NULL');
@@ -761,11 +761,21 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('point', $columnTokenizer->getColumnDataType());
         $this->assertEquals('point', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
+        $this->assertEquals('$table->point(\'point\')', $columnDefinition->render());
     }
+    public function test_it_tokenizes_multipoint_column()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`point` multipoint NOT NULL');
+        $columnDefinition = $columnTokenizer->definition();
 
+        $this->assertEquals('multipoint', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('multiPoint', $columnDefinition->getMethodName());
+        $this->assertCount(0, $columnDefinition->getMethodParameters());
+        $this->assertEquals('$table->multiPoint(\'point\')', $columnDefinition->render());
+    }
     //endregion
 
-    //region POLYGON
+    //region POLYGON, MULTIPOLYGON
     public function test_it_tokenizes_polygon_column()
     {
         $columnTokenizer = ColumnTokenizer::parse('`polygon` polygon NOT NULL');
@@ -774,9 +784,21 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('polygon', $columnTokenizer->getColumnDataType());
         $this->assertEquals('polygon', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
+        $this->assertEquals('$table->polygon(\'polygon\')', $columnDefinition->render());
     }
 
-    //endregion
+    public function test_it_tokenizes_multipolygon_column()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`polygon` multipolygon NOT NULL');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('multipolygon', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('multiPolygon', $columnDefinition->getMethodName());
+        $this->assertCount(0, $columnDefinition->getMethodParameters());
+        $this->assertEquals('$table->multiPolygon(\'polygon\')', $columnDefinition->render());
+    }
+
+    //endregion,
 
     //region GEOMETRY
     public function test_it_tokenizes_geometry_column()
@@ -830,6 +852,80 @@ class ColumnTokenizerTest extends TestCase
         $this->assertFalse($columnDefinition->isNullable());
 
         $this->assertEquals('$table->uuid(\'uuid_col\')', $columnDefinition->render());
+    }
+    //endregion
+
+    //region DATE, YEAR, TIME
+    public function test_it_tokenizes_date_column()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`birth_date` date NOT NULL');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('date', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('date', $columnDefinition->getMethodName());
+        $this->assertCount(0, $columnDefinition->getMethodParameters());
+        $this->assertNull($columnDefinition->getCollation());
+        $this->assertFalse($columnDefinition->isNullable());
+
+        $this->assertEquals('$table->date(\'birth_date\')', $columnDefinition->render());
+    }
+
+    public function test_it_tokenizes_year_column()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`birth_year` year NOT NULL');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('year', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('year', $columnDefinition->getMethodName());
+        $this->assertCount(0, $columnDefinition->getMethodParameters());
+        $this->assertNull($columnDefinition->getCollation());
+        $this->assertFalse($columnDefinition->isNullable());
+
+        $this->assertEquals('$table->year(\'birth_year\')', $columnDefinition->render());
+    }
+
+    public function test_it_tokenizes_time_column()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`birth_time` time NOT NULL');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('time', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('time', $columnDefinition->getMethodName());
+        $this->assertCount(0, $columnDefinition->getMethodParameters());
+        $this->assertNull($columnDefinition->getCollation());
+        $this->assertFalse($columnDefinition->isNullable());
+
+        $this->assertEquals('$table->time(\'birth_time\')', $columnDefinition->render());
+    }
+    //endregion
+
+    //region LINESTRING, MULTILINESTRING
+    public function test_it_tokenizes_linestring_column()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`str` linestring NOT NULL');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('linestring', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('lineString', $columnDefinition->getMethodName());
+        $this->assertCount(0, $columnDefinition->getMethodParameters());
+        $this->assertNull($columnDefinition->getCollation());
+        $this->assertFalse($columnDefinition->isNullable());
+
+        $this->assertEquals('$table->lineString(\'str\')', $columnDefinition->render());
+    }
+
+    public function test_it_tokenizes_multilinestring_column()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`str` multilinestring NOT NULL');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('multilinestring', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('multiLineString', $columnDefinition->getMethodName());
+        $this->assertCount(0, $columnDefinition->getMethodParameters());
+        $this->assertNull($columnDefinition->getCollation());
+        $this->assertFalse($columnDefinition->isNullable());
+
+        $this->assertEquals('$table->multiLineString(\'str\')', $columnDefinition->render());
     }
     //endregion
 }
