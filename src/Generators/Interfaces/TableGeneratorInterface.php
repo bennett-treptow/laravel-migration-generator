@@ -4,6 +4,8 @@ namespace LaravelMigrationGenerator\Generators\Interfaces;
 
 interface TableGeneratorInterface
 {
+    public static function driver(): string;
+
     public function shouldResolveStructure(): bool;
 
     public function resolveStructure();
@@ -14,7 +16,7 @@ interface TableGeneratorInterface
 
     public function cleanUp();
 
-    public function write(string $basePath);
+    public function write(string $basePath, string $tabCharacter = '    ');
 
     public function getIndices();
 }

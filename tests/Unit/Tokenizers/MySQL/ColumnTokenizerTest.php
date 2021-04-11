@@ -3,8 +3,6 @@
 namespace Tests\Unit\Tokenizers\MySQL;
 
 use Tests\TestCase;
-use LaravelMigrationGenerator\Generators\MySQL\TableGenerator;
-use LaravelMigrationGenerator\Tokenizers\MySQL\IndexTokenizer;
 use LaravelMigrationGenerator\Tokenizers\MySQL\ColumnTokenizer;
 
 class ColumnTokenizerTest extends TestCase
@@ -16,7 +14,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('email', $columnDefinition->getColumnName());
-        $this->assertEquals('varchar', $columnTokenizer->getColumnType());
+        $this->assertEquals('varchar', $columnTokenizer->getColumnDataType());
         $this->assertEquals('string', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertFalse($columnDefinition->isNullable());
@@ -30,7 +28,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('favorite_color', $columnDefinition->getColumnName());
-        $this->assertEquals('varchar', $columnTokenizer->getColumnType());
+        $this->assertEquals('varchar', $columnTokenizer->getColumnDataType());
         $this->assertEquals('string', $columnDefinition->getMethodName());
         $this->assertEquals(200, $columnDefinition->getMethodParameters()[0]);
         $this->assertTrue($columnDefinition->isNullable());
@@ -44,7 +42,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('favorite_color', $columnDefinition->getColumnName());
-        $this->assertEquals('varchar', $columnTokenizer->getColumnType());
+        $this->assertEquals('varchar', $columnTokenizer->getColumnDataType());
         $this->assertEquals('string', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertTrue($columnDefinition->isNullable());
@@ -59,7 +57,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('favorite_color', $columnDefinition->getColumnName());
-        $this->assertEquals('varchar', $columnTokenizer->getColumnType());
+        $this->assertEquals('varchar', $columnTokenizer->getColumnDataType());
         $this->assertEquals('string', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertTrue($columnDefinition->isNullable());
@@ -77,7 +75,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('notes', $columnDefinition->getColumnName());
-        $this->assertEquals('tinytext', $columnTokenizer->getColumnType());
+        $this->assertEquals('tinytext', $columnTokenizer->getColumnDataType());
         $this->assertEquals('tinyText', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertFalse($columnDefinition->isNullable());
@@ -91,7 +89,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('notes', $columnDefinition->getColumnName());
-        $this->assertEquals('tinytext', $columnTokenizer->getColumnType());
+        $this->assertEquals('tinytext', $columnTokenizer->getColumnDataType());
         $this->assertEquals('tinyText', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertTrue($columnDefinition->isNullable());
@@ -105,7 +103,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('notes', $columnDefinition->getColumnName());
-        $this->assertEquals('text', $columnTokenizer->getColumnType());
+        $this->assertEquals('text', $columnTokenizer->getColumnDataType());
         $this->assertEquals('text', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertFalse($columnDefinition->isNullable());
@@ -119,7 +117,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('notes', $columnDefinition->getColumnName());
-        $this->assertEquals('text', $columnTokenizer->getColumnType());
+        $this->assertEquals('text', $columnTokenizer->getColumnDataType());
         $this->assertEquals('text', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertTrue($columnDefinition->isNullable());
@@ -133,7 +131,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('notes', $columnDefinition->getColumnName());
-        $this->assertEquals('mediumtext', $columnTokenizer->getColumnType());
+        $this->assertEquals('mediumtext', $columnTokenizer->getColumnDataType());
         $this->assertEquals('mediumText', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertFalse($columnDefinition->isNullable());
@@ -147,7 +145,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('notes', $columnDefinition->getColumnName());
-        $this->assertEquals('mediumtext', $columnTokenizer->getColumnType());
+        $this->assertEquals('mediumtext', $columnTokenizer->getColumnDataType());
         $this->assertEquals('mediumText', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertTrue($columnDefinition->isNullable());
@@ -161,7 +159,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('notes', $columnDefinition->getColumnName());
-        $this->assertEquals('longtext', $columnTokenizer->getColumnType());
+        $this->assertEquals('longtext', $columnTokenizer->getColumnDataType());
         $this->assertEquals('longText', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertFalse($columnDefinition->isNullable());
@@ -175,7 +173,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('notes', $columnDefinition->getColumnName());
-        $this->assertEquals('longtext', $columnTokenizer->getColumnType());
+        $this->assertEquals('longtext', $columnTokenizer->getColumnDataType());
         $this->assertEquals('longText', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertTrue($columnDefinition->isNullable());
@@ -192,7 +190,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('cats', $columnDefinition->getColumnName());
-        $this->assertEquals('smallint', $columnTokenizer->getColumnType());
+        $this->assertEquals('smallint', $columnTokenizer->getColumnDataType());
         $this->assertEquals('smallInteger', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertFalse($columnDefinition->isNullable());
@@ -206,7 +204,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('cats', $columnDefinition->getColumnName());
-        $this->assertEquals('smallint', $columnTokenizer->getColumnType());
+        $this->assertEquals('smallint', $columnTokenizer->getColumnDataType());
         $this->assertEquals('smallInteger', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertFalse($columnDefinition->isNullable());
@@ -220,7 +218,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('cats', $columnDefinition->getColumnName());
-        $this->assertEquals('smallint', $columnTokenizer->getColumnType());
+        $this->assertEquals('smallint', $columnTokenizer->getColumnDataType());
         $this->assertEquals('smallInteger', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertFalse($columnDefinition->isNullable());
@@ -235,7 +233,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('template_id', $columnDefinition->getColumnName());
-        $this->assertEquals('bigint', $columnTokenizer->getColumnType());
+        $this->assertEquals('bigint', $columnTokenizer->getColumnDataType());
         $this->assertEquals('bigInteger', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertTrue($columnDefinition->isNullable());
@@ -251,7 +249,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('id', $columnDefinition->getColumnName());
-        $this->assertEquals('int', $columnTokenizer->getColumnType());
+        $this->assertEquals('int', $columnTokenizer->getColumnDataType());
         $this->assertEquals('integer', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertFalse($columnDefinition->isNullable());
@@ -268,7 +266,7 @@ class ColumnTokenizerTest extends TestCase
         $columnTokenizer = ColumnTokenizer::parse('`parameter` float NOT NULL');
         $columnDefinition = $columnTokenizer->definition();
         $this->assertEquals('parameter', $columnDefinition->getColumnName());
-        $this->assertEquals('float', $columnTokenizer->getColumnType());
+        $this->assertEquals('float', $columnTokenizer->getColumnDataType());
         $this->assertEquals('float', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertFalse($columnDefinition->isNullable());
@@ -281,7 +279,7 @@ class ColumnTokenizerTest extends TestCase
         $columnTokenizer = ColumnTokenizer::parse('`parameter` float(4,2) NOT NULL');
         $columnDefinition = $columnTokenizer->definition();
         $this->assertEquals('parameter', $columnDefinition->getColumnName());
-        $this->assertEquals('float', $columnTokenizer->getColumnType());
+        $this->assertEquals('float', $columnTokenizer->getColumnDataType());
         $this->assertEquals('float', $columnDefinition->getMethodName());
         $this->assertCount(2, $columnDefinition->getMethodParameters());
         $this->assertEquals(4, $columnDefinition->getMethodParameters()[0]);
@@ -296,7 +294,7 @@ class ColumnTokenizerTest extends TestCase
         $columnTokenizer = ColumnTokenizer::parse('`parameter` float');
         $columnDefinition = $columnTokenizer->definition();
         $this->assertEquals('parameter', $columnDefinition->getColumnName());
-        $this->assertEquals('float', $columnTokenizer->getColumnType());
+        $this->assertEquals('float', $columnTokenizer->getColumnDataType());
         $this->assertEquals('float', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertTrue($columnDefinition->isNullable());
@@ -309,7 +307,7 @@ class ColumnTokenizerTest extends TestCase
         $columnTokenizer = ColumnTokenizer::parse('`parameter` float(4,2)');
         $columnDefinition = $columnTokenizer->definition();
         $this->assertEquals('parameter', $columnDefinition->getColumnName());
-        $this->assertEquals('float', $columnTokenizer->getColumnType());
+        $this->assertEquals('float', $columnTokenizer->getColumnDataType());
         $this->assertEquals('float', $columnDefinition->getMethodName());
         $this->assertCount(2, $columnDefinition->getMethodParameters());
         $this->assertEquals(4, $columnDefinition->getMethodParameters()[0]);
@@ -324,7 +322,7 @@ class ColumnTokenizerTest extends TestCase
         $columnTokenizer = ColumnTokenizer::parse('`parameter` float NOT NULL DEFAULT 1.00');
         $columnDefinition = $columnTokenizer->definition();
         $this->assertEquals('parameter', $columnDefinition->getColumnName());
-        $this->assertEquals('float', $columnTokenizer->getColumnType());
+        $this->assertEquals('float', $columnTokenizer->getColumnDataType());
         $this->assertEquals('float', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertEquals(1.0, $columnDefinition->getDefaultValue());
@@ -338,7 +336,7 @@ class ColumnTokenizerTest extends TestCase
         $columnTokenizer = ColumnTokenizer::parse('`parameter` float(4,2) NOT NULL DEFAULT 1.00');
         $columnDefinition = $columnTokenizer->definition();
         $this->assertEquals('parameter', $columnDefinition->getColumnName());
-        $this->assertEquals('float', $columnTokenizer->getColumnType());
+        $this->assertEquals('float', $columnTokenizer->getColumnDataType());
         $this->assertEquals('float', $columnDefinition->getMethodName());
         $this->assertCount(2, $columnDefinition->getMethodParameters());
         $this->assertEquals(4, $columnDefinition->getMethodParameters()[0]);
@@ -354,7 +352,7 @@ class ColumnTokenizerTest extends TestCase
         $columnTokenizer = ColumnTokenizer::parse('`parameter` float DEFAULT 1.0');
         $columnDefinition = $columnTokenizer->definition();
         $this->assertEquals('parameter', $columnDefinition->getColumnName());
-        $this->assertEquals('float', $columnTokenizer->getColumnType());
+        $this->assertEquals('float', $columnTokenizer->getColumnDataType());
         $this->assertEquals('float', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertEquals(1.0, $columnDefinition->getDefaultValue());
@@ -368,7 +366,7 @@ class ColumnTokenizerTest extends TestCase
         $columnTokenizer = ColumnTokenizer::parse('`parameter` float(4,2) DEFAULT 1.00');
         $columnDefinition = $columnTokenizer->definition();
         $this->assertEquals('parameter', $columnDefinition->getColumnName());
-        $this->assertEquals('float', $columnTokenizer->getColumnType());
+        $this->assertEquals('float', $columnTokenizer->getColumnDataType());
         $this->assertEquals('float', $columnDefinition->getMethodName());
         $this->assertCount(2, $columnDefinition->getMethodParameters());
         $this->assertEquals(4, $columnDefinition->getMethodParameters()[0]);
@@ -388,7 +386,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('amount', $columnDefinition->getColumnName());
-        $this->assertEquals('decimal', $columnTokenizer->getColumnType());
+        $this->assertEquals('decimal', $columnTokenizer->getColumnDataType());
         $this->assertEquals('decimal', $columnDefinition->getMethodName());
         $this->assertCount(2, $columnDefinition->getMethodParameters());
         $this->assertEquals(9, $columnDefinition->getMethodParameters()[0]);
@@ -404,7 +402,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('amount', $columnDefinition->getColumnName());
-        $this->assertEquals('decimal', $columnTokenizer->getColumnType());
+        $this->assertEquals('decimal', $columnTokenizer->getColumnDataType());
         $this->assertEquals('decimal', $columnDefinition->getMethodName());
         $this->assertCount(2, $columnDefinition->getMethodParameters());
         $this->assertEquals(9, $columnDefinition->getMethodParameters()[0]);
@@ -421,7 +419,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('amount', $columnDefinition->getColumnName());
-        $this->assertEquals('decimal', $columnTokenizer->getColumnType());
+        $this->assertEquals('decimal', $columnTokenizer->getColumnDataType());
         $this->assertEquals('decimal', $columnDefinition->getMethodName());
         $this->assertCount(2, $columnDefinition->getMethodParameters());
         $this->assertEquals(9, $columnDefinition->getMethodParameters()[0]);
@@ -438,7 +436,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('amount', $columnDefinition->getColumnName());
-        $this->assertEquals('decimal', $columnTokenizer->getColumnType());
+        $this->assertEquals('decimal', $columnTokenizer->getColumnDataType());
         $this->assertEquals('decimal', $columnDefinition->getMethodName());
         $this->assertCount(2, $columnDefinition->getMethodParameters());
         $this->assertEquals(9, $columnDefinition->getMethodParameters()[0]);
@@ -459,7 +457,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('amount', $columnDefinition->getColumnName());
-        $this->assertEquals('double', $columnTokenizer->getColumnType());
+        $this->assertEquals('double', $columnTokenizer->getColumnDataType());
         $this->assertEquals('double', $columnDefinition->getMethodName());
         $this->assertCount(2, $columnDefinition->getMethodParameters());
         $this->assertEquals(9, $columnDefinition->getMethodParameters()[0]);
@@ -475,7 +473,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('amount', $columnDefinition->getColumnName());
-        $this->assertEquals('double', $columnTokenizer->getColumnType());
+        $this->assertEquals('double', $columnTokenizer->getColumnDataType());
         $this->assertEquals('double', $columnDefinition->getMethodName());
         $this->assertCount(2, $columnDefinition->getMethodParameters());
         $this->assertEquals(9, $columnDefinition->getMethodParameters()[0]);
@@ -492,7 +490,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('amount', $columnDefinition->getColumnName());
-        $this->assertEquals('double', $columnTokenizer->getColumnType());
+        $this->assertEquals('double', $columnTokenizer->getColumnDataType());
         $this->assertEquals('double', $columnDefinition->getMethodName());
         $this->assertCount(2, $columnDefinition->getMethodParameters());
         $this->assertEquals(9, $columnDefinition->getMethodParameters()[0]);
@@ -509,7 +507,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('amount', $columnDefinition->getColumnName());
-        $this->assertEquals('double', $columnTokenizer->getColumnType());
+        $this->assertEquals('double', $columnTokenizer->getColumnDataType());
         $this->assertEquals('double', $columnDefinition->getMethodName());
         $this->assertCount(2, $columnDefinition->getMethodParameters());
         $this->assertEquals(9, $columnDefinition->getMethodParameters()[0]);
@@ -530,7 +528,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('sent_at', $columnDefinition->getColumnName());
-        $this->assertEquals('datetime', $columnTokenizer->getColumnType());
+        $this->assertEquals('datetime', $columnTokenizer->getColumnDataType());
         $this->assertEquals('dateTime', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertNull($columnDefinition->getDefaultValue());
@@ -546,7 +544,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('sent_at', $columnDefinition->getColumnName());
-        $this->assertEquals('datetime', $columnTokenizer->getColumnType());
+        $this->assertEquals('datetime', $columnTokenizer->getColumnDataType());
         $this->assertEquals('dateTime', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertNull($columnDefinition->getDefaultValue());
@@ -562,7 +560,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('sent_at', $columnDefinition->getColumnName());
-        $this->assertEquals('datetime', $columnTokenizer->getColumnType());
+        $this->assertEquals('datetime', $columnTokenizer->getColumnDataType());
         $this->assertEquals('dateTime', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertNull($columnDefinition->getDefaultValue());
@@ -578,7 +576,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('sent_at', $columnDefinition->getColumnName());
-        $this->assertEquals('datetime', $columnTokenizer->getColumnType());
+        $this->assertEquals('datetime', $columnTokenizer->getColumnDataType());
         $this->assertEquals('dateTime', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertNull($columnDefinition->getDefaultValue());
@@ -594,7 +592,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('sent_at', $columnDefinition->getColumnName());
-        $this->assertEquals('datetime', $columnTokenizer->getColumnType());
+        $this->assertEquals('datetime', $columnTokenizer->getColumnDataType());
         $this->assertEquals('dateTime', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertNull($columnDefinition->getDefaultValue());
@@ -613,7 +611,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('sent_at', $columnDefinition->getColumnName());
-        $this->assertEquals('timestamp', $columnTokenizer->getColumnType());
+        $this->assertEquals('timestamp', $columnTokenizer->getColumnDataType());
         $this->assertEquals('timestamp', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertNull($columnDefinition->getDefaultValue());
@@ -629,7 +627,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('sent_at', $columnDefinition->getColumnName());
-        $this->assertEquals('timestamp', $columnTokenizer->getColumnType());
+        $this->assertEquals('timestamp', $columnTokenizer->getColumnDataType());
         $this->assertEquals('timestamp', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertNull($columnDefinition->getDefaultValue());
@@ -645,7 +643,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('sent_at', $columnDefinition->getColumnName());
-        $this->assertEquals('timestamp', $columnTokenizer->getColumnType());
+        $this->assertEquals('timestamp', $columnTokenizer->getColumnDataType());
         $this->assertEquals('timestamp', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertNull($columnDefinition->getDefaultValue());
@@ -661,7 +659,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('sent_at', $columnDefinition->getColumnName());
-        $this->assertEquals('timestamp', $columnTokenizer->getColumnType());
+        $this->assertEquals('timestamp', $columnTokenizer->getColumnDataType());
         $this->assertEquals('timestamp', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertEquals('2000-01-01 00:00:01', $columnDefinition->getDefaultValue());
@@ -677,7 +675,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('sent_at', $columnDefinition->getColumnName());
-        $this->assertEquals('timestamp', $columnTokenizer->getColumnType());
+        $this->assertEquals('timestamp', $columnTokenizer->getColumnDataType());
         $this->assertEquals('timestamp', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertEquals('2000-01-01 00:00:01', $columnDefinition->getDefaultValue());
@@ -696,7 +694,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('status_flag', $columnDefinition->getColumnName());
-        $this->assertEquals('enum', $columnTokenizer->getColumnType());
+        $this->assertEquals('enum', $columnTokenizer->getColumnDataType());
         $this->assertEquals('enum', $columnDefinition->getMethodName());
         $this->assertCount(4, $columnDefinition->getMethodParameters()[0]);
         $this->assertEqualsCanonicalizing([1, 2, 3, 4], $columnDefinition->getMethodParameters()[0]);
@@ -711,7 +709,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('status_flag', $columnDefinition->getColumnName());
-        $this->assertEquals('enum', $columnTokenizer->getColumnType());
+        $this->assertEquals('enum', $columnTokenizer->getColumnDataType());
         $this->assertEquals('enum', $columnDefinition->getMethodName());
         $this->assertCount(4, $columnDefinition->getMethodParameters()[0]);
         $this->assertEqualsCanonicalizing([1, 2, 3, 4], $columnDefinition->getMethodParameters()[0]);
@@ -726,7 +724,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('status_flag', $columnDefinition->getColumnName());
-        $this->assertEquals('enum', $columnTokenizer->getColumnType());
+        $this->assertEquals('enum', $columnTokenizer->getColumnDataType());
         $this->assertEquals('enum', $columnDefinition->getMethodName());
         $this->assertCount(4, $columnDefinition->getMethodParameters()[0]);
         $this->assertEqualsCanonicalizing([1, 2, 3, 4], $columnDefinition->getMethodParameters()[0]);
@@ -742,7 +740,7 @@ class ColumnTokenizerTest extends TestCase
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('status_flag', $columnDefinition->getColumnName());
-        $this->assertEquals('enum', $columnTokenizer->getColumnType());
+        $this->assertEquals('enum', $columnTokenizer->getColumnDataType());
         $this->assertEquals('enum', $columnDefinition->getMethodName());
         $this->assertCount(4, $columnDefinition->getMethodParameters()[0]);
         $this->assertEqualsCanonicalizing([1, 2, 3, 4], $columnDefinition->getMethodParameters()[0]);
@@ -752,5 +750,182 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('$table->enum(\'status_flag\', [\'1\', \'2\', \'3\', \'4\'])->default(\'1\')', $columnDefinition->render());
     }
 
+    //endregion
+
+    //region POINT, MULTIPOINT
+    public function test_it_tokenizes_point_column()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`point` point NOT NULL');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('point', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('point', $columnDefinition->getMethodName());
+        $this->assertCount(0, $columnDefinition->getMethodParameters());
+        $this->assertEquals('$table->point(\'point\')', $columnDefinition->render());
+    }
+    public function test_it_tokenizes_multipoint_column()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`point` multipoint NOT NULL');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('multipoint', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('multiPoint', $columnDefinition->getMethodName());
+        $this->assertCount(0, $columnDefinition->getMethodParameters());
+        $this->assertEquals('$table->multiPoint(\'point\')', $columnDefinition->render());
+    }
+    //endregion
+
+    //region POLYGON, MULTIPOLYGON
+    public function test_it_tokenizes_polygon_column()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`polygon` polygon NOT NULL');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('polygon', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('polygon', $columnDefinition->getMethodName());
+        $this->assertCount(0, $columnDefinition->getMethodParameters());
+        $this->assertEquals('$table->polygon(\'polygon\')', $columnDefinition->render());
+    }
+
+    public function test_it_tokenizes_multipolygon_column()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`polygon` multipolygon NOT NULL');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('multipolygon', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('multiPolygon', $columnDefinition->getMethodName());
+        $this->assertCount(0, $columnDefinition->getMethodParameters());
+        $this->assertEquals('$table->multiPolygon(\'polygon\')', $columnDefinition->render());
+    }
+
+    //endregion,
+
+    //region GEOMETRY
+    public function test_it_tokenizes_geometry_column()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`geometry` geometry NOT NULL');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('geometry', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('geometry', $columnDefinition->getMethodName());
+        $this->assertCount(0, $columnDefinition->getMethodParameters());
+    }
+
+    public function test_it_tokenizes_geometry_collection_column()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`geometry_collection` geometrycollection NOT NULL');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('geometrycollection', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('geometryCollection', $columnDefinition->getMethodName());
+        $this->assertCount(0, $columnDefinition->getMethodParameters());
+    }
+
+    //endregion
+
+    //region SET
+    public function test_it_tokenizes_set_column()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`set_field` set(\'1\',\'2\',\'3\') COLLATE utf8mb4_unicode_ci DEFAULT NULL');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('set', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('set', $columnDefinition->getMethodName());
+        $this->assertCount(1, $columnDefinition->getMethodParameters());
+        $this->assertNotNull($columnDefinition->getCollation());
+        $this->assertTrue($columnDefinition->isNullable());
+
+        $this->assertEquals('$table->set(\'set_field\', [\'1\', \'2\', \'3\'])->nullable()', $columnDefinition->render());
+    }
+    //endregion
+
+    //region UUID
+    public function test_it_tokenizes_uuid_column()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`uuid_col` char(36) COLLATE utf8mb4_unicode_ci NOT NULL');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('char', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('char', $columnDefinition->getMethodName());
+        $this->assertCount(0, $columnDefinition->getMethodParameters());
+        $this->assertNotNull($columnDefinition->getCollation());
+        $this->assertFalse($columnDefinition->isNullable());
+
+        $this->assertEquals('$table->uuid(\'uuid_col\')', $columnDefinition->render());
+    }
+    //endregion
+
+    //region DATE, YEAR, TIME
+    public function test_it_tokenizes_date_column()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`birth_date` date NOT NULL');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('date', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('date', $columnDefinition->getMethodName());
+        $this->assertCount(0, $columnDefinition->getMethodParameters());
+        $this->assertNull($columnDefinition->getCollation());
+        $this->assertFalse($columnDefinition->isNullable());
+
+        $this->assertEquals('$table->date(\'birth_date\')', $columnDefinition->render());
+    }
+
+    public function test_it_tokenizes_year_column()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`birth_year` year NOT NULL');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('year', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('year', $columnDefinition->getMethodName());
+        $this->assertCount(0, $columnDefinition->getMethodParameters());
+        $this->assertNull($columnDefinition->getCollation());
+        $this->assertFalse($columnDefinition->isNullable());
+
+        $this->assertEquals('$table->year(\'birth_year\')', $columnDefinition->render());
+    }
+
+    public function test_it_tokenizes_time_column()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`birth_time` time NOT NULL');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('time', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('time', $columnDefinition->getMethodName());
+        $this->assertCount(0, $columnDefinition->getMethodParameters());
+        $this->assertNull($columnDefinition->getCollation());
+        $this->assertFalse($columnDefinition->isNullable());
+
+        $this->assertEquals('$table->time(\'birth_time\')', $columnDefinition->render());
+    }
+    //endregion
+
+    //region LINESTRING, MULTILINESTRING
+    public function test_it_tokenizes_linestring_column()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`str` linestring NOT NULL');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('linestring', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('lineString', $columnDefinition->getMethodName());
+        $this->assertCount(0, $columnDefinition->getMethodParameters());
+        $this->assertNull($columnDefinition->getCollation());
+        $this->assertFalse($columnDefinition->isNullable());
+
+        $this->assertEquals('$table->lineString(\'str\')', $columnDefinition->render());
+    }
+
+    public function test_it_tokenizes_multilinestring_column()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`str` multilinestring NOT NULL');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('multilinestring', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('multiLineString', $columnDefinition->getMethodName());
+        $this->assertCount(0, $columnDefinition->getMethodParameters());
+        $this->assertNull($columnDefinition->getCollation());
+        $this->assertFalse($columnDefinition->isNullable());
+
+        $this->assertEquals('$table->multiLineString(\'str\')', $columnDefinition->render());
+    }
     //endregion
 }

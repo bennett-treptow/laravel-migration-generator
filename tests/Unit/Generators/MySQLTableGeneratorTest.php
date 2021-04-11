@@ -3,10 +3,19 @@
 namespace Tests\Unit\Generators;
 
 use Tests\TestCase;
+use Illuminate\Support\Facades\Config;
 use LaravelMigrationGenerator\Generators\MySQL\TableGenerator;
 
 class MySQLTableGeneratorTest extends TestCase
 {
+    public function tearDown(): void
+    {
+        parent::tearDown();
+
+        $path = __DIR__ . '/../../migrations';
+        $this->cleanUpMigrations($path);
+    }
+
     private function assertSchemaHas($str, $schema)
     {
         $this->assertStringContainsString($str, $schema);
@@ -31,14 +40,17 @@ class MySQLTableGeneratorTest extends TestCase
 
     private function cleanUpMigrations($path)
     {
-        foreach (glob($path . '/*.php') as $file) {
-            unlink($file);
+        if (is_dir($path)) {
+            foreach (glob($path . '/*.php') as $file) {
+                unlink($file);
+            }
+            rmdir($path);
         }
-        rmdir($path);
     }
 
     public function test_writes()
     {
+        Config::set('laravel-migration-generator.table_naming_scheme', '0000_00_00_000000_create_[TableName]_table.php');
         $generator = TableGenerator::init('table', [
             '`id` int(9) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY',
             '`user_id` int(9) unsigned NOT NULL',
@@ -50,12 +62,50 @@ class MySQLTableGeneratorTest extends TestCase
         $path = __DIR__ . '/../../migrations';
 
         if (! is_dir($path)) {
-            mkdir($path);
+            mkdir($path, 0777, true);
         }
+
         $generator->write($path);
 
-        $this->assertFileExists($path . '/0000_00_00_000000_create_test_table_table.php');
+        $this->assertFileExists($path . '/0000_00_00_000000_create_table_table.php');
+    }
 
-        $this->cleanUpMigrations($path);
+    public function test_cleans_up_regular_morphs()
+    {
+        $generator = TableGenerator::init('table', [
+            '`id` int(9) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY',
+            '`user_id` int(9) unsigned NOT NULL',
+            '`user_type` varchar(255) NOT NULL',
+            '`note` varchar(255) NOT NULL'
+        ]);
+
+        $schema = $generator->getSchema();
+        $this->assertSchemaHas('$table->morphs(\'user\');', $schema);
+    }
+
+    public function test_cleans_up_uuid_morphs()
+    {
+        $generator = TableGenerator::init('table', [
+            '`id` int(9) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY',
+            '`user_id` char(36) NOT NULL',
+            '`user_type` varchar(255) NOT NULL',
+            '`note` varchar(255) NOT NULL'
+        ]);
+
+        $schema = $generator->getSchema();
+        $this->assertSchemaHas('$table->uuidMorphs(\'user\');', $schema);
+    }
+
+    public function test_cleans_up_uuid_morphs_nullable()
+    {
+        $generator = TableGenerator::init('table', [
+            '`id` int(9) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY',
+            '`user_id` char(36) DEFAULT NULL',
+            '`user_type` varchar(255) DEFAULT NULL',
+            '`note` varchar(255) NOT NULL'
+        ]);
+
+        $schema = $generator->getSchema();
+        $this->assertSchemaHas('$table->uuidMorphs(\'user\')->nullable();', $schema);
     }
 }

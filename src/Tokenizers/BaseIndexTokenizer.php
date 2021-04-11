@@ -10,19 +10,10 @@ abstract class BaseIndexTokenizer extends BaseTokenizer implements IndexTokenize
 {
     protected IndexDefinition $definition;
 
-    protected array $relatedColumns = [];
-
     public function __construct(string $value)
     {
         $this->definition = new IndexDefinition();
         parent::__construct($value);
-    }
-
-    public function column(ColumnTokenizerInterface $column)
-    {
-        $this->relatedColumns[] = $column;
-
-        return $this;
     }
 
     public function definition(): IndexDefinition
