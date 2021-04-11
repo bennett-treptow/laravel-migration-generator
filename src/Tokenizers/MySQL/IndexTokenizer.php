@@ -3,12 +3,9 @@
 namespace LaravelMigrationGenerator\Tokenizers\MySQL;
 
 use LaravelMigrationGenerator\Tokenizers\BaseIndexTokenizer;
-use LaravelMigrationGenerator\Tokenizers\Traits\WritableTokenizer;
 
 class IndexTokenizer extends BaseIndexTokenizer
 {
-    use WritableTokenizer;
-
     public function tokenize(): self
     {
         $this->consumeIndexType();

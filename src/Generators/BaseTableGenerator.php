@@ -3,24 +3,31 @@
 namespace LaravelMigrationGenerator\Generators;
 
 use Illuminate\Support\Str;
-use LaravelMigrationGenerator\Tokenizers\Traits\WritableTokenizer;
+use LaravelMigrationGenerator\Helpers\ConfigResolver;
+use LaravelMigrationGenerator\Helpers\WritableTrait;
 use LaravelMigrationGenerator\Generators\Interfaces\TableGeneratorInterface;
 use LaravelMigrationGenerator\Tokenizers\Interfaces\IndexTokenizerInterface;
 use LaravelMigrationGenerator\Tokenizers\Interfaces\ColumnTokenizerInterface;
 
 abstract class BaseTableGenerator implements TableGeneratorInterface
 {
-    use WritableTokenizer;
+    use WritableTrait;
 
-    protected $tableName;
+    protected string $tableName;
 
-    protected $rows;
+    protected array $rows = [];
 
     /** @var ColumnTokenizerInterface[] */
-    protected $columns = [];
+    protected array $columns = [];
 
     /** @var IndexTokenizerInterface[] */
-    protected $indices = [];
+    protected array $indices = [];
+
+    abstract public function getSchema($tab = ''): string;
+
+    abstract public function resolveStructure();
+
+    abstract public function parse();
 
     public static function init(string $tableName, array $rows = [])
     {
@@ -36,12 +43,31 @@ abstract class BaseTableGenerator implements TableGeneratorInterface
         return $instance;
     }
 
+    public function write(string $basePath): void
+    {
+        if (! $this->isWritable()) {
+            return;
+        }
+        $tab = str_repeat('    ', 3);
+
+        $schema = $this->getSchema($tab);
+
+        $stubPath = $this->getStubPath();
+        $stub = file_get_contents($stubPath);
+        $stub = str_replace('[TableName]', Str::studly($this->tableName), $stub);
+        $stub = str_replace('[Table]', $this->tableName, $stub);
+        $stub = str_replace('[Schema]', $schema, $stub);
+
+        $fileName = $this->getStubFileName();
+        file_put_contents($basePath . '/' . $fileName, $stub);
+    }
+
     public function shouldResolveStructure(): bool
     {
         return count($this->rows) === 0;
     }
 
-    public function cleanUp()
+    public function cleanUp(): void
     {
         $this->findForeignKeyIndices();
 
@@ -52,7 +78,7 @@ abstract class BaseTableGenerator implements TableGeneratorInterface
         $this->findColumnsWithIndices();
     }
 
-    protected function findForeignKeyIndices()
+    protected function findForeignKeyIndices(): void
     {
         foreach ($this->indices as $index) {
             if ($index->definition()->getIndexType() === 'index') {
@@ -77,7 +103,7 @@ abstract class BaseTableGenerator implements TableGeneratorInterface
         }
     }
 
-    protected function findMorphColumns()
+    protected function findMorphColumns(): void
     {
         $morphColumns = [];
 
@@ -111,7 +137,7 @@ abstract class BaseTableGenerator implements TableGeneratorInterface
         }
     }
 
-    protected function findColumnsWithIndices()
+    protected function findColumnsWithIndices(): void
     {
         foreach ($this->indices as &$index) {
             if (! $index->isWritable()) {
@@ -141,7 +167,7 @@ abstract class BaseTableGenerator implements TableGeneratorInterface
         }
     }
 
-    protected function findTimestampsColumn()
+    protected function findTimestampsColumn(): void
     {
         $timestampColumns = [];
         foreach ($this->columns as &$column) {
@@ -163,30 +189,60 @@ abstract class BaseTableGenerator implements TableGeneratorInterface
         }
     }
 
-    public function getIndices()
+    public function getIndices(): array
     {
         return $this->indices;
     }
 
-    public function write(string $basePath)
+    protected function stubNameVariables(): array
     {
-        if (! $this->isWritable()) {
-            return;
-        }
-        $tab = str_repeat('    ', 3);
+        return [
+            'TableName:Studly'    => Str::studly($this->tableName),
+            'TableName:Lowercase' => strtolower($this->tableName),
+            'TableName'           => $this->tableName,
+            'Timestamp'           => app('laravel-migration-generator:time')->format('Y_m_d_His'),
+            'Timestamp:(.+?)'     => function ($parameter) {
+                if (preg_match('/\[Timestamp:(.+?)\]/i', $parameter, $matches) !== 0) {
+                    $format = $matches[1];
 
-        $schema = $this->getSchema($tab);
-
-        $stub = file_get_contents(__DIR__ . '/../Stubs/MigrationStub.stub');
-        $stub = str_replace('[TableName]', Str::studly($this->tableName), $stub);
-        $stub = str_replace('[Table]', $this->tableName, $stub);
-        $stub = str_replace('[Schema]', $schema, $stub);
-        file_put_contents($basePath . '/0000_00_00_000000_create_test_' . $this->tableName . '_table.php', $stub);
+                    return ['Timestamp:' . $format, app('laravel-migration-generator:time')->format($format)];
+                } else {
+                    return [null, null];
+                }
+            }
+        ];
     }
 
-    abstract public function getSchema($tab = ''): string;
+    protected function getStubFileName(): string
+    {
+        $driver = static::driver();
+        $baseStubFileName = ConfigResolver::tableNamingScheme($driver);
+        foreach ($this->stubNameVariables() as $variable => $replacement) {
+            if (is_callable($replacement)) {
+                //replacement is a closure
+                [$variable, $replacement] = $replacement($baseStubFileName);
+            }
+            if ($variable === null) {
+                continue;
+            }
+            $baseStubFileName = preg_replace("/\[" . $variable . "\]/i", $replacement, $baseStubFileName);
+        }
 
-    abstract public function resolveStructure();
+        return $baseStubFileName;
+    }
 
-    abstract public function parse();
+    protected function getStubPath(): string
+    {
+        $driver = static::driver();
+
+        if (file_exists($overridden = resource_path('views/vendor/laravel-migration-generator/' . $driver . '-table.stub'))) {
+            return $overridden;
+        }
+
+        if (file_exists($overridden = resource_path('views/vendor/laravel-migration-generator/table.stub'))) {
+            return $overridden;
+        }
+
+        return __DIR__ . '/../../stubs/table.stub';
+    }
 }

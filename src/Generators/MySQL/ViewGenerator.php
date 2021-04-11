@@ -2,34 +2,25 @@
 
 namespace LaravelMigrationGenerator\Generators\MySQL;
 
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use LaravelMigrationGenerator\Generators\BaseViewGenerator;
 use LaravelMigrationGenerator\Generators\Interfaces\ViewGeneratorInterface;
 
-class ViewGenerator implements ViewGeneratorInterface
+class ViewGenerator extends BaseViewGenerator implements ViewGeneratorInterface
 {
-    protected string $viewName;
-
-    protected string $schema;
-
-    public function __construct(string $viewName)
+    public static function driver(): string
     {
-        $this->viewName = $viewName;
+        return 'mysql';
+    }
 
-        $structure = DB::select('SHOW CREATE VIEW `' . $viewName . '`');
+    public function resolveSchema()
+    {
+        $structure = DB::select('SHOW CREATE VIEW `' . $this->viewName . '`');
         $structure = $structure[0];
         $structure = (array) $structure;
         if (isset($structure['Create View'])) {
             $this->schema = $structure['Create View'];
         }
-    }
-
-    public static function init(string $viewName)
-    {
-        $obj = new static($viewName);
-        $obj->parse();
-
-        return $obj;
     }
 
     public function parse()
@@ -46,15 +37,5 @@ class ViewGenerator implements ViewGeneratorInterface
         if (preg_match('/collate utf8mb4_unicode_ci/', $this->schema)) {
             $this->schema = str_replace('collate utf8mb4_unicode_ci', '', $this->schema);
         }
-    }
-
-    public function write(string $basePath, string $tabCharacter = '    ')
-    {
-        $tab = str_repeat($tabCharacter, 3);
-        $stub = file_get_contents(__DIR__ . '/../../Stubs/ViewStub.stub');
-        $stub = str_replace('[ViewName]', Str::studly($this->viewName), $stub);
-        $stub = str_replace('[View]', $this->viewName, $stub);
-        $stub = str_replace('[Schema]', $tab . $this->schema, $stub);
-        file_put_contents($basePath . '/0000_00_00_000000_create_test_' . $this->viewName . '_view.php', $stub);
     }
 }

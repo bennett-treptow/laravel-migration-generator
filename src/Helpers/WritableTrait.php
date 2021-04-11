@@ -1,8 +1,8 @@
 <?php
 
-namespace LaravelMigrationGenerator\Tokenizers\Traits;
+namespace LaravelMigrationGenerator\Helpers;
 
-trait WritableTokenizer
+trait WritableTrait
 {
     public bool $writable = true;
 

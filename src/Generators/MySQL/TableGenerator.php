@@ -22,6 +22,11 @@ class TableGenerator extends BaseTableGenerator
         $this->rows = $rows;
     }
 
+    public static function driver(): string
+    {
+        return 'mysql';
+    }
+
     public function resolveStructure()
     {
         $structure = DB::select('SHOW CREATE TABLE `' . $this->tableName . '`');
@@ -82,6 +87,4 @@ class TableGenerator extends BaseTableGenerator
 
         return $schema;
     }
-
-
 }

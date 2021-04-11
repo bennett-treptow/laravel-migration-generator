@@ -6,13 +6,10 @@ use Illuminate\Support\Str;
 use Illuminate\Database\Schema\Builder;
 use LaravelMigrationGenerator\Helpers\ValueToString;
 use LaravelMigrationGenerator\Tokenizers\BaseColumnTokenizer;
-use LaravelMigrationGenerator\Tokenizers\Traits\WritableTokenizer;
 
 class ColumnTokenizer extends BaseColumnTokenizer
 {
-    use WritableTokenizer;
-
-    protected $columnType;
+    protected $columnDataType;
 
     /**
      * MySQL provides a ZEROFILL property for ints which is not an ANSI compliant modifier
@@ -50,12 +47,12 @@ class ColumnTokenizer extends BaseColumnTokenizer
 
     protected function isTextType()
     {
-        return Str::contains($this->columnType, ['char', 'text']);
+        return Str::contains($this->columnDataType, ['char', 'text']);
     }
 
     protected function isNumberType()
     {
-        return Str::contains($this->columnType, ['int', 'decimal', 'float', 'double']);
+        return Str::contains($this->columnDataType, ['int', 'decimal', 'float', 'double']);
     }
 
     protected function consumeZeroFill()
@@ -78,7 +75,7 @@ class ColumnTokenizer extends BaseColumnTokenizer
             $columnType = explode('(', $columnType)[0];
         }
 
-        $this->columnType = $columnType;
+        $this->columnDataType = $columnType;
 
         $this->resolveColumnMethod();
         if ($hasConstraints) {
@@ -113,11 +110,11 @@ class ColumnTokenizer extends BaseColumnTokenizer
             'blob'       => 'binary',
             'datetime'   => 'dateTime'
         ];
-        if (isset($mapped[$this->columnType])) {
-            $this->definition->setMethodName($mapped[$this->columnType]);
+        if (isset($mapped[$this->columnDataType])) {
+            $this->definition->setMethodName($mapped[$this->columnDataType]);
         } else {
             //do some custom resolution
-            $this->definition->setMethodName($this->columnType);
+            $this->definition->setMethodName($this->columnDataType);
         }
     }
 
@@ -151,7 +148,7 @@ class ColumnTokenizer extends BaseColumnTokenizer
             }
             if ($this->definition->getDefaultValue() !== null) {
                 if ($this->isNumberType()) {
-                    if (Str::contains(strtoupper($this->columnType), 'INT')) {
+                    if (Str::contains(strtoupper($this->columnDataType), 'INT')) {
                         $this->definition->setDefaultValue((int) $this->definition->getDefaultValue());
                     } else {
                         $this->definition->setDefaultValue(ValueToString::castFloat($this->definition->getDefaultValue()));
@@ -189,10 +186,10 @@ class ColumnTokenizer extends BaseColumnTokenizer
 
     private function resolveColumnConstraints(array $constraints)
     {
-        if ($this->columnType === 'enum') {
+        if ($this->columnDataType === 'enum') {
             $this->definition->setMethodParameters([array_map(fn ($item) => trim($item, '\''), $constraints)]);
         } else {
-            if (Str::contains(strtoupper($this->columnType), 'INT')) {
+            if (Str::contains(strtoupper($this->columnDataType), 'INT')) {
                 $this->definition->setMethodParameters([]); //laravel does not like display field widths
             } else {
                 if ($this->definition->getMethodName() === 'string') {
@@ -213,8 +210,8 @@ class ColumnTokenizer extends BaseColumnTokenizer
     /**
      * @return mixed
      */
-    public function getColumnType()
+    public function getColumnDataType()
     {
-        return $this->columnType;
+        return $this->columnDataType;
     }
 }

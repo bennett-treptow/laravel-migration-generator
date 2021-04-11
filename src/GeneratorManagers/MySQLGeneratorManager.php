@@ -3,41 +3,64 @@
 namespace LaravelMigrationGenerator\GeneratorManagers;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Console\OutputStyle;
+use LaravelMigrationGenerator\Helpers\ConfigResolver;
 use LaravelMigrationGenerator\Generators\MySQL\ViewGenerator;
 use LaravelMigrationGenerator\Generators\MySQL\TableGenerator;
 use LaravelMigrationGenerator\GeneratorManagers\Interfaces\GeneratorManagerInterface;
 
 class MySQLGeneratorManager extends BaseGeneratorManager implements GeneratorManagerInterface
 {
-    public function handle(string $basePath, ?string $singleTable = null)
+    public function handle(string $basePath, array $tableNames = [], OutputStyle $output)
     {
         $this->createMissingDirectory($basePath);
 
-        if ($singleTable === null) {
-            $tables = DB::select('SHOW FULL TABLES');
-            $skippableTables = [
-                'migrations'
-            ];
+        $skippableTables = ConfigResolver::skippableTables('mysql');
+        $outputQueue = [];
 
-            foreach ($tables as $table) {
+        if (count($tableNames) > 0) {
+            $progressBar = $output->createProgressBar(count($tableNames));
+            foreach ($tableNames as $tableName) {
+                if (in_array($tableName, $skippableTables)) {
+                    $progressBar->advance();
+                    $outputQueue[] = 'Skipped `' . $tableName . '` table';
+
+                    continue;
+                }
+
+                TableGenerator::init($tableName)->write($basePath);
+                $progressBar->advance();
+            }
+            $progressBar->finish();
+        } else {
+            $tables = DB::select('SHOW FULL TABLES');
+            $progressBar = $output->createProgressBar(count($tables));
+            foreach ($tables as $rowNumber => $table) {
                 $tableData = (array) $table;
                 $table = $tableData[array_key_first($tableData)];
                 $tableType = $tableData['Table_type'];
                 if ($tableType === 'BASE TABLE') {
                     if (in_array($table, $skippableTables)) {
+                        $outputQueue[] = 'Skipped `' . $table . '` table';
+                        $progressBar->advance();
+
                         continue;
                     }
 
-                    $generator = TableGenerator::init($table);
-                    $generator->write($basePath);
+                    TableGenerator::init($table)->write($basePath);
+                    $progressBar->advance();
                 } elseif ($tableType === 'VIEW') {
-                    $generator = ViewGenerator::init($table);
-                    $generator->write($basePath);
+                    ViewGenerator::init($table)->write($basePath);
+                    $progressBar->advance();
+                } else {
+                    $outputQueue[] = 'Not sure how to handle a table type of ' . $tableType . ' on row ' . $rowNumber;
+                    $progressBar->advance();
                 }
             }
-        } else {
-            $generator = TableGenerator::init($singleTable);
-            $generator->write($basePath);
+            $progressBar->finish();
+        }
+        foreach ($outputQueue as $item) {
+            $output->info($item);
         }
     }
 }
