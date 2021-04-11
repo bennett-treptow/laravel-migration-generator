@@ -29,7 +29,7 @@ abstract class BaseViewGenerator implements ViewGeneratorInterface
         return $obj;
     }
 
-    public function getSchema(): string
+    public function getSchema(): ?string
     {
         return $this->schema;
     }

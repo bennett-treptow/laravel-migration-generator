@@ -12,5 +12,5 @@ interface ViewGeneratorInterface
 
     public function write(string $basePath, string $tabCharacter = '    ');
 
-    public function getSchema(): string;
+    public function getSchema(): ?string;
 }
