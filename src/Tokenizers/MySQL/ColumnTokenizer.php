@@ -40,19 +40,11 @@ class ColumnTokenizer extends BaseColumnTokenizer
         return $this;
     }
 
+    //region Consumers
+
     protected function consumeColumnName()
     {
         $this->definition->setColumnName($this->parseColumn($this->consume()));
-    }
-
-    protected function isTextType()
-    {
-        return Str::contains($this->columnDataType, ['char', 'text']);
-    }
-
-    protected function isNumberType()
-    {
-        return Str::contains($this->columnDataType, ['int', 'decimal', 'float', 'double']);
     }
 
     protected function consumeZeroFill()
@@ -95,29 +87,6 @@ class ColumnTokenizer extends BaseColumnTokenizer
         }
     }
 
-    private function resolveColumnMethod()
-    {
-        $mapped = [
-            'int'        => 'integer',
-            'tinyint'    => 'tinyInteger',
-            'smallint'   => 'smallInteger',
-            'mediumint'  => 'mediumInteger',
-            'bigint'     => 'bigInteger',
-            'varchar'    => 'string',
-            'tinytext'   => 'tinyText',
-            'mediumtext' => 'mediumText',
-            'longtext'   => 'longText',
-            'blob'       => 'binary',
-            'datetime'   => 'dateTime'
-        ];
-        if (isset($mapped[$this->columnDataType])) {
-            $this->definition->setMethodName($mapped[$this->columnDataType]);
-        } else {
-            //do some custom resolution
-            $this->definition->setMethodName($this->columnDataType);
-        }
-    }
-
     protected function consumeNullable()
     {
         $piece = $this->consume();
@@ -137,6 +106,7 @@ class ColumnTokenizer extends BaseColumnTokenizer
         $piece = $this->consume();
         if (strtoupper($piece) === 'DEFAULT') {
             $this->definition->setDefaultValue($this->consume());
+
             if (strtoupper($this->definition->getDefaultValue()) === 'NULL') {
                 $this->definition
                     ->setNullable(true)
@@ -151,6 +121,7 @@ class ColumnTokenizer extends BaseColumnTokenizer
                     if (Str::contains(strtoupper($this->columnDataType), 'INT')) {
                         $this->definition->setDefaultValue((int) $this->definition->getDefaultValue());
                     } else {
+                        //floats get converted to strings improperly, gotta do a string cast
                         $this->definition->setDefaultValue(ValueToString::castFloat($this->definition->getDefaultValue()));
                     }
                 } else {
@@ -158,7 +129,6 @@ class ColumnTokenizer extends BaseColumnTokenizer
                 }
             }
         } else {
-            //put it back
             $this->putBack($piece);
         }
     }
@@ -184,9 +154,36 @@ class ColumnTokenizer extends BaseColumnTokenizer
         }
     }
 
+    //endregion
+
+    //region Resolvers
+    private function resolveColumnMethod()
+    {
+        $mapped = [
+            'int'                => 'integer',
+            'tinyint'            => 'tinyInteger',
+            'smallint'           => 'smallInteger',
+            'mediumint'          => 'mediumInteger',
+            'bigint'             => 'bigInteger',
+            'varchar'            => 'string',
+            'tinytext'           => 'tinyText',
+            'mediumtext'         => 'mediumText',
+            'longtext'           => 'longText',
+            'blob'               => 'binary',
+            'datetime'           => 'dateTime',
+            'geometrycollection' => 'geometryCollection'
+        ];
+        if (isset($mapped[$this->columnDataType])) {
+            $this->definition->setMethodName($mapped[$this->columnDataType]);
+        } else {
+            //do some custom resolution
+            $this->definition->setMethodName($this->columnDataType);
+        }
+    }
+
     private function resolveColumnConstraints(array $constraints)
     {
-        if ($this->columnDataType === 'enum') {
+        if ($this->isArrayType()) {
             $this->definition->setMethodParameters([array_map(fn ($item) => trim($item, '\''), $constraints)]);
         } else {
             if (Str::contains(strtoupper($this->columnDataType), 'INT')) {
@@ -205,6 +202,23 @@ class ColumnTokenizer extends BaseColumnTokenizer
                 $this->definition->setMethodParameters(array_map(fn ($item) => (int) $item, $constraints));
             }
         }
+    }
+
+    //endregion
+
+    protected function isTextType()
+    {
+        return Str::contains($this->columnDataType, ['char', 'text', 'set']);
+    }
+
+    protected function isNumberType()
+    {
+        return Str::contains($this->columnDataType, ['int', 'decimal', 'float', 'double']);
+    }
+
+    protected function isArrayType()
+    {
+        return Str::contains($this->columnDataType, ['enum', 'set']);
     }
 
     /**

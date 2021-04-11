@@ -320,6 +320,10 @@ class ColumnDefinition
             return [null, 'rememberToken', []];
         }
 
+        if ($this->methodName === 'char' && count($this->methodParameters) === 1 && $this->methodParameters[0] === 36) {
+            return [$this->columnName, 'uuid', []];
+        }
+
         return [$this->columnName, $this->methodName, $this->methodParameters];
     }
 

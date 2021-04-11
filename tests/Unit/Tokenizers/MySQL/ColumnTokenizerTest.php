@@ -3,8 +3,6 @@
 namespace Tests\Unit\Tokenizers\MySQL;
 
 use Tests\TestCase;
-use LaravelMigrationGenerator\Generators\MySQL\TableGenerator;
-use LaravelMigrationGenerator\Tokenizers\MySQL\IndexTokenizer;
 use LaravelMigrationGenerator\Tokenizers\MySQL\ColumnTokenizer;
 
 class ColumnTokenizerTest extends TestCase
@@ -752,5 +750,86 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('$table->enum(\'status_flag\', [\'1\', \'2\', \'3\', \'4\'])->default(\'1\')', $columnDefinition->render());
     }
 
+    //endregion
+
+    //region POINT
+    public function test_it_tokenizes_point_column()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`point` point NOT NULL');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('point', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('point', $columnDefinition->getMethodName());
+        $this->assertCount(0, $columnDefinition->getMethodParameters());
+    }
+
+    //endregion
+
+    //region POLYGON
+    public function test_it_tokenizes_polygon_column()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`polygon` polygon NOT NULL');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('polygon', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('polygon', $columnDefinition->getMethodName());
+        $this->assertCount(0, $columnDefinition->getMethodParameters());
+    }
+
+    //endregion
+
+    //region GEOMETRY
+    public function test_it_tokenizes_geometry_column()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`geometry` geometry NOT NULL');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('geometry', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('geometry', $columnDefinition->getMethodName());
+        $this->assertCount(0, $columnDefinition->getMethodParameters());
+    }
+
+    public function test_it_tokenizes_geometry_collection_column()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`geometry_collection` geometrycollection NOT NULL');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('geometrycollection', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('geometryCollection', $columnDefinition->getMethodName());
+        $this->assertCount(0, $columnDefinition->getMethodParameters());
+    }
+
+    //endregion
+
+    //region SET
+    public function test_it_tokenizes_set_column()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`set_field` set(\'1\',\'2\',\'3\') COLLATE utf8mb4_unicode_ci DEFAULT NULL');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('set', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('set', $columnDefinition->getMethodName());
+        $this->assertCount(1, $columnDefinition->getMethodParameters());
+        $this->assertNotNull($columnDefinition->getCollation());
+        $this->assertTrue($columnDefinition->isNullable());
+
+        $this->assertEquals('$table->set(\'set_field\', [\'1\', \'2\', \'3\'])->nullable()', $columnDefinition->render());
+    }
+    //endregion
+
+    //region UUID
+    public function test_it_tokenizes_uuid_column()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`uuid_col` char(36) COLLATE utf8mb4_unicode_ci NOT NULL');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('char', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('char', $columnDefinition->getMethodName());
+        $this->assertCount(1, $columnDefinition->getMethodParameters());
+        $this->assertNotNull($columnDefinition->getCollation());
+        $this->assertFalse($columnDefinition->isNullable());
+
+        $this->assertEquals('$table->uuid(\'uuid_col\')', $columnDefinition->render());
+    }
     //endregion
 }
