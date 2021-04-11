@@ -69,4 +69,43 @@ class MySQLTableGeneratorTest extends TestCase
 
         $this->assertFileExists($path . '/0000_00_00_000000_create_table_table.php');
     }
+
+    public function test_cleans_up_regular_morphs()
+    {
+        $generator = TableGenerator::init('table', [
+            '`id` int(9) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY',
+            '`user_id` int(9) unsigned NOT NULL',
+            '`user_type` varchar(255) NOT NULL',
+            '`note` varchar(255) NOT NULL'
+        ]);
+
+        $schema = $generator->getSchema();
+        $this->assertSchemaHas('$table->morphs(\'user\');', $schema);
+    }
+
+    public function test_cleans_up_uuid_morphs()
+    {
+        $generator = TableGenerator::init('table', [
+            '`id` int(9) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY',
+            '`user_id` char(36) NOT NULL',
+            '`user_type` varchar(255) NOT NULL',
+            '`note` varchar(255) NOT NULL'
+        ]);
+
+        $schema = $generator->getSchema();
+        $this->assertSchemaHas('$table->uuidMorphs(\'user\');', $schema);
+    }
+
+    public function test_cleans_up_uuid_morphs_nullable()
+    {
+        $generator = TableGenerator::init('table', [
+            '`id` int(9) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY',
+            '`user_id` char(36) DEFAULT NULL',
+            '`user_type` varchar(255) DEFAULT NULL',
+            '`note` varchar(255) NOT NULL'
+        ]);
+
+        $schema = $generator->getSchema();
+        $this->assertSchemaHas('$table->uuidMorphs(\'user\')->nullable();', $schema);
+    }
 }

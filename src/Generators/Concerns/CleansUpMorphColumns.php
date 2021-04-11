@@ -4,6 +4,7 @@ namespace LaravelMigrationGenerator\Generators\Concerns;
 
 use Illuminate\Support\Str;
 use LaravelMigrationGenerator\Generators\BaseTableGenerator;
+use LaravelMigrationGenerator\Tokenizers\Interfaces\ColumnTokenizerInterface;
 
 /**
  * Trait CleansUpMorphColumns
@@ -27,10 +28,24 @@ trait CleansUpMorphColumns
 
         foreach ($morphColumns as $columnName => $fields) {
             if (count($fields) === 2) {
-                $fields['id']->definition()
-                    ->setMethodName('morphs')
-                    ->setColumnName($columnName);
-                $fields['type']->markAsWritable(false);
+                /** @var ColumnTokenizerInterface $idField */
+                $idField = $fields['id'];
+                /** @var ColumnTokenizerInterface $typeField */
+                $typeField = $fields['type'];
+
+                if ($idField->definition()->isUUID()) {
+                    //UUID morph
+                    $idField->definition()
+                        ->setMethodName('uuidMorphs')
+                        ->setMethodParameters([])
+                        ->setColumnName($columnName);
+                } else {
+                    //regular morph
+                    $idField->definition()
+                        ->setMethodName('morphs')
+                        ->setColumnName($columnName);
+                }
+                $typeField->markAsWritable(false);
 
                 foreach ($this->indices as $index) {
                     $columns = $index->definition()->getIndexColumns();

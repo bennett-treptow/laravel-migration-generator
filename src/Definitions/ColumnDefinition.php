@@ -33,6 +33,8 @@ class ColumnDefinition
 
     protected bool $useCurrent = false;
 
+    protected bool $isUUID = false;
+
     public function __construct($attributes = [])
     {
         foreach ($attributes as $attribute => $value) {
@@ -134,6 +136,14 @@ class ColumnDefinition
     public function useCurrent(): bool
     {
         return $this->useCurrent;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUUID(): bool
+    {
+        return $this->isUUID;
     }
 
     //endregion
@@ -261,6 +271,17 @@ class ColumnDefinition
         return $this;
     }
 
+    /**
+     * @param bool $isUUID
+     * @return ColumnDefinition
+     */
+    public function setIsUUID(bool $isUUID): ColumnDefinition
+    {
+        $this->isUUID = $isUUID;
+
+        return $this;
+    }
+
     //endregion
 
     protected function isNullableMethod($methodName)
@@ -319,8 +340,8 @@ class ColumnDefinition
         if ($this->methodName === 'string' && $this->columnName === 'remember_token' && $this->nullable) {
             return [null, 'rememberToken', []];
         }
-
-        if ($this->methodName === 'char' && count($this->methodParameters) === 1 && $this->methodParameters[0] === 36) {
+        if ($this->isUUID() && $this->methodName !== 'uuidMorphs') {
+            //only override if not already uuidMorphs
             return [$this->columnName, 'uuid', []];
         }
 

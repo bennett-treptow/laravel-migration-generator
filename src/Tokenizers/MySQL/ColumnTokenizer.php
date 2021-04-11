@@ -183,6 +183,11 @@ class ColumnTokenizer extends BaseColumnTokenizer
 
     private function resolveColumnConstraints(array $constraints)
     {
+        if ($this->columnDataType === 'char' && count($constraints) === 1 && $constraints[0] == 36) {
+            //uuid for mysql
+            $this->definition->setIsUUID(true);
+            return;
+        }
         if ($this->isArrayType()) {
             $this->definition->setMethodParameters([array_map(fn ($item) => trim($item, '\''), $constraints)]);
         } else {

@@ -825,7 +825,7 @@ class ColumnTokenizerTest extends TestCase
 
         $this->assertEquals('char', $columnTokenizer->getColumnDataType());
         $this->assertEquals('char', $columnDefinition->getMethodName());
-        $this->assertCount(1, $columnDefinition->getMethodParameters());
+        $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertNotNull($columnDefinition->getCollation());
         $this->assertFalse($columnDefinition->isNullable());
 

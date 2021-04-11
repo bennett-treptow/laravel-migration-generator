@@ -2,7 +2,6 @@
 
 namespace LaravelMigrationGenerator\Generators;
 
-use Illuminate\Support\Str;
 use LaravelMigrationGenerator\Generators\Concerns\CleansUpColumnIndices;
 use LaravelMigrationGenerator\Generators\Concerns\CleansUpForeignKeyIndices;
 use LaravelMigrationGenerator\Generators\Concerns\CleansUpMorphColumns;
