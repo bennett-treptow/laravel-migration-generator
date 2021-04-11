@@ -21,8 +21,8 @@ trait WritesTablesToFile
 
         $schema = $this->getSchema($tab);
         $stub = file_get_contents($stubPath);
-        $stub = str_replace('[TableName]', Str::studly($this->tableName), $stub);
-        $stub = str_replace('[Table]', $this->tableName, $stub);
+        $stub = str_replace('[TableName:Studly]', Str::studly($this->tableName), $stub);
+        $stub = str_replace('[TableName]', $this->tableName, $stub);
         $stub = str_replace('[Schema]', $schema, $stub);
 
         return $stub;

@@ -68,8 +68,8 @@ trait WritesViewsToFile
 
         $schema = $this->getSchema();
         $stub = file_get_contents($stubPath);
-        $stub = str_replace('[ViewName]', Str::studly($this->viewName), $stub);
-        $stub = str_replace('[View]', $this->viewName, $stub);
+        $stub = str_replace('[ViewName:Studly]', Str::studly($this->viewName), $stub);
+        $stub = str_replace('[ViewName]', $this->viewName, $stub);
         $stub = str_replace('[Schema]', $tab . $schema, $stub);
 
         return $stub;
