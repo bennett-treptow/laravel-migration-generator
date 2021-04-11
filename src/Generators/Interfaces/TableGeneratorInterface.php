@@ -16,7 +16,7 @@ interface TableGeneratorInterface
 
     public function cleanUp();
 
-    public function write(string $basePath);
+    public function write(string $basePath, string $tabCharacter = '    ');
 
     public function getIndices();
 }
