@@ -3,24 +3,40 @@ Generate migrations from existing database structures, an alternative to the sch
 Another use case would be taking a project with a database and no migrations and turning that database into base migrations.
 
 # Installation
+```bash
+composer require --dev bennett-treptow/laravel-migration-generator
+```
 
-`composer require bennett-treptow/laravel-migration-generator`
-`php artisan vendor:publish --provider="LaravelMigrationGenerator\LaravelMigrationGeneratorProvider"`
-
+```bash
+php artisan vendor:publish --provider="LaravelMigrationGenerator\LaravelMigrationGeneratorProvider"
+```
 # Usage
 
 Whenever you have database changes or are ready to squash your database structure down to migrations, run:
-`php artisan migrate:generate`
+```bash
+php artisan migrate:generate
+```
 
-By default, the migrations will be created in `tests/database/migrations`. You can specify a different path with the `--path` option: `php artisan migrate:generate --path=database/migrations`
+By default, the migrations will be created in `tests/database/migrations`. You can specify a different path with the `--path` option: 
+```bash
+php artisan migrate:generate --path=database/migrations
+```
 
-You can specify the connection to use as the database with the `--connection` option, `php artisan migrate:generate --connection=mysql2`
+You can specify the connection to use as the database with the `--connection` option:
+```bash
+php artisan migrate:generate --connection=mysql2
+```
+
+You can also clear the directory with the `--empty-path` option:
+```bash
+php artisan migrate:generate --empty-path
+```
 
 # Configuration
 
 Each database driver can have separate configs, as specified in `config/laravel-migration-generator.php`.
 
-Want to customize the migration stubs? Make sure you've published the vendor assets with `php artisan vendor:publish --provider="LaravelMigrationGenerator\LaravelMigrationGeneratorProvider"`. 
+Want to customize the migration stubs? Make sure you've published the vendor assets with the artisan command to publish vendor files above.
 
 ## Stubs
 There is a default stub for tables and views, found in `resources/stubs/vendor/laravel-migration-generator/`.
@@ -32,33 +48,33 @@ Stubs can be named using the `(table|view)_naming_scheme` in the config. See bel
 ### Table Stubs
 Table stubs have the following tokens available for the naming scheme:
 
-- \[TableName] - Table's name, same as what is defined in the database
-- \[TableName:Studly] - Table's name with `Str::studly()` applied to it (useful for standardizing table names if they are inconsistent)
-- \[TableName:Lowercase] - Table's name with `strtolower` applied to it (useful for standardizing table names if they are inconsistent)
-- \[Timestamp] - The standard migration timestamp format, at the time of calling the command: `Y_m_d_His` 
-- \[Timestamp:format\] - Specify a format for the timestamp, e.g. \[Timestamp:Y_m\]
+- `[TableName]` - Table's name, same as what is defined in the database
+- `[TableName:Studly]` - Table's name with `Str::studly()` applied to it (useful for standardizing table names if they are inconsistent)
+- `[TableName:Lowercase]` - Table's name with `strtolower` applied to it (useful for standardizing table names if they are inconsistent)
+- `[Timestamp]` - The standard migration timestamp format, at the time of calling the command: `Y_m_d_His` 
+- `[Timestamp:{format}]` - Specify a format for the timestamp, e.g. \[Timestamp:Y_m\]
 
 Table schema stubs have the following tokens available:
-- \[TableName] - Table's name, same as what is defined in the database
-- \[TableName:Studly] - Table's name with `Str::studly()` applied to it, for use with the class name
-- \[Schema] - The table's generated schema
+- `[TableName]` - Table's name, same as what is defined in the database
+- `[TableName:Studly]` - Table's name with `Str::studly()` applied to it, for use with the class name
+- `[Schema]` - The table's generated schema
 
 ### View Stubs
 View stubs have the following tokens available for the naming scheme:
 
-- \[ViewName] - View's name, same as what is defined in the database
-- \[ViewName:Studly] - View's name with `Str::studly()` applied to it (useful for standardizing view names if they are inconsistent)
-- \[ViewName:Lowercase] - View's name with `strtolower` applied to it (useful for standardizing view names if they are inconsistent)
-- \[Timestamp] - The standard migration timestamp format, at the time of calling the command: `Y_m_d_His` 
-- \[Timestamp:format\] - Specify a format for the timestamp, e.g. \[Timestamp:Y_m\]
+- `[ViewName]` - View's name, same as what is defined in the database
+- `[ViewName:Studly]` - View's name with `Str::studly()` applied to it (useful for standardizing view names if they are inconsistent)
+- `[ViewName:Lowercase] - View's name with `strtolower` applied to it (useful for standardizing view names if they are inconsistent)
+- `[Timestamp]` - The standard migration timestamp format, at the time of calling the command: `Y_m_d_His` 
+- `[Timestamp:{format}]` - Specify a format for the timestamp, e.g. \[Timestamp:Y_m\]
 
 View schema stubs have the following tokens available:
-- \[ViewName] - View's name, same as what is defined in the database
-- \[ViewName:Studly] - View's name with `Str::studly()` applied to it, for use with the class name
-- \[Schema] - The view's schema
+- `[ViewName]` - View's name, same as what is defined in the database
+- `[ViewName:Studly]` - View's name with `Str::studly()` applied to it, for use with the class name
+- `[Schema]` - The view's schema
 
 
-# Example
+# Example Usage
 
 Given a database structure for a `users` table of:
 ```sql
