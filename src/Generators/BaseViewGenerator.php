@@ -2,8 +2,8 @@
 
 namespace LaravelMigrationGenerator\Generators;
 
-use LaravelMigrationGenerator\Generators\Concerns\WritesViewsToFile;
 use LaravelMigrationGenerator\Helpers\WritableTrait;
+use LaravelMigrationGenerator\Generators\Concerns\WritesViewsToFile;
 use LaravelMigrationGenerator\Generators\Interfaces\ViewGeneratorInterface;
 
 abstract class BaseViewGenerator implements ViewGeneratorInterface
@@ -21,9 +21,12 @@ abstract class BaseViewGenerator implements ViewGeneratorInterface
         $this->schema = $schema;
     }
 
-    public static function init(string $viewName)
+    public static function init(string $viewName, ?string $schema = null)
     {
-        $obj = new static($viewName);
+        $obj = new static($viewName, $schema);
+        if ($obj->shouldResolveStructure()) {
+            $obj->resolveSchema();
+        }
         $obj->parse();
 
         return $obj;
