@@ -76,11 +76,11 @@ class ColumnTokenizerTest extends TestCase
 
         $this->assertEquals('notes', $columnDefinition->getColumnName());
         $this->assertEquals('tinytext', $columnTokenizer->getColumnDataType());
-        $this->assertEquals('tinyText', $columnDefinition->getMethodName());
+        $this->assertEquals('string', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertFalse($columnDefinition->isNullable());
         $this->assertNull($columnDefinition->getCollation());
-        $this->assertEquals('$table->tinyText(\'notes\')', $columnDefinition->render());
+        $this->assertEquals('$table->string(\'notes\')', $columnDefinition->render());
     }
 
     public function test_it_tokenizes_a_null_tinytext_column()
@@ -90,11 +90,11 @@ class ColumnTokenizerTest extends TestCase
 
         $this->assertEquals('notes', $columnDefinition->getColumnName());
         $this->assertEquals('tinytext', $columnTokenizer->getColumnDataType());
-        $this->assertEquals('tinyText', $columnDefinition->getMethodName());
+        $this->assertEquals('string', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertTrue($columnDefinition->isNullable());
         $this->assertNull($columnDefinition->getCollation());
-        $this->assertEquals('$table->tinyText(\'notes\')->nullable()', $columnDefinition->render());
+        $this->assertEquals('$table->string(\'notes\')->nullable()', $columnDefinition->render());
     }
 
     public function test_it_tokenizes_a_not_null_text_column()

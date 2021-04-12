@@ -166,7 +166,7 @@ class ColumnTokenizer extends BaseColumnTokenizer
             'mediumint'          => 'mediumInteger',
             'bigint'             => 'bigInteger',
             'varchar'            => 'string',
-            'tinytext'           => 'tinyText',
+            'tinytext'           => 'string',  //tinytext is not a valid Blueprint method currently
             'mediumtext'         => 'mediumText',
             'longtext'           => 'longText',
             'blob'               => 'binary',
