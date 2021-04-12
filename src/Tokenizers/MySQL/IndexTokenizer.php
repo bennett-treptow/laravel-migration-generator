@@ -77,8 +77,14 @@ class IndexTokenizer extends BaseIndexTokenizer
     {
         while ($token = $this->consume()) {
             if (strtoupper($token) === 'ON') {
-                $actionType = strtolower($this->consume());
-                $actionMethod = strtolower($this->consume());
+                $actionType = strtolower($this->consume()); //UPDATE
+                $actionMethod = strtolower($this->consume()); //CASCADE | NO ACTION | SET NULL | SET DEFAULT
+                if ($actionMethod === 'no') {
+                    $this->consume(); //consume ACTION
+                    $actionMethod = 'restrict';
+                } elseif ($actionMethod === 'set') {
+                    $actionMethod = 'set ' . $this->consume(); //consume NULL or DEFAULT
+                }
                 $currentActions = $this->definition->getConstraintActions();
                 $currentActions[$actionType] = $actionMethod;
                 $this->definition->setConstraintActions($currentActions);

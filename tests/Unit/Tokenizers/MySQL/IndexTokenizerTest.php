@@ -136,5 +136,50 @@ class IndexTokenizerTest extends TestCase
         $this->assertEquals('$table->foreign(\'user_id\', \'fk_bank_accounts_user_id\')->references(\'id\')->on(\'users\')->onUpdate(\'cascade\')->onDelete(\'cascade\')', $indexDefinition->render());
     }
 
+    public function test_it_tokenizes_foreign_key_with_update_restrict()
+    {
+        $indexTokenizer = IndexTokenizer::parse('CONSTRAINT `fk_bank_accounts_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON UPDATE NO ACTION');
+        $indexDefinition = $indexTokenizer->definition();
+
+        $this->assertEquals('foreign', $indexDefinition->getIndexType());
+        $this->assertFalse($indexDefinition->isMultiColumnIndex());
+        $this->assertCount(1, $indexDefinition->getIndexColumns());
+        $this->assertEquals('users', $indexDefinition->getForeignReferencedTable());
+        $this->assertEquals(['id'], $indexDefinition->getForeignReferencedColumns());
+        $this->assertEquals(['user_id'], $indexDefinition->getIndexColumns());
+
+        $this->assertEquals('$table->foreign(\'user_id\', \'fk_bank_accounts_user_id\')->references(\'id\')->on(\'users\')->onUpdate(\'restrict\')', $indexDefinition->render());
+    }
+
+    public function test_it_tokenizes_foreign_key_with_update_set_null()
+    {
+        $indexTokenizer = IndexTokenizer::parse('CONSTRAINT `fk_bank_accounts_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON UPDATE SET NULL');
+        $indexDefinition = $indexTokenizer->definition();
+
+        $this->assertEquals('foreign', $indexDefinition->getIndexType());
+        $this->assertFalse($indexDefinition->isMultiColumnIndex());
+        $this->assertCount(1, $indexDefinition->getIndexColumns());
+        $this->assertEquals('users', $indexDefinition->getForeignReferencedTable());
+        $this->assertEquals(['id'], $indexDefinition->getForeignReferencedColumns());
+        $this->assertEquals(['user_id'], $indexDefinition->getIndexColumns());
+
+        $this->assertEquals('$table->foreign(\'user_id\', \'fk_bank_accounts_user_id\')->references(\'id\')->on(\'users\')->onUpdate(\'set NULL\')', $indexDefinition->render());
+    }
+
+    public function test_it_tokenizes_foreign_key_with_update_set_default()
+    {
+        $indexTokenizer = IndexTokenizer::parse('CONSTRAINT `fk_bank_accounts_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON UPDATE SET DEFAULT');
+        $indexDefinition = $indexTokenizer->definition();
+
+        $this->assertEquals('foreign', $indexDefinition->getIndexType());
+        $this->assertFalse($indexDefinition->isMultiColumnIndex());
+        $this->assertCount(1, $indexDefinition->getIndexColumns());
+        $this->assertEquals('users', $indexDefinition->getForeignReferencedTable());
+        $this->assertEquals(['id'], $indexDefinition->getForeignReferencedColumns());
+        $this->assertEquals(['user_id'], $indexDefinition->getIndexColumns());
+
+        $this->assertEquals('$table->foreign(\'user_id\', \'fk_bank_accounts_user_id\')->references(\'id\')->on(\'users\')->onUpdate(\'set DEFAULT\')', $indexDefinition->render());
+    }
+
     //endregion
 }
