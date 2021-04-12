@@ -3,7 +3,7 @@
 namespace LaravelMigrationGenerator;
 
 use Illuminate\Support\ServiceProvider;
-use LaravelMigrationGenerator\Commands\MigrationsGenerationCommand;
+use LaravelMigrationGenerator\Commands\GenerateMigrationsCommand;
 
 class LaravelMigrationGeneratorProvider extends ServiceProvider
 {
@@ -22,7 +22,7 @@ class LaravelMigrationGeneratorProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->app->instance('laravel-migration-generator:time', now());
             $this->commands([
-                MigrationsGenerationCommand::class
+                GenerateMigrationsCommand::class
             ]);
         }
     }

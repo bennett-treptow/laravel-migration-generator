@@ -10,9 +10,9 @@ use LaravelMigrationGenerator\Helpers\ConfigResolver;
 use LaravelMigrationGenerator\GeneratorManagers\MySQLGeneratorManager;
 use LaravelMigrationGenerator\GeneratorManagers\Interfaces\GeneratorManagerInterface;
 
-class MigrationsGenerationCommand extends Command
+class GenerateMigrationsCommand extends Command
 {
-    protected $signature = 'migrate:generate {--path=default : The path where migrations will be output to} {--table=* : Only generate output for specified tables} {--connection=default : Use a different database connection specified in database config} {--empty-path : Clear other files in path, eg if wanting to replace all migrations}';
+    protected $signature = 'generate:migrations {--path=default : The path where migrations will be output to} {--table=* : Only generate output for specified tables} {--connection=default : Use a different database connection specified in database config} {--empty-path : Clear other files in path, eg if wanting to replace all migrations}';
 
     protected $description = 'Generate migrations from an existing database';
 

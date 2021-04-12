@@ -14,22 +14,22 @@ php artisan vendor:publish --provider="LaravelMigrationGenerator\LaravelMigratio
 
 Whenever you have database changes or are ready to squash your database structure down to migrations, run:
 ```bash
-php artisan migrate:generate
+php artisan generate:migrations
 ```
 
 By default, the migrations will be created in `tests/database/migrations`. You can specify a different path with the `--path` option: 
 ```bash
-php artisan migrate:generate --path=database/migrations
+php artisan generate:migrations --path=database/migrations
 ```
 
 You can specify the connection to use as the database with the `--connection` option:
 ```bash
-php artisan migrate:generate --connection=mysql2
+php artisan generate:migrations --connection=mysql2
 ```
 
 You can also clear the directory with the `--empty-path` option:
 ```bash
-php artisan migrate:generate --empty-path
+php artisan generate:migrations --empty-path
 ```
 
 # Configuration
@@ -101,7 +101,7 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
 ```
 
-A `tests/database/migrations/0000_00_00_000000_create_test_users_table.php` with the following Blueprint would be created:
+A `tests/database/migrations/[TIMESTAMP]_create_users_table.php` with the following Blueprint would be created:
 ```php
 <?php
 
