@@ -55,7 +55,7 @@ trait WritesViewsToFile
             return $overridden;
         }
 
-        if (file_exists($overridden = resource_path('subs/vendor/laravel-migration-generator/view.stub'))) {
+        if (file_exists($overridden = resource_path('stubs/vendor/laravel-migration-generator/view.stub'))) {
             return $overridden;
         }
 
