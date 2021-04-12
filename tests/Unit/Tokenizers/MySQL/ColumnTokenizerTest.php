@@ -763,6 +763,7 @@ class ColumnTokenizerTest extends TestCase
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertEquals('$table->point(\'point\')', $columnDefinition->render());
     }
+
     public function test_it_tokenizes_multipoint_column()
     {
         $columnTokenizer = ColumnTokenizer::parse('`point` multipoint NOT NULL');
@@ -773,6 +774,7 @@ class ColumnTokenizerTest extends TestCase
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertEquals('$table->multiPoint(\'point\')', $columnDefinition->render());
     }
+
     //endregion
 
     //region POLYGON, MULTIPOLYGON
@@ -837,6 +839,7 @@ class ColumnTokenizerTest extends TestCase
 
         $this->assertEquals('$table->set(\'set_field\', [\'1\', \'2\', \'3\'])->nullable()', $columnDefinition->render());
     }
+
     //endregion
 
     //region UUID
@@ -853,6 +856,7 @@ class ColumnTokenizerTest extends TestCase
 
         $this->assertEquals('$table->uuid(\'uuid_col\')', $columnDefinition->render());
     }
+
     //endregion
 
     //region DATE, YEAR, TIME
@@ -897,6 +901,7 @@ class ColumnTokenizerTest extends TestCase
 
         $this->assertEquals('$table->time(\'birth_time\')', $columnDefinition->render());
     }
+
     //endregion
 
     //region LINESTRING, MULTILINESTRING
@@ -927,5 +932,6 @@ class ColumnTokenizerTest extends TestCase
 
         $this->assertEquals('$table->multiLineString(\'str\')', $columnDefinition->render());
     }
+
     //endregion
 }

@@ -83,6 +83,19 @@ class MySQLTableGeneratorTest extends TestCase
         $this->assertSchemaHas('$table->morphs(\'user\');', $schema);
     }
 
+    public function test_doesnt_clean_up_morph_looking_columns()
+    {
+        $generator = TableGenerator::init('table', [
+            '`id` int(9) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY',
+            '`user_id` varchar(255) NOT NULL',
+            '`user_type` varchar(255) NOT NULL',
+            '`note` varchar(255) NOT NULL'
+        ]);
+
+        $schema = $generator->getSchema();
+        $this->assertStringNotContainsString('$table->morphs(\'user\');', $schema);
+    }
+
     public function test_cleans_up_uuid_morphs()
     {
         $generator = TableGenerator::init('table', [

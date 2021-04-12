@@ -334,7 +334,7 @@ class ColumnDefinition
         }
 
         if ($this->methodName === 'morphs' && $this->nullable) {
-            return [$this->columnName, 'nullableMorphs', $this->methodParameters];
+            return [$this->columnName, 'nullableMorphs', []];
         }
 
         if ($this->methodName === 'string' && $this->columnName === 'remember_token' && $this->nullable) {

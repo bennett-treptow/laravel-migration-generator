@@ -7,7 +7,7 @@ class ConfigResolver
     protected static function resolver(string $configKey, string $driver)
     {
         return ($override = config('laravel-migration-generator.' . $driver . '.' . $configKey)) !== null ?
-            $override : config('laravel-migration-generator.'.$configKey);
+            $override : config('laravel-migration-generator.' . $configKey);
     }
 
     public static function tableNamingScheme(string $driver)

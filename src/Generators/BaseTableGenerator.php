@@ -2,12 +2,12 @@
 
 namespace LaravelMigrationGenerator\Generators;
 
-use LaravelMigrationGenerator\Generators\Concerns\CleansUpColumnIndices;
-use LaravelMigrationGenerator\Generators\Concerns\CleansUpForeignKeyIndices;
-use LaravelMigrationGenerator\Generators\Concerns\CleansUpMorphColumns;
-use LaravelMigrationGenerator\Generators\Concerns\CleansUpTimestampsColumn;
 use LaravelMigrationGenerator\Helpers\WritableTrait;
 use LaravelMigrationGenerator\Generators\Concerns\WritesTablesToFile;
+use LaravelMigrationGenerator\Generators\Concerns\CleansUpMorphColumns;
+use LaravelMigrationGenerator\Generators\Concerns\CleansUpColumnIndices;
+use LaravelMigrationGenerator\Generators\Concerns\CleansUpTimestampsColumn;
+use LaravelMigrationGenerator\Generators\Concerns\CleansUpForeignKeyIndices;
 use LaravelMigrationGenerator\Generators\Interfaces\TableGeneratorInterface;
 use LaravelMigrationGenerator\Tokenizers\Interfaces\IndexTokenizerInterface;
 use LaravelMigrationGenerator\Tokenizers\Interfaces\ColumnTokenizerInterface;

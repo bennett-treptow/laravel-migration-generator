@@ -4,7 +4,6 @@ namespace LaravelMigrationGenerator\Tokenizers;
 
 use LaravelMigrationGenerator\Definitions\IndexDefinition;
 use LaravelMigrationGenerator\Tokenizers\Interfaces\IndexTokenizerInterface;
-use LaravelMigrationGenerator\Tokenizers\Interfaces\ColumnTokenizerInterface;
 
 abstract class BaseIndexTokenizer extends BaseTokenizer implements IndexTokenizerInterface
 {

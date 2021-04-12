@@ -33,6 +33,15 @@ trait CleansUpMorphColumns
                 /** @var ColumnTokenizerInterface $typeField */
                 $typeField = $fields['type'];
 
+                if (! ($idField->definition()->isUUID() || Str::contains($idField->definition()->getMethodName(), 'integer'))) {
+                    //should only be a uuid field or integer
+                    continue;
+                }
+                if ($typeField->definition()->getMethodName() != 'string') {
+                    //should only be a string field
+                    continue;
+                }
+
                 if ($idField->definition()->isUUID()) {
                     //UUID morph
                     $idField->definition()

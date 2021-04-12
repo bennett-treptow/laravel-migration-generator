@@ -2,7 +2,6 @@
 
 namespace LaravelMigrationGenerator\Tokenizers;
 
-use Illuminate\Support\Str;
 use LaravelMigrationGenerator\Definitions\ColumnDefinition;
 use LaravelMigrationGenerator\Tokenizers\Interfaces\ColumnTokenizerInterface;
 
