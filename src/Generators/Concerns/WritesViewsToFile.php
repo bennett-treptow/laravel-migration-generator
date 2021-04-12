@@ -17,7 +17,7 @@ trait WritesViewsToFile
             'ViewName'           => $this->viewName,
             'Timestamp'          => app('laravel-migration-generator:time')->format('Y_m_d_His'),
             'Timestamp:(.+?)'    => function ($parameter) {
-                if (preg_match('/\[Timestamp:(.+?)\]/i', $parameter, $matches) !== false) {
+                if (preg_match('/\[Timestamp:(.+?)\]/i', $parameter, $matches) !== 0) {
                     $format = $matches[1];
 
                     return ['Timestamp:' . $format, app('laravel-migration-generator:time')->format($format)];
