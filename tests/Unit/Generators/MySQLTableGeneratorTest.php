@@ -121,4 +121,37 @@ class MySQLTableGeneratorTest extends TestCase
         $schema = $generator->getSchema();
         $this->assertSchemaHas('$table->uuidMorphs(\'user\')->nullable();', $schema);
     }
+
+    public function test_doesnt_clean_non_auto_inc_id_to_laravel_method()
+    {
+        $generator = TableGenerator::init('table', [
+            '`id` int(9) unsigned NOT NULL',
+            'PRIMARY KEY `id`'
+        ]);
+
+        $schema = $generator->getSchema();
+        $this->assertSchemaHas('$table->integer(\'id\')->unsigned()->primary();', $schema);
+    }
+
+    public function test_does_clean_auto_inc_int_to_laravel_method()
+    {
+        $generator = TableGenerator::init('table', [
+            '`id` int(9) unsigned NOT NULL AUTO_INCREMENT',
+            'PRIMARY KEY `id`'
+        ]);
+
+        $schema = $generator->getSchema();
+        $this->assertSchemaHas('$table->increments(\'id\');', $schema);
+    }
+
+    public function test_does_clean_auto_inc_big_int_to_laravel_method()
+    {
+        $generator = TableGenerator::init('table', [
+            '`id` bigint(12) unsigned NOT NULL AUTO_INCREMENT',
+            'PRIMARY KEY `id`'
+        ]);
+
+        $schema = $generator->getSchema();
+        $this->assertSchemaHas('$table->id();', $schema);
+    }
 }

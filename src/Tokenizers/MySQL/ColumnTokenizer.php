@@ -35,6 +35,7 @@ class ColumnTokenizer extends BaseColumnTokenizer
         $this->consumeDefaultValue();
         if ($this->isNumberType()) {
             $this->consumeAutoIncrement();
+            $this->consumeKeyConstraints();
         }
 
         return $this;
@@ -81,7 +82,7 @@ class ColumnTokenizer extends BaseColumnTokenizer
     {
         $piece = $this->consume();
         if (strtoupper($piece) === 'AUTO_INCREMENT') {
-            $this->definition->setPrimary(true);
+            $this->definition->setAutoIncrementing(true);
         } else {
             $this->putBack($piece);
         }
@@ -151,6 +152,28 @@ class ColumnTokenizer extends BaseColumnTokenizer
             $this->definition->setUnsigned(true);
         } else {
             $this->putBack($piece);
+        }
+    }
+
+    private function consumeKeyConstraints()
+    {
+        $nextPiece = $this->consume();
+        if (strtoupper($nextPiece) === 'PRIMARY') {
+            $this->definition->setPrimary(true);
+
+            $next = $this->consume();
+            if (strtoupper($next) !== 'KEY') {
+                $this->putBack($next);
+            }
+        } elseif (strtoupper($nextPiece) === 'UNIQUE') {
+            $this->definition->setUnique(true);
+
+            $next = $this->consume();
+            if (strtoupper($next) !== 'KEY') {
+                $this->putBack($next);
+            }
+        } else {
+            $this->putBack($nextPiece);
         }
     }
 
