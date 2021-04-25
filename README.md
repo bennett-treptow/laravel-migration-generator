@@ -44,8 +44,8 @@ Want to customize the migration stubs? Make sure you've published the vendor ass
 | --- | ------------- | -------------- | ----------- |
 | LMG_RUN_AFTER_MIGRATIONS | false | boolean | Whether or not the migration generator should run after migrations have completed. |
 | LMG_CLEAR_OUTPUT_PATH | false | boolean | Whether or not to clear out the output path before creating new files. Same as specifying `--empty-path` on the command |
-| LMG_TABLE_NAMING_SCHEME | [Timestamp]_create_[TableName]_table.php | string | The string to be used to name table migration files |
-| LMG_VIEW_NAMING_SCHEME | [Timestamp]_create_[ViewName]_view.php | string | The string to be used to name view migration files |
+| LMG_TABLE_NAMING_SCHEME | `[Timestamp]_create_[TableName]_table.php` | string | The string to be used to name table migration files |
+| LMG_VIEW_NAMING_SCHEME | `[Timestamp]_create_[ViewName]_view.php` | string | The string to be used to name view migration files |
 | LMG_OUTPUT_PATH | tests/database/migrations | string | The path (relative to the root of your project) to where the files will be output to. Same as specifying `--path=` on the command |
 | LMG_SKIPPABLE_TABLES | migrations | comma delimited string | The tables to be skipped |
 | LMG_PREFER_UNSIGNED_PREFIX | true | boolean | When true, uses `unsigned` variant methods instead of the `->unsigned()` modifier. |
