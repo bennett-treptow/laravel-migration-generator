@@ -39,10 +39,11 @@ Each database driver can have separate configs, as specified in `config/laravel-
 Want to customize the migration stubs? Make sure you've published the vendor assets with the artisan command to publish vendor files above.
 
 ## Definition Output Preferences
-Make sure to publish the config with the vendor:publish command to be able to edit this config.
-Output preferences can be found in `config/laravel-mgiration-generator.php`.
 
-`definitions.prefer_unsigned_prefix` - Set to true to use `unsignedInteger` instead of `integer()->unsigned()`
+| Key | Values | Description |
+| --- | ------ | ----------- |
+| prefer_unsigned_prefix | boolean | Set to true to use the `unsigned` prefix for the applicable fields (integer, smallInteger, etc). Set to false to use the `unsigned()` modifier. |
+
 
 ## Stubs
 There is a default stub for tables and views, found in `resources/stubs/vendor/laravel-migration-generator/`.
@@ -54,30 +55,41 @@ Stubs can be named using the `(table|view)_naming_scheme` in the config. See bel
 ### Table Stubs
 Table stubs have the following tokens available for the naming scheme:
 
-- `[TableName]` - Table's name, same as what is defined in the database
-- `[TableName:Studly]` - Table's name with `Str::studly()` applied to it (useful for standardizing table names if they are inconsistent)
-- `[TableName:Lowercase]` - Table's name with `strtolower` applied to it (useful for standardizing table names if they are inconsistent)
-- `[Timestamp]` - The standard migration timestamp format, at the time of calling the command: `Y_m_d_His` 
-- `[Timestamp:{format}]` - Specify a format for the timestamp, e.g. \[Timestamp:Y_m\]
+| Token | Example | Description |
+| ----- |-------- | ----------- |
+| `[TableName]` | users | Table's name, same as what is defined in the database |
+| `[TableName:Studly]` | Users | Table's name with `Str::studly()` applied to it (useful for standardizing table names if they are inconsistent) |
+| `[TableName:Lowercase]` | users | Table's name with `strtolower` applied to it (useful for standardizing table names if they are inconsistent) |
+| `[Timestamp]` | 2021_04_25_110000 | The standard migration timestamp format, at the time of calling the command: `Y_m_d_His` |
+| `[Timestamp:{format}]` | {Y_m} = 2021_04 |Specify a format for the timestamp, e.g. \[Timestamp:Y_m\] |
 
 Table schema stubs have the following tokens available:
-- `[TableName]` - Table's name, same as what is defined in the database
-- `[TableName:Studly]` - Table's name with `Str::studly()` applied to it, for use with the class name
-- `[Schema]` - The table's generated schema
+
+| Token | Description |
+| ----- | ----------- |
+| `[TableName]` | Table's name, same as what is defined in the database |
+| `[TableName:Studly]` | Table's name with `Str::studly()` applied to it, for use with the class name |
+| `[Schema]` | The table's generated schema |
+
 
 ### View Stubs
 View stubs have the following tokens available for the naming scheme:
 
-- `[ViewName]` - View's name, same as what is defined in the database
-- `[ViewName:Studly]` - View's name with `Str::studly()` applied to it (useful for standardizing view names if they are inconsistent)
-- `[ViewName:Lowercase] - View's name with `strtolower` applied to it (useful for standardizing view names if they are inconsistent)
-- `[Timestamp]` - The standard migration timestamp format, at the time of calling the command: `Y_m_d_His` 
-- `[Timestamp:{format}]` - Specify a format for the timestamp, e.g. \[Timestamp:Y_m\]
+| Token | Example | Description |
+| ----- |-------- | ----------- |
+| `[ViewName]` | user_earnings | View's name, same as what is defined in the database |
+| `[ViewName:Studly]` | UserEarnings | View's name with `Str::studly()` applied to it (useful for standardizing view names if they are inconsistent) |
+| `[ViewName:Lowercase]` | user_earnings | View's name with `strtolower` applied to it (useful for standardizing view names if they are inconsistent) |
+| `[Timestamp]` | 2021_04_25_110000 | The standard migration timestamp format, at the time of calling the command: `Y_m_d_His` |
+| `[Timestamp:{format}]` | {Y_m} = 2021_04 |Specify a format for the timestamp, e.g. \[Timestamp:Y_m\] |
 
 View schema stubs have the following tokens available:
-- `[ViewName]` - View's name, same as what is defined in the database
-- `[ViewName:Studly]` - View's name with `Str::studly()` applied to it, for use with the class name
-- `[Schema]` - The view's schema
+
+| Token | Description |
+| ----- | ----------- |
+| `[ViewName]` | View's name, same as what is defined in the database |
+| `[ViewName:Studly]` | View's name with `Str::studly()` applied to it, for use with the class name |
+| `[Schema]` | The view's schema |
 
 
 # Example Usage
