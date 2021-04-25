@@ -27,7 +27,7 @@ class LaravelMigrationGeneratorProvider extends ServiceProvider
                 GenerateMigrationsCommand::class
             ]);
         }
-        if (config('laravel-migration-generator.run_after_migrations') && config('app.env') == 'testing') {
+        if (config('laravel-migration-generator.run_after_migrations') && config('app.env') === 'local') {
             Event::listen(MigrationsEnded::class, function () {
                 Artisan::call('generate:migrations');
             });

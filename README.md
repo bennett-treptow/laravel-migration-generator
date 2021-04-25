@@ -32,6 +32,8 @@ You can also clear the directory with the `--empty-path` option:
 php artisan generate:migrations --empty-path
 ```
 
+This command can also be run by setting the `LMG_RUN_AFTER_MIGRATIONS` environment variable to `true` and running your migrations as normal. This will latch into the `MigrationsEnded` event and run this command using the default options specified via your environment variables. Note: it will only run when your app environment is set to `local`.
+
 # Configuration
 
 Want to customize the migration stubs? Make sure you've published the vendor assets with the artisan command to publish vendor files above.
