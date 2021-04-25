@@ -7,7 +7,7 @@ abstract class BaseGeneratorManager
     public function createMissingDirectory($basePath)
     {
         if (! is_dir($basePath)) {
-            mkdir($basePath, 077, true);
+            mkdir($basePath, 0777, true);
         }
     }
 }
