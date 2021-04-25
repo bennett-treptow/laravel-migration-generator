@@ -33,7 +33,7 @@ class MySQLTableGeneratorTest extends TestCase
 
         $schema = $generator->getSchema();
         $this->assertSchemaHas('$table->increments(\'id\');', $schema);
-        $this->assertSchemaHas('$table->integer(\'user_id\')->unsigned();', $schema);
+        $this->assertSchemaHas('$table->unsignedInteger(\'user_id\');', $schema);
         $this->assertSchemaHas('$table->string(\'note\');', $schema);
         $this->assertSchemaHas('$table->foreign(\'user_id\', \'fk_user_id\')->references(\'id\')->on(\'users\')->onDelete(\'cascade\')->onUpdate(\'cascade\');', $schema);
     }
@@ -130,7 +130,7 @@ class MySQLTableGeneratorTest extends TestCase
         ]);
 
         $schema = $generator->getSchema();
-        $this->assertSchemaHas('$table->integer(\'id\')->unsigned()->primary();', $schema);
+        $this->assertSchemaHas('$table->unsignedInteger(\'id\')->primary();', $schema);
     }
 
     public function test_does_clean_auto_inc_int_to_laravel_method()

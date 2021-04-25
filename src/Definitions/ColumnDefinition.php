@@ -366,6 +366,20 @@ class ColumnDefinition
             return [$this->columnName, 'uuid', []];
         }
 
+        if (config('laravel-migration-generator.definitions.prefer_unsigned_prefix') && $this->unsigned) {
+            $availableUnsignedPrefixes = [
+                'bigInteger',
+                'decimal',
+                'integer',
+                'mediumInteger',
+                'smallInteger',
+                'tinyInteger'
+            ];
+            if (in_array($this->methodName, $availableUnsignedPrefixes)) {
+                return [$this->columnName, 'unsigned' . ucfirst($this->methodName), $this->methodParameters];
+            }
+        }
+
         return [$this->columnName, $this->methodName, $this->methodParameters];
     }
 
@@ -383,7 +397,7 @@ class ColumnDefinition
             }
         }
         $initialString .= ')';
-        if ($this->unsigned && $this->canBeUnsigned($finalMethodName)) {
+        if ($this->unsigned && $this->canBeUnsigned($finalMethodName) && ! Str::startsWith($finalMethodName, 'unsigned')) {
             $initialString .= '->unsigned()';
         }
         if ($this->nullable && $this->isNullableMethod($finalMethodName)) {
