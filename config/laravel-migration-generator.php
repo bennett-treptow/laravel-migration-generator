@@ -8,6 +8,9 @@ return [
     'skippable_tables'    => [
         'migrations'
     ],
+    'definitions' => [
+        'prefer_unsigned_prefix' => true
+    ],
 
     //now driver specific configs
     //null = use default

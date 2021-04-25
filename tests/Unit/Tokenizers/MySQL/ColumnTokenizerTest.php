@@ -224,7 +224,7 @@ class ColumnTokenizerTest extends TestCase
         $this->assertFalse($columnDefinition->isNullable());
         $this->assertTrue($columnDefinition->isUnsigned());
         $this->assertNull($columnDefinition->getCollation());
-        $this->assertEquals('$table->smallInteger(\'cats\')->unsigned()', $columnDefinition->render());
+        $this->assertEquals('$table->unsignedSmallInteger(\'cats\')', $columnDefinition->render());
     }
 
     public function test_it_tokenizes_a_nullable_big_int_column()
@@ -240,7 +240,7 @@ class ColumnTokenizerTest extends TestCase
         $this->assertTrue($columnDefinition->isUnsigned());
         $this->assertNull($columnDefinition->getCollation());
         $this->assertNull($columnDefinition->getDefaultValue());
-        $this->assertEquals('$table->bigInteger(\'template_id\')->unsigned()->nullable()', $columnDefinition->render());
+        $this->assertEquals('$table->unsignedBigInteger(\'template_id\')->nullable()', $columnDefinition->render());
     }
 
     public function test_it_tokenizes_a_primary_auto_inc_int_column()
@@ -256,7 +256,16 @@ class ColumnTokenizerTest extends TestCase
         $this->assertFalse($columnDefinition->isNullable());
         $this->assertTrue($columnDefinition->isUnsigned());
         $this->assertNull($columnDefinition->getCollation());
-        $this->assertEquals('$table->integer(\'id\')->unsigned()', $columnDefinition->render());
+        $this->assertEquals('$table->unsignedInteger(\'id\')', $columnDefinition->render());
+    }
+
+    public function test_definition_config()
+    {
+        config()->set('laravel-migration-generator.definitions.prefer_unsigned_prefix', false);
+        $columnTokenizer = ColumnTokenizer::parse('`column` int(9) unsigned NOT NULL');
+        $columnDefinition = $columnTokenizer->definition();
+        $this->assertEquals('$table->integer(\'column\')->unsigned()', $columnDefinition->render());
+        config()->set('laravel-migration-generator.definitions.prefer_unsigned_prefix', true);
     }
 
     //endregion
@@ -411,7 +420,7 @@ class ColumnTokenizerTest extends TestCase
         $this->assertFalse($columnDefinition->isNullable());
         $this->assertTrue($columnDefinition->isUnsigned());
         $this->assertNull($columnDefinition->getCollation());
-        $this->assertEquals('$table->decimal(\'amount\', 9, 2)->unsigned()', $columnDefinition->render());
+        $this->assertEquals('$table->unsignedDecimal(\'amount\', 9, 2)', $columnDefinition->render());
     }
 
     public function test_it_tokenizes_a_not_null_decimal_with_default_value_column()
@@ -446,7 +455,7 @@ class ColumnTokenizerTest extends TestCase
         $this->assertFalse($columnDefinition->isNullable());
         $this->assertTrue($columnDefinition->isUnsigned());
         $this->assertNull($columnDefinition->getCollation());
-        $this->assertEquals('$table->decimal(\'amount\', 9, 2)->unsigned()->default(1.00)', $columnDefinition->render());
+        $this->assertEquals('$table->unsignedDecimal(\'amount\', 9, 2)->default(1.00)', $columnDefinition->render());
     }
 
     //endregion
