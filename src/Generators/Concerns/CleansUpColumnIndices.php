@@ -26,13 +26,13 @@ trait CleansUpColumnIndices
                         $isMultiColumnIndex = $index->definition()->isMultiColumnIndex();
 
                         if ($indexType === 'primary' && ! $isMultiColumnIndex) {
-                            $column->definition()->setPrimary(true);
+                            $column->definition()->setPrimary(true)->addIndexDefinition($index->definition());
                             $index->markAsWritable(false);
                         } elseif ($indexType === 'index' && ! $isMultiColumnIndex) {
-                            $column->definition()->setIndex(true);
+                            $column->definition()->setIndex(true)->addIndexDefinition($index->definition());
                             $index->markAsWritable(false);
                         } elseif ($indexType === 'unique' && ! $isMultiColumnIndex) {
-                            $column->definition()->setUnique(true);
+                            $column->definition()->setUnique(true)->addIndexDefinition($index->definition());
                             $index->markAsWritable(false);
                         }
                     }

@@ -37,6 +37,9 @@ class ColumnDefinition
 
     protected bool $isUUID = false;
 
+    /** @var IndexDefinition[] */
+    protected array $indexDefinitions = [];
+
     public function __construct($attributes = [])
     {
         foreach ($attributes as $attribute => $value) {
@@ -248,6 +251,13 @@ class ColumnDefinition
         return $this;
     }
 
+    public function addIndexDefinition(IndexDefinition $definition): ColumnDefinition
+    {
+        $this->indexDefinitions[] = $definition;
+
+        return $this;
+    }
+
     /**
      * @param bool $index
      * @return ColumnDefinition
@@ -417,15 +427,29 @@ class ColumnDefinition
         }
 
         if ($this->index) {
-            $initialString .= '->index()';
+            $indexName = '';
+            if (count($this->indexDefinitions) === 1 && config('laravel-migration-generator.definitions.use_defined_index_names')) {
+                $indexName = ValueToString::make($this->indexDefinitions[0]->getIndexName());
+            }
+            $initialString .= '->index(' . $indexName . ')';
         }
 
         if ($this->primary && ! $this->isPrimaryKeyMethod($finalMethodName)) {
-            $initialString .= '->primary()';
+            $indexName = '';
+            if (count($this->indexDefinitions) === 1 && config('laravel-migration-generator.definitions.use_defined_primary_key_index_names')) {
+                if($this->indexDefinitions[0]->getIndexName() !== null) {
+                    $indexName = ValueToString::make($this->indexDefinitions[0]->getIndexName());
+                }
+            }
+            $initialString .= '->primary(' . $indexName . ')';
         }
 
         if ($this->unique) {
-            $initialString .= '->unique()';
+            $indexName = '';
+            if (count($this->indexDefinitions) === 1 && config('laravel-migration-generator.definitions.use_defined_unique_key_index_names')) {
+                $indexName = ValueToString::make($this->indexDefinitions[0]->getIndexName());
+            }
+            $initialString .= '->unique(' . $indexName . ')';
         }
 
         return $initialString;
