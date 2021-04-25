@@ -1,7 +1,7 @@
-#Version 2.3.0
+#Version 3.0.0
 
 ### Run after migrations
-When `LMG_RUN_AFTER_MIGRATIONS` is set to true, after running any of the `artisan migrate` commands, the `generate:migrations` command will be run using all the default options for the command. It will only run when the app environment is `testing`.
+When `LMG_RUN_AFTER_MIGRATIONS` is set to true, after running any of the `artisan migrate` commands, the `generate:migrations` command will be run using all the default options for the command. It will only run when the app environment is `local`.
 
 ### Environment Variables
 New environment variables to replace config updates:
