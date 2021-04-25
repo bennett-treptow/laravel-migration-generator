@@ -38,6 +38,12 @@ Each database driver can have separate configs, as specified in `config/laravel-
 
 Want to customize the migration stubs? Make sure you've published the vendor assets with the artisan command to publish vendor files above.
 
+## Definition Output Preferences
+Make sure to publish the config with the vendor:publish command to be able to edit this config.
+Output preferences can be found in `config/laravel-mgiration-generator.php`.
+
+`definitions.prefer_unsigned_prefix` - Set to true to use `unsignedInteger` instead of `integer()->unsigned()`
+
 ## Stubs
 There is a default stub for tables and views, found in `resources/stubs/vendor/laravel-migration-generator/`.
 Each database driver can be assigned a specific migration stub by creating a new stub file in `resources/stubs/vendor/laravel-migration-generator/` with a `driver`-prefix, e.g. `mysql-table.stub` for a MySQL specific table stub.
