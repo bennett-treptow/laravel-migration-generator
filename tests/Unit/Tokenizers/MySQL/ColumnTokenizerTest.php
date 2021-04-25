@@ -252,10 +252,11 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('int', $columnTokenizer->getColumnDataType());
         $this->assertEquals('integer', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
+        $this->assertFalse($columnDefinition->isPrimary());
         $this->assertFalse($columnDefinition->isNullable());
         $this->assertTrue($columnDefinition->isUnsigned());
         $this->assertNull($columnDefinition->getCollation());
-        $this->assertEquals('$table->increments(\'id\')', $columnDefinition->render());
+        $this->assertEquals('$table->integer(\'id\')->unsigned()', $columnDefinition->render());
     }
 
     //endregion

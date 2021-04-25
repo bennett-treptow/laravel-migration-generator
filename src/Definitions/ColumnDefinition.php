@@ -25,6 +25,8 @@ class ColumnDefinition
 
     protected ?string $collation = null;
 
+    protected bool $autoIncrementing = false;
+
     protected bool $index = false;
 
     protected bool $primary = false;
@@ -104,6 +106,14 @@ class ColumnDefinition
     public function getCollation(): ?string
     {
         return $this->collation;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAutoIncrementing(): bool
+    {
+        return $this->autoIncrementing;
     }
 
     /**
@@ -228,6 +238,17 @@ class ColumnDefinition
     }
 
     /**
+     * @param bool $autoIncrementing
+     * @return ColumnDefinition
+     */
+    public function setAutoIncrementing(bool $autoIncrementing): ColumnDefinition
+    {
+        $this->autoIncrementing = $autoIncrementing;
+
+        return $this;
+    }
+
+    /**
      * @param bool $index
      * @return ColumnDefinition
      */
@@ -301,7 +322,7 @@ class ColumnDefinition
 
     protected function guessLaravelMethod()
     {
-        if ($this->primary && $this->unsigned) {
+        if ($this->primary && $this->unsigned && $this->autoIncrementing) {
             //some sort of increments field
             if ($this->methodName === 'bigInteger') {
                 if ($this->columnName === 'id') {
