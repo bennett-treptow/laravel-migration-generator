@@ -1,3 +1,16 @@
+#Version 3.1.0
+### Environment Variables
+New environment variables:
+
+| Key | Default Value | Allowed Values | Description |
+| --- | ------------- | -------------- | ----------- |
+| LMG_SKIP_VIEWS | false | boolean | When true, skip all views |
+| LMG_SKIPPABLE_VIEWS | '' | comma delimited string | The views to be skipped |
+| LMG_MYSQL_SKIPPABLE_VIEWS | null | comma delimited string | The views to be skipped when driver is `mysql` |
+| LMG_SQLITE_SKIPPABLE_VIEWS | null | comma delimited string | The views to be skipped when driver is `sqlite` |
+| LMG_PGSQL_SKIPPABLE_VIEWS | null | comma delimited string | The views to be skipped when driver is `pgsql` |
+| LMG_SQLSRV_SKIPPABLE_VIEWS | null | comma delimited string | The views to be skipped when driver is `sqlsrv` |
+
 #Version 3.0.0
 
 ### Run after migrations

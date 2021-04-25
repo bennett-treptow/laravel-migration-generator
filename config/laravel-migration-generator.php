@@ -8,6 +8,8 @@ return [
     'view_naming_scheme'  => env('LMG_VIEW_NAMING_SCHEME', '[Timestamp]_create_[ViewName]_view.php'),
     'path'                => env('LMG_OUTPUT_PATH', 'tests/database/migrations'),
     'skippable_tables'    => env('LMG_SKIPPABLE_TABLES', 'migrations'),
+    'skip_views'          => env('LMG_SKIP_VIEWS', false),
+    'skippable_views'     => env('LMG_SKIPPABLE_VIEWS', ''),
     'definitions'         => [
         'prefer_unsigned_prefix'              => env('LMG_PREFER_UNSIGNED_PREFIX', true),
         'use_defined_index_names'             => env('LMG_USE_DEFINED_INDEX_NAMES', true),
@@ -22,24 +24,28 @@ return [
         'table_naming_scheme' => env('LMG_MYSQL_TABLE_NAMING_SCHEME', null),
         'view_naming_scheme'  => env('LMG_MYSQL_VIEW_NAMING_SCHEME', null),
         'path'                => env('LMG_MYSQL_OUTPUT_PATH', null),
-        'skippable_tables'    => env('LMG_MYSQL_SKIPPABLE_TABLES', null)
+        'skippable_tables'    => env('LMG_MYSQL_SKIPPABLE_TABLES', null),
+        'skippable_views'     => env('LMG_MYSQL_SKIPPABLE_VIEWS', null),
     ],
     'sqlite' => [
         'table_naming_scheme' => env('LMG_SQLITE_TABLE_NAMING_SCHEME', null),
         'view_naming_scheme'  => env('LMG_SQLITE_VIEW_NAMING_SCHEME', null),
         'path'                => env('LMG_SQLITE_OUTPUT_PATH', null),
-        'skippable_tables'    => env('LMG_MYSQL_SKIPPABLE_TABLES', null)
+        'skippable_tables'    => env('LMG_SQLITE_SKIPPABLE_TABLES', null),
+        'skippable_views'     => env('LMG_SQLITE_SKIPPABLE_VIEWS', null),
     ],
     'pgsql' => [
         'table_naming_scheme' => env('LMG_PGSQL_TABLE_NAMING_SCHEME', null),
         'view_naming_scheme'  => env('LMG_PGSQL_VIEW_NAMING_SCHEME', null),
         'path'                => env('LMG_PGSQL_OUTPUT_PATH', null),
-        'skippable_tables'    => env('LMG_PGSQL_SKIPPABLE_TABLES', null)
+        'skippable_tables'    => env('LMG_PGSQL_SKIPPABLE_TABLES', null),
+        'skippable_views'     => env('LMG_PGSQL_SKIPPABLE_VIEWS', null)
     ],
     'sqlsrv' => [
         'table_naming_scheme' => env('LMG_SQLSRV_TABLE_NAMING_SCHEME', null),
         'view_naming_scheme'  => env('LMG_SQLSRV_VIEW_NAMING_SCHEME', null),
         'path'                => env('LMG_SQLSRV_OUTPUT_PATH', null),
-        'skippable_tables'    => env('LMG_SQLSRV_SKIPPABLE_TABLES', null)
+        'skippable_tables'    => env('LMG_SQLSRV_SKIPPABLE_TABLES', null),
+        'skippable_views'     => env('LMG_SQLSRV_SKIPPABLE_VIEWS', null),
     ],
 ];

@@ -48,6 +48,8 @@ Want to customize the migration stubs? Make sure you've published the vendor ass
 | LMG_VIEW_NAMING_SCHEME | `[Timestamp]_create_[ViewName]_view.php` | string | The string to be used to name view migration files |
 | LMG_OUTPUT_PATH | tests/database/migrations | string | The path (relative to the root of your project) to where the files will be output to. Same as specifying `--path=` on the command |
 | LMG_SKIPPABLE_TABLES | migrations | comma delimited string | The tables to be skipped |
+| LMG_SKIP_VIEWS | false | boolean | When true, skip all views |
+| LMG_SKIPPABLE_VIEWS | '' | comma delimited string | The views to be skipped |
 | LMG_PREFER_UNSIGNED_PREFIX | true | boolean | When true, uses `unsigned` variant methods instead of the `->unsigned()` modifier. |
 | LMG_USE_DEFINED_INDEX_NAMES | true | boolean | When true, uses index names defined by the database as the name parameter for index methods |
 | LMG_USE_DEFINED_FOREIGN_KEY_INDEX_NAMES | true | boolean | When true, uses foreign key index names defined by the database as the name parameter for foreign key methods |
@@ -57,18 +59,22 @@ Want to customize the migration stubs? Make sure you've published the vendor ass
 | LMG_MYSQL_VIEW_NAMING_SCHEME | null | ?boolean | When not null, this setting will override LMG_VIEW_NAMING_SCHEME when the database driver is `mysql`. |
 | LMG_MYSQL_OUTPUT_PATH | null | ?boolean | When not null, this setting will override LMG_OUTPUT_PATH when the database driver is `mysql`. |
 | LMG_MYSQL_SKIPPABLE_TABLES | null | ?boolean | When not null, this setting will override LMG_SKIPPABLE_TABLES when the database driver is `mysql`. |
+| LMG_MYSQL_SKIPPABLE_VIEWS | null | comma delimited string | The views to be skipped when driver is `mysql` |
 | LMG_SQLITE_TABLE_NAMING_SCHEME | null | ?boolean | When not null, this setting will override LMG_TABLE_NAMING_SCHEME when the database driver is `sqlite`. |
 | LMG_SQLITE_VIEW_NAMING_SCHEME | null | ?boolean | When not null, this setting will override LMG_VIEW_NAMING_SCHEME when the database driver is `sqlite`. |
 | LMG_SQLITE_OUTPUT_PATH | null | ?boolean | When not null, this setting will override LMG_OUTPUT_PATH when the database driver is `sqlite`. |
 | LMG_SQLITE_SKIPPABLE_TABLES | null | ?boolean | When not null, this setting will override LMG_SKIPPABLE_TABLES when the database driver is `sqlite`. |
+| LMG_SQLITE_SKIPPABLE_VIEWS | null | comma delimited string | The views to be skipped when driver is `sqlite` |
 | LMG_PGSQL_TABLE_NAMING_SCHEME | null | ?boolean | When not null, this setting will override LMG_TABLE_NAMING_SCHEME when the database driver is `pgsql`. |
 | LMG_PGSQL_VIEW_NAMING_SCHEME | null | ?boolean | When not null, this setting will override LMG_VIEW_NAMING_SCHEME when the database driver is `pgsql`. |
 | LMG_PGSQL_OUTPUT_PATH | null | ?boolean | When not null, this setting will override LMG_OUTPUT_PATH when the database driver is `pgsql`. |
 | LMG_PGSQL_SKIPPABLE_TABLES | null | ?boolean | When not null, this setting will override LMG_SKIPPABLE_TABLES when the database driver is `pgsql`. |
+| LMG_PGSQL_SKIPPABLE_VIEWS | null | comma delimited string | The views to be skipped when driver is `pgsql` |
 | LMG_SQLSRV_TABLE_NAMING_SCHEME | null | ?boolean | When not null, this setting will override LMG_TABLE_NAMING_SCHEME when the database driver is `sqlsrc`. |
 | LMG_SQLSRV_VIEW_NAMING_SCHEME | null | ?boolean | When not null, this setting will override LMG_VIEW_NAMING_SCHEME when the database driver is `sqlsrv`. |
 | LMG_SQLSRV_OUTPUT_PATH | null | ?boolean | When not null, this setting will override LMG_OUTPUT_PATH when the database driver is `sqlsrv`. |
 | LMG_SQLSRV_SKIPPABLE_TABLES | null | ?boolean | When not null, this setting will override LMG_SKIPPABLE_TABLES when the database driver is `sqlsrv`. |
+| LMG_SQLSRV_SKIPPABLE_VIEWS | null | comma delimited string | The views to be skipped when driver is `sqlsrv` |
 
 ## Stubs
 There is a default stub for tables and views, found in `resources/stubs/vendor/laravel-migration-generator/`.

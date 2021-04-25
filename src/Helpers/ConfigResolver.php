@@ -29,4 +29,9 @@ class ConfigResolver
     {
         return array_map('trim', explode(',', static::resolver('skippable_tables', $driver)));
     }
+
+    public static function skippableViews(string $driver)
+    {
+        return array_map('trim', explode(',', static::resolver('skippable_views', $driver)));
+    }
 }

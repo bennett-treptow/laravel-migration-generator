@@ -16,6 +16,8 @@ class MySQLGeneratorManager extends BaseGeneratorManager implements GeneratorMan
         $this->createMissingDirectory($basePath);
 
         $skippableTables = ConfigResolver::skippableTables('mysql');
+        $skipViews = config('laravel-migration-generator.skip_views');
+        $skippableViews = ! $skipViews ? ConfigResolver::skippableViews('mysql') : [];
         $outputQueue = [];
 
         if (count($tableNames) > 0) {
@@ -50,6 +52,12 @@ class MySQLGeneratorManager extends BaseGeneratorManager implements GeneratorMan
                     TableGenerator::init($table)->write($basePath);
                     $progressBar->advance();
                 } elseif ($tableType === 'VIEW') {
+                    if ($skipViews || in_array($table, $skippableViews)) {
+                        $outputQueue[] = 'Skipped `' . $table . '` view';
+                        $progressBar->advance();
+
+                        continue;
+                    }
                     ViewGenerator::init($table)->write($basePath);
                     $progressBar->advance();
                 } else {
