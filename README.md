@@ -34,28 +34,48 @@ php artisan generate:migrations --empty-path
 
 # Configuration
 
-Each database driver can have separate configs, as specified in `config/laravel-migration-generator.php`.
-
 Want to customize the migration stubs? Make sure you've published the vendor assets with the artisan command to publish vendor files above.
 
-## Definition Output Preferences
+## Environment Variables
 
-| Key | Values | Description |
-| --- | ------ | ----------- |
-| prefer_unsigned_prefix | boolean | Set to true to use the `unsigned` prefix for the applicable fields (integer, smallInteger, etc). Set to false to use the `unsigned()` modifier. |
-| use_defined_index_names | boolean | Set to true to use the defined index names as second parameter for the `->index()` method. Set to false to default to Laravel's index naming scheme. |
-| use_defined_foreign_key_index_names | boolean | Set to true to use the defined index names for foreign keys as second parameter for the `->foreign()` method. Set to false to default to Laravel's index naming scheme. |
-| use_defined_unique_key_index_names | boolean | Set to true to use the defined index names for unique keys as second parameter for the `->unique()` method. Set to false to default to Laravel's index naming scheme. |
-| use_defined_primary_key_index_names | boolean | Set to true to use the defined index names for primary keys as second parameter for the `->primary()` method. Set to false to default to Laravel's index naming scheme. |
+| Key | Default Value | Allowed Values | Description |
+| --- | ------------- | -------------- | ----------- |
+| LMG_RUN_AFTER_MIGRATIONS | false | boolean | Whether or not the migration generator should run after migrations have completed. |
+| LMG_CLEAR_OUTPUT_PATH | false | boolean | Whether or not to clear out the output path before creating new files. Same as specifying `--empty-path` on the command |
+| LMG_TABLE_NAMING_SCHEME | [Timestamp]_create_[TableName]_table.php | string | The string to be used to name table migration files |
+| LMG_VIEW_NAMING_SCHEME | [Timestamp]_create_[ViewName]_view.php | string | The string to be used to name view migration files |
+| LMG_OUTPUT_PATH | tests/database/migrations | string | The path (relative to the root of your project) to where the files will be output to. Same as specifying `--path=` on the command |
+| LMG_SKIPPABLE_TABLES | migrations | comma delimited string | The tables to be skipped |
+| LMG_PREFER_UNSIGNED_PREFIX | true | boolean | When true, uses `unsigned` variant methods instead of the `->unsigned()` modifier. |
+| LMG_USE_DEFINED_INDEX_NAMES | true | boolean | When true, uses index names defined by the database as the name parameter for index methods |
+| LMG_USE_DEFINED_FOREIGN_KEY_INDEX_NAMES | true | boolean | When true, uses foreign key index names defined by the database as the name parameter for foreign key methods |
+| LMG_USE_DEFINED_UNIQUE_KEY_INDEX_NAMES | true | boolean | When true, uses unique key index names defined by the database as the name parameter for the `unique` methods |
+| LMG_USE_DEFINED_PRIMARY_KEY_INDEX_NAMES | true | boolean | When true, uses primary key index name defined by the database as the name parameter for the `primary` method |
+| LMG_MYSQL_TABLE_NAMING_SCHEME | null | ?boolean | When not null, this setting will override LMG_TABLE_NAMING_SCHEME when the database driver is `mysql`. |
+| LMG_MYSQL_VIEW_NAMING_SCHEME | null | ?boolean | When not null, this setting will override LMG_VIEW_NAMING_SCHEME when the database driver is `mysql`. |
+| LMG_MYSQL_OUTPUT_PATH | null | ?boolean | When not null, this setting will override LMG_OUTPUT_PATH when the database driver is `mysql`. |
+| LMG_MYSQL_SKIPPABLE_TABLES | null | ?boolean | When not null, this setting will override LMG_SKIPPABLE_TABLES when the database driver is `mysql`. |
+| LMG_SQLITE_TABLE_NAMING_SCHEME | null | ?boolean | When not null, this setting will override LMG_TABLE_NAMING_SCHEME when the database driver is `sqlite`. |
+| LMG_SQLITE_VIEW_NAMING_SCHEME | null | ?boolean | When not null, this setting will override LMG_VIEW_NAMING_SCHEME when the database driver is `sqlite`. |
+| LMG_SQLITE_OUTPUT_PATH | null | ?boolean | When not null, this setting will override LMG_OUTPUT_PATH when the database driver is `sqlite`. |
+| LMG_SQLITE_SKIPPABLE_TABLES | null | ?boolean | When not null, this setting will override LMG_SKIPPABLE_TABLES when the database driver is `sqlite`. |
+| LMG_PGSQL_TABLE_NAMING_SCHEME | null | ?boolean | When not null, this setting will override LMG_TABLE_NAMING_SCHEME when the database driver is `pgsql`. |
+| LMG_PGSQL_VIEW_NAMING_SCHEME | null | ?boolean | When not null, this setting will override LMG_VIEW_NAMING_SCHEME when the database driver is `pgsql`. |
+| LMG_PGSQL_OUTPUT_PATH | null | ?boolean | When not null, this setting will override LMG_OUTPUT_PATH when the database driver is `pgsql`. |
+| LMG_PGSQL_SKIPPABLE_TABLES | null | ?boolean | When not null, this setting will override LMG_SKIPPABLE_TABLES when the database driver is `pgsql`. |
+| LMG_SQLSRV_TABLE_NAMING_SCHEME | null | ?boolean | When not null, this setting will override LMG_TABLE_NAMING_SCHEME when the database driver is `sqlsrc`. |
+| LMG_SQLSRV_VIEW_NAMING_SCHEME | null | ?boolean | When not null, this setting will override LMG_VIEW_NAMING_SCHEME when the database driver is `sqlsrv`. |
+| LMG_SQLSRV_OUTPUT_PATH | null | ?boolean | When not null, this setting will override LMG_OUTPUT_PATH when the database driver is `sqlsrv`. |
+| LMG_SQLSRV_SKIPPABLE_TABLES | null | ?boolean | When not null, this setting will override LMG_SKIPPABLE_TABLES when the database driver is `sqlsrv`. |
 
 ## Stubs
 There is a default stub for tables and views, found in `resources/stubs/vendor/laravel-migration-generator/`.
 Each database driver can be assigned a specific migration stub by creating a new stub file in `resources/stubs/vendor/laravel-migration-generator/` with a `driver`-prefix, e.g. `mysql-table.stub` for a MySQL specific table stub.
 
 ## Stub Naming
-Stubs can be named using the `(table|view)_naming_scheme` in the config. See below for available tokens that can be replaced.
+Table and view stubs can be named using the `LMG_(TABLE|VIEW)_NAMING_SCHEME` environment variables. Optionally, driver-specific naming schemes can be used as well by specifying `LMG_{driver}_TABLE_NAMING_SCHEME` environment vars using the same tokens. See below for available tokens that can be replaced.
 
-### Table Stubs
+### Table Name Stub Tokens
 Table stubs have the following tokens available for the naming scheme:
 
 | Token | Example | Description |
@@ -66,6 +86,8 @@ Table stubs have the following tokens available for the naming scheme:
 | `[Timestamp]` | 2021_04_25_110000 | The standard migration timestamp format, at the time of calling the command: `Y_m_d_His` |
 | `[Timestamp:{format}]` | {Y_m} = 2021_04 |Specify a format for the timestamp, e.g. \[Timestamp:Y_m\] |
 
+
+### Table Schema Stub Tokens
 Table schema stubs have the following tokens available:
 
 | Token | Description |
@@ -75,7 +97,7 @@ Table schema stubs have the following tokens available:
 | `[Schema]` | The table's generated schema |
 
 
-### View Stubs
+### View Name Stub Tokens
 View stubs have the following tokens available for the naming scheme:
 
 | Token | Example | Description |
@@ -86,6 +108,7 @@ View stubs have the following tokens available for the naming scheme:
 | `[Timestamp]` | 2021_04_25_110000 | The standard migration timestamp format, at the time of calling the command: `Y_m_d_His` |
 | `[Timestamp:{format}]` | {Y_m} = 2021_04 |Specify a format for the timestamp, e.g. \[Timestamp:Y_m\] |
 
+### View Schema Stub Tokens
 View schema stubs have the following tokens available:
 
 | Token | Description |

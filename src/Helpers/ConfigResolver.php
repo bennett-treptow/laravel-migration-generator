@@ -27,6 +27,6 @@ class ConfigResolver
 
     public static function skippableTables(string $driver)
     {
-        return static::resolver('skippable_tables', $driver);
+        return array_map('trim', explode(',', static::resolver('skippable_tables', $driver)));
     }
 }

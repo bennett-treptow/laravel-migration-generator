@@ -2,7 +2,10 @@
 
 namespace LaravelMigrationGenerator;
 
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Database\Events\MigrationsEnded;
 use LaravelMigrationGenerator\Commands\GenerateMigrationsCommand;
 
 class LaravelMigrationGeneratorProvider extends ServiceProvider
@@ -15,8 +18,7 @@ class LaravelMigrationGeneratorProvider extends ServiceProvider
         );
 
         $this->publishes([
-            __DIR__ . '/../stubs'                                  => resource_path('stubs/vendor/laravel-migration-generator'),
-            __DIR__ . '/../config/laravel-migration-generator.php' => config_path('laravel-migration-generator.php')
+            __DIR__ . '/../stubs' => resource_path('stubs/vendor/laravel-migration-generator')
         ]);
 
         if ($this->app->runningInConsole()) {
@@ -24,6 +26,11 @@ class LaravelMigrationGeneratorProvider extends ServiceProvider
             $this->commands([
                 GenerateMigrationsCommand::class
             ]);
+        }
+        if (config('laravel-migration-generator.run_after_migrations') && config('app.env') == 'testing') {
+            Event::listen(MigrationsEnded::class, function () {
+                Artisan::call('generate:migrations');
+            });
         }
     }
 }

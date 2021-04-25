@@ -63,9 +63,9 @@ class GenerateMigrationsCommand extends Command
             return 1;
         }
 
-        $basePath = $this->getPath($driver);
+        $basePath = base_path($this->getPath($driver));
 
-        if ($this->option('empty-path')) {
+        if ($this->option('empty-path') || config('laravel-migration-generator.clear_output_path')) {
             foreach (glob($basePath . '/*.php') as $file) {
                 unlink($file);
             }
