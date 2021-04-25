@@ -43,7 +43,10 @@ Want to customize the migration stubs? Make sure you've published the vendor ass
 | Key | Values | Description |
 | --- | ------ | ----------- |
 | prefer_unsigned_prefix | boolean | Set to true to use the `unsigned` prefix for the applicable fields (integer, smallInteger, etc). Set to false to use the `unsigned()` modifier. |
-
+| use_defined_index_names | boolean | Set to true to use the defined index names as second parameter for the `->index()` method. Set to false to default to Laravel's index naming scheme. |
+| use_defined_foreign_key_index_names | boolean | Set to true to use the defined index names for foreign keys as second parameter for the `->foreign()` method. Set to false to default to Laravel's index naming scheme. |
+| use_defined_unique_key_index_names | boolean | Set to true to use the defined index names for unique keys as second parameter for the `->unique()` method. Set to false to default to Laravel's index naming scheme. |
+| use_defined_primary_key_index_names | boolean | Set to true to use the defined index names for primary keys as second parameter for the `->primary()` method. Set to false to default to Laravel's index naming scheme. |
 
 ## Stubs
 There is a default stub for tables and views, found in `resources/stubs/vendor/laravel-migration-generator/`.

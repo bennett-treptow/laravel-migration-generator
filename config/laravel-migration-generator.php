@@ -9,7 +9,11 @@ return [
         'migrations'
     ],
     'definitions' => [
-        'prefer_unsigned_prefix' => true
+        'prefer_unsigned_prefix'              => true,
+        'use_defined_index_names'             => true,
+        'use_defined_foreign_key_index_names' => true,
+        'use_defined_unique_key_index_names'  => true,
+        'use_defined_primary_key_index_names' => true
     ],
 
     //now driver specific configs

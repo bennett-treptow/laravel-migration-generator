@@ -156,18 +156,36 @@ class IndexDefinition
     public function render(): string
     {
         if ($this->indexType === 'foreign') {
-            $base = '$table->foreign(' . ValueToString::make($this->indexColumns, true) . ', ' . ValueToString::make($this->indexName) . ')->references(' . ValueToString::make($this->foreignReferencedColumns, true) . ')->on(' . ValueToString::make($this->foreignReferencedTable) . ')';
+            $indexName = '';
+            if (config('laravel-migration-generator.definitions.use_defined_foreign_key_index_names')) {
+                $indexName = ', \'' . $this->getIndexName() . '\'';
+            }
+
+            $base = '$table->foreign(' . ValueToString::make($this->indexColumns, true) . $indexName . ')->references(' . ValueToString::make($this->foreignReferencedColumns, true) . ')->on(' . ValueToString::make($this->foreignReferencedTable) . ')';
             foreach ($this->constraintActions as $type => $action) {
                 $base .= '->on' . ucfirst($type) . '(' . ValueToString::make($action) . ')';
             }
 
             return $base;
         } elseif ($this->indexType === 'primary') {
-            return '$table->primary(' . ValueToString::make($this->indexColumns) . ')';
+            $indexName = '';
+            if (config('laravel-migration-generator.definitions.use_defined_primary_key_index_names') && $this->getIndexName() !== null) {
+                $indexName = ', \'' . $this->getIndexName() . '\'';
+            }
+
+            return '$table->primary(' . ValueToString::make($this->indexColumns) . $indexName . ')';
         } elseif ($this->indexType === 'unique') {
-            return '$table->unique(' . ValueToString::make($this->indexColumns) . ', ' . ValueToString::make($this->indexName) . ')';
+            $indexName = '';
+            if (config('laravel-migration-generator.definitions.use_defined_unique_key_index_names')) {
+                $indexName = ', \'' . $this->getIndexName() . '\'';
+            }
+            return '$table->unique(' . ValueToString::make($this->indexColumns) . $indexName . ')';
         } elseif ($this->indexType === 'index') {
-            return '$table->index(' . ValueToString::make($this->indexColumns) . ', ' . ValueToString::make($this->indexName) . ')';
+            $indexName = '';
+            if (config('laravel-migration-generator.definitions.use_defined_index_names')) {
+                $indexName = ', \'' . $this->getIndexName() . '\'';
+            }
+            return '$table->index(' . ValueToString::make($this->indexColumns) . $indexName . ')';
         }
 
         return '';
