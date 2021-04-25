@@ -19,6 +19,19 @@ class IndexTokenizerTest extends TestCase
         $this->assertEquals('$table->index([\'email\'], \'password_resets_email_index\')', $indexDefinition->render());
     }
 
+    public function test_it_doesnt_use_index_name()
+    {
+        config()->set('laravel-migration-generator.definitions.use_defined_index_names', false);
+        $indexTokenizer = IndexTokenizer::parse('KEY `password_resets_email_index` (`email`)');
+        $indexDefinition = $indexTokenizer->definition();
+
+        $this->assertEquals('index', $indexDefinition->getIndexType());
+        $this->assertFalse($indexDefinition->isMultiColumnIndex());
+
+        $this->assertEquals('$table->index([\'email\'])', $indexDefinition->render());
+        config()->set('laravel-migration-generator.definitions.use_defined_index_names', true);
+    }
+
     //endregion
 
     //region Primary Key
@@ -60,6 +73,19 @@ class IndexTokenizerTest extends TestCase
         $this->assertEquals('$table->unique([\'email\'], \'users_email_unique\')', $indexDefinition->render());
     }
 
+    public function test_it_doesnt_use_unique_key_index_name()
+    {
+        config()->set('laravel-migration-generator.definitions.use_defined_unique_key_index_names', false);
+        $indexTokenizer = IndexTokenizer::parse('UNIQUE KEY `users_email_unique` (`email`)');
+        $indexDefinition = $indexTokenizer->definition();
+
+        $this->assertEquals('unique', $indexDefinition->getIndexType());
+        $this->assertFalse($indexDefinition->isMultiColumnIndex());
+
+        $this->assertEquals('$table->unique([\'email\'])', $indexDefinition->render());
+        config()->set('laravel-migration-generator.definitions.use_defined_unique_key_index_names', true);
+    }
+
     public function test_it_tokenizes_two_column_unique_key()
     {
         $indexTokenizer = IndexTokenizer::parse('UNIQUE KEY `users_email_location_id_unique` (`email`,`location_id`)');
@@ -71,6 +97,21 @@ class IndexTokenizerTest extends TestCase
         $this->assertEqualsCanonicalizing(['email', 'location_id'], $indexDefinition->getIndexColumns());
 
         $this->assertEquals('$table->unique([\'email\', \'location_id\'], \'users_email_location_id_unique\')', $indexDefinition->render());
+    }
+
+    public function test_it_tokenizes_two_column_unique_key_and_doesnt_use_index_name()
+    {
+        config()->set('laravel-migration-generator.definitions.use_defined_unique_key_index_names', false);
+        $indexTokenizer = IndexTokenizer::parse('UNIQUE KEY `users_email_location_id_unique` (`email`,`location_id`)');
+        $indexDefinition = $indexTokenizer->definition();
+
+        $this->assertEquals('unique', $indexDefinition->getIndexType());
+        $this->assertTrue($indexDefinition->isMultiColumnIndex());
+        $this->assertCount(2, $indexDefinition->getIndexColumns());
+        $this->assertEqualsCanonicalizing(['email', 'location_id'], $indexDefinition->getIndexColumns());
+
+        $this->assertEquals('$table->unique([\'email\', \'location_id\'])', $indexDefinition->render());
+        config()->set('laravel-migration-generator.definitions.use_defined_unique_key_index_names', true);
     }
 
     //endregion
@@ -89,6 +130,23 @@ class IndexTokenizerTest extends TestCase
         $this->assertEquals(['user_id'], $indexDefinition->getIndexColumns());
 
         $this->assertEquals('$table->foreign(\'user_id\', \'fk_bank_accounts_user_id\')->references(\'id\')->on(\'users\')', $indexDefinition->render());
+    }
+
+    public function test_it_tokenizes_foreign_key_doesnt_use_index_name()
+    {
+        config()->set('laravel-migration-generator.definitions.use_defined_foreign_key_index_names', false);
+        $indexTokenizer = IndexTokenizer::parse('CONSTRAINT `fk_bank_accounts_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)');
+        $indexDefinition = $indexTokenizer->definition();
+
+        $this->assertEquals('foreign', $indexDefinition->getIndexType());
+        $this->assertFalse($indexDefinition->isMultiColumnIndex());
+        $this->assertCount(1, $indexDefinition->getIndexColumns());
+        $this->assertEquals('users', $indexDefinition->getForeignReferencedTable());
+        $this->assertEquals(['id'], $indexDefinition->getForeignReferencedColumns());
+        $this->assertEquals(['user_id'], $indexDefinition->getIndexColumns());
+
+        $this->assertEquals('$table->foreign(\'user_id\')->references(\'id\')->on(\'users\')', $indexDefinition->render());
+        config()->set('laravel-migration-generator.definitions.use_defined_foreign_key_index_names', true);
     }
 
     public function test_it_tokenizes_foreign_key_with_update()
