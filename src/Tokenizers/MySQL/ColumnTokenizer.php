@@ -241,7 +241,7 @@ class ColumnTokenizer extends BaseColumnTokenizer
 
     protected function isTextType()
     {
-        return Str::contains($this->columnDataType, ['char', 'text', 'set']);
+        return Str::contains($this->columnDataType, ['char', 'text', 'set', 'enum']);
     }
 
     protected function isNumberType()
