@@ -1,5 +1,5 @@
 ---
 layout: default
-title: Laravel Migration Generator Config
+title: Config
 nav_order: 1
 ---

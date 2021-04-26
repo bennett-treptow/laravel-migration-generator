@@ -1,5 +1,5 @@
 ---
 layout: default
-title: Laravel Migration Generator Stubs
+title: Stubs
 nav_order: 2
 ---
