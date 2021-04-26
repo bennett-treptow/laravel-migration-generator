@@ -2,7 +2,7 @@
 
 `skippable_tables` is now a comma delimited string instead of an array so they are compatible with .env files.
 
-All config options have been moved to equivalent .env variables and the config is no longer publishable. Please delete `config/laravel-migration-generator.php`.
+All config options have been moved to equivalent .env variables. Please update `config/laravel-migration-generator.php` with a `vendor:publish --force`.
 The new environment variables are below:
 
 | Key | Default Value | Allowed Values | Description |
