@@ -12,10 +12,29 @@ abstract class BaseTokenizer
 
     private string $value;
 
+    private const SPACE_REPLACER = '&!@';
+
     public function __construct(string $value)
     {
         $this->value = $value;
-        $this->tokens = array_map(fn ($item) => trim($item, ', '), str_getcsv($value, ' ', "'"));
+        $prune = false;
+        if (preg_match("/\(\'(.+?)\s(.+?)\'\)/", $value, $matches)) {
+            //we've got an enum or set that has spaces in the text
+            //so we'll convert to a different character so it doesn't get pruned
+            $toReplace = $matches[0];
+            $value = str_replace($toReplace, str_replace(' ', self::SPACE_REPLACER, $toReplace), $value);
+            $prune = true;
+        }
+        $this->tokens = array_map(function ($item) {
+            return trim($item, ', ');
+        }, str_getcsv($value, ' ', "'"));
+
+
+        if ($prune) {
+            $this->tokens = array_map(function ($item) {
+                return str_replace(self::SPACE_REPLACER, ' ', $item);
+            }, $this->tokens);
+        }
     }
 
     public static function make(string $line)
