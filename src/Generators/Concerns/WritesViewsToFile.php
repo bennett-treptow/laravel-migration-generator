@@ -15,16 +15,7 @@ trait WritesViewsToFile
             'ViewName:Studly'    => Str::studly($this->viewName),
             'ViewName:Lowercase' => strtolower($this->viewName),
             'ViewName'           => $this->viewName,
-            'Timestamp'          => app('laravel-migration-generator:time')->format('Y_m_d_His'),
-            'Timestamp:(.+?)'    => function ($parameter) {
-                if (preg_match('/\[Timestamp:(.+?)\]/i', $parameter, $matches) !== 0) {
-                    $format = $matches[1];
-
-                    return ['Timestamp:' . $format, app('laravel-migration-generator:time')->format($format)];
-                } else {
-                    return [null, null];
-                }
-            }
+            'Timestamp'          => app('laravel-migration-generator:time')->format('Y_m_d_His')
         ];
     }
 
@@ -34,14 +25,9 @@ trait WritesViewsToFile
 
         $baseStubFileName = ConfigResolver::viewNamingScheme($driver);
         foreach ($this->stubNameVariables() as $variable => $replacement) {
-            if (is_callable($replacement)) {
-                //replacement is a closure
-                [$variable, $replacement] = $replacement($baseStubFileName);
+            if (preg_match("/\[" . $variable . "\]/i", $baseStubFileName) === 1) {
+                $baseStubFileName = preg_replace("/\[" . $variable . "\]/i", $replacement, $baseStubFileName);
             }
-            if ($variable === null) {
-                continue;
-            }
-            $baseStubFileName = preg_replace("/\[" . $variable . "\]/i", $replacement, $baseStubFileName);
         }
 
         return $baseStubFileName;
