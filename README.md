@@ -92,7 +92,6 @@ Table stubs have the following tokens available for the naming scheme:
 | `[TableName:Studly]` | Users | Table's name with `Str::studly()` applied to it (useful for standardizing table names if they are inconsistent) |
 | `[TableName:Lowercase]` | users | Table's name with `strtolower` applied to it (useful for standardizing table names if they are inconsistent) |
 | `[Timestamp]` | 2021_04_25_110000 | The standard migration timestamp format, at the time of calling the command: `Y_m_d_His` |
-| `[Timestamp:{format}]` | {Y_m} = 2021_04 |Specify a format for the timestamp, e.g. \[Timestamp:Y_m\] |
 
 
 ### Table Schema Stub Tokens
@@ -114,7 +113,6 @@ View stubs have the following tokens available for the naming scheme:
 | `[ViewName:Studly]` | UserEarnings | View's name with `Str::studly()` applied to it (useful for standardizing view names if they are inconsistent) |
 | `[ViewName:Lowercase]` | user_earnings | View's name with `strtolower` applied to it (useful for standardizing view names if they are inconsistent) |
 | `[Timestamp]` | 2021_04_25_110000 | The standard migration timestamp format, at the time of calling the command: `Y_m_d_His` |
-| `[Timestamp:{format}]` | {Y_m} = 2021_04 |Specify a format for the timestamp, e.g. \[Timestamp:Y_m\] |
 
 ### View Schema Stub Tokens
 View schema stubs have the following tokens available:

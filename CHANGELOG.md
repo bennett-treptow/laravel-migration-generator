@@ -1,3 +1,8 @@
+#Version 3.1.3
+### [Timestamp:format] Removal
+The [Timestamp:format] token for file names has been removed. Migration file names require that [Timestamp] be at the beginning in that specific format. Any other format would cause the migrations to not be loaded.
+
+
 #Version 3.1.0
 ### Environment Variables
 New environment variables:
