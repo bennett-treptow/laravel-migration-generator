@@ -77,7 +77,7 @@ class GenerateMigrationsCommand extends Command
 
         $this->newLine();
 
-        $manager->handle($basePath, $tableNames, $this->getOutput());
+        $manager->handle($basePath, $this->getOutput(), $tableNames);
     }
 
     /**
