@@ -11,7 +11,7 @@ use LaravelMigrationGenerator\GeneratorManagers\Interfaces\GeneratorManagerInter
 
 class MySQLGeneratorManager extends BaseGeneratorManager implements GeneratorManagerInterface
 {
-    public function handle(string $basePath, array $tableNames = [], OutputStyle $output)
+    public function handle(string $basePath, OutputStyle $output, array $tableNames = [])
     {
         $this->createMissingDirectory($basePath);
 
