@@ -6,5 +6,5 @@ use Illuminate\Console\OutputStyle;
 
 interface GeneratorManagerInterface
 {
-    public function handle(string $basePath, array $tableNames = [], OutputStyle $output);
+    public function handle(string $basePath, OutputStyle $output, array $tableNames = []);
 }
