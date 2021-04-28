@@ -1,9 +1,15 @@
-#Version 3.1.3
+# Version 3.1.6
+### New Modifier
+`useCurrentOnUpdate` has been implemented
+### Bugfix
+Issue #27 - `useCurrent` on `timestamps()` method fix
+
+# Version 3.1.3
 ### [Timestamp:format] Removal
 The [Timestamp:format] token for file names has been removed. Migration file names require that [Timestamp] be at the beginning in that specific format. Any other format would cause the migrations to not be loaded.
 
 
-#Version 3.1.0
+# Version 3.1.0
 ### Environment Variables
 New environment variables:
 
@@ -16,7 +22,7 @@ New environment variables:
 | LMG_PGSQL_SKIPPABLE_VIEWS | null | comma delimited string | The views to be skipped when driver is `pgsql` |
 | LMG_SQLSRV_SKIPPABLE_VIEWS | null | comma delimited string | The views to be skipped when driver is `sqlsrv` |
 
-#Version 3.0.0
+# Version 3.0.0
 
 ### Run after migrations
 When `LMG_RUN_AFTER_MIGRATIONS` is set to true, after running any of the `artisan migrate` commands, the `generate:migrations` command will be run using all the default options for the command. It will only run when the app environment is `local`.
