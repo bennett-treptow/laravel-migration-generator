@@ -37,6 +37,7 @@ class ColumnTokenizer extends BaseColumnTokenizer
             $this->consumeAutoIncrement();
             $this->consumeKeyConstraints();
         }
+
         if ($this->columnDataType == 'timestamp') {
             $this->consumeTimestamp();
         }
