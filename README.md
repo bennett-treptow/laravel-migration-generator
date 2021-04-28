@@ -1,4 +1,6 @@
 # Laravel Migration Generator
+![Latest Version on Packagist](https://img.shields.io/packagist/v/bennett-treptow/laravel-migration-generator.svg)
+
 Generate migrations from existing database structures, an alternative to the schema dump provided by Laravel. A primary use case for this package would be a project that has many migrations that alter tables using `->change()` from doctrine/dbal that SQLite doesn't support and need a way to get table structures updated for SQLite to use in tests.
 Another use case would be taking a project with a database and no migrations and turning that database into base migrations.
 
