@@ -37,6 +37,9 @@ class ColumnTokenizer extends BaseColumnTokenizer
             $this->consumeAutoIncrement();
             $this->consumeKeyConstraints();
         }
+        if ($this->columnDataType == 'timestamp') {
+            $this->consumeTimestamp();
+        }
 
         return $this;
     }
@@ -170,6 +173,26 @@ class ColumnTokenizer extends BaseColumnTokenizer
 
             $next = $this->consume();
             if (strtoupper($next) !== 'KEY') {
+                $this->putBack($next);
+            }
+        } else {
+            $this->putBack($nextPiece);
+        }
+    }
+
+    private function consumeTimestamp()
+    {
+        $nextPiece = $this->consume();
+        if (strtoupper($nextPiece) === 'ON') {
+            $next = $this->consume();
+            if (strtoupper($next) === 'UPDATE') {
+                $next = $this->consume();
+                if (strtoupper($next) === 'CURRENT_TIMESTAMP') {
+                    $this->definition->setUseCurrentOnUpdate(true);
+                } else {
+                    $this->putBack($next);
+                }
+            } else {
                 $this->putBack($next);
             }
         } else {
