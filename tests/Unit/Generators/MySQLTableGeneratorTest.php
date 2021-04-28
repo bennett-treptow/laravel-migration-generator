@@ -154,4 +154,15 @@ class MySQLTableGeneratorTest extends TestCase
         $schema = $generator->getSchema();
         $this->assertSchemaHas('$table->id();', $schema);
     }
+
+    public function test_doesnt_clean_timestamps_with_use_current(){
+        $generator = TableGenerator::init('table', [
+            'id int auto_increment primary key',
+            'created_at timestamp default CURRENT_TIMESTAMP not null',
+            'updated_at timestamp null on update CURRENT_TIMESTAMP'
+        ]);
+        $schema = $generator->getSchema();
+        $this->assertSchemaHas('$table->timestamp(\'created_at\')->nullable()->useCurrent()', $schema);
+        $this->assertSchemaHas('$table->timestamp(\'updated_at\')->nullable()->useCurrentOnUpdate()', $schema);
+    }
 }

@@ -22,6 +22,13 @@ trait CleansUpTimestampsColumn
                 $timestampColumns['updated_at'] = $column;
             }
             if (count($timestampColumns) === 2) {
+                foreach ($timestampColumns as $timestampColumn) {
+                    if ($timestampColumn->definition()->useCurrent() || $timestampColumn->definition()->useCurrentOnUpdate()) {
+                        //don't convert to a `timestamps()` method if useCurrent is used
+
+                        return;
+                    }
+                }
                 $timestampColumns['created_at']->definition()
                     ->setColumnName(null)
                     ->setMethodName('timestamps')

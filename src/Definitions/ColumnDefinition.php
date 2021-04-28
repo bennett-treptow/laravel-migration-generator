@@ -35,6 +35,8 @@ class ColumnDefinition
 
     protected bool $useCurrent = false;
 
+    protected bool $useCurrentOnUpdate = false;
+
     protected bool $isUUID = false;
 
     /** @var IndexDefinition[] */
@@ -149,6 +151,14 @@ class ColumnDefinition
     public function useCurrent(): bool
     {
         return $this->useCurrent;
+    }
+
+    /**
+     * @return bool
+     */
+    public function useCurrentOnUpdate(): bool
+    {
+        return $this->useCurrentOnUpdate;
     }
 
     /**
@@ -303,6 +313,17 @@ class ColumnDefinition
     }
 
     /**
+     * @param bool $useCurrentOnUpdate
+     * @return ColumnDefinition
+     */
+    public function setUseCurrentOnUpdate(bool $useCurrentOnUpdate): ColumnDefinition
+    {
+        $this->useCurrentOnUpdate = $useCurrentOnUpdate;
+
+        return $this;
+    }
+
+    /**
      * @param bool $isUUID
      * @return ColumnDefinition
      */
@@ -425,6 +446,9 @@ class ColumnDefinition
         if ($this->useCurrent) {
             $initialString .= '->useCurrent()';
         }
+        if ($this->useCurrentOnUpdate) {
+            $initialString .= '->useCurrentOnUpdate()';
+        }
 
         if ($this->index) {
             $indexName = '';
@@ -437,7 +461,7 @@ class ColumnDefinition
         if ($this->primary && ! $this->isPrimaryKeyMethod($finalMethodName)) {
             $indexName = '';
             if (count($this->indexDefinitions) === 1 && config('laravel-migration-generator.definitions.use_defined_primary_key_index_names')) {
-                if($this->indexDefinitions[0]->getIndexName() !== null) {
+                if ($this->indexDefinitions[0]->getIndexName() !== null) {
                     $indexName = ValueToString::make($this->indexDefinitions[0]->getIndexName());
                 }
             }
