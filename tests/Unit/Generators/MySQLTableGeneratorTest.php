@@ -171,7 +171,7 @@ class MySQLTableGeneratorTest extends TestCase
     {
         $generator = TableGenerator::init('table', [
             'id int auto_increment primary key',
-            'created_at timestamp not null default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
+            'created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
             'updated_at timestamp null on update CURRENT_TIMESTAMP'
         ]);
         $schema = $generator->getSchema();
