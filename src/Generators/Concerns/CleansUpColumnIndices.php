@@ -29,7 +29,17 @@ trait CleansUpColumnIndices
                             $column->definition()->setPrimary(true)->addIndexDefinition($index->definition());
                             $index->markAsWritable(false);
                         } elseif ($indexType === 'index' && ! $isMultiColumnIndex) {
-                            $column->definition()->setIndex(true)->addIndexDefinition($index->definition());
+                            $isForeignKeyIndex = false;
+                            foreach ($this->indices as $innerIndex) {
+                                if ($innerIndex->definition()->getIndexType() === 'foreign' && ! $innerIndex->definition()->isMultiColumnIndex() && $innerIndex->definition()->getIndexColumns()[0] == $column->definition()->getColumnName()) {
+                                    $isForeignKeyIndex = true;
+
+                                    break;
+                                }
+                            }
+                            if ($isForeignKeyIndex === false) {
+                                $column->definition()->setIndex(true)->addIndexDefinition($index->definition());
+                            }
                             $index->markAsWritable(false);
                         } elseif ($indexType === 'unique' && ! $isMultiColumnIndex) {
                             $column->definition()->setUnique(true)->addIndexDefinition($index->definition());
