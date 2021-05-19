@@ -2,6 +2,7 @@
 
 namespace LaravelMigrationGenerator\Generators;
 
+use Illuminate\Support\Collection;
 use LaravelMigrationGenerator\Helpers\WritableTrait;
 use LaravelMigrationGenerator\Generators\Concerns\WritesViewsToFile;
 use LaravelMigrationGenerator\Generators\Interfaces\ViewGeneratorInterface;
@@ -30,6 +31,11 @@ abstract class BaseViewGenerator implements ViewGeneratorInterface
         $obj->parse();
 
         return $obj;
+    }
+
+    public static function sort(Collection $generators): Collection
+    {
+        return $generators;
     }
 
     public function getSchema(): ?string

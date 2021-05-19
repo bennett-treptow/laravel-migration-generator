@@ -35,6 +35,9 @@ class MySQLGeneratorManager extends BaseGeneratorManager implements GeneratorMan
             }
             $progressBar->finish();
         } else {
+            $tableGenerators = collect();
+            $viewGenerators = collect();
+
             $tables = DB::select('SHOW FULL TABLES');
             $progressBar = $output->createProgressBar(count($tables));
             foreach ($tables as $rowNumber => $table) {
@@ -49,7 +52,7 @@ class MySQLGeneratorManager extends BaseGeneratorManager implements GeneratorMan
                         continue;
                     }
 
-                    TableGenerator::init($table)->write($basePath);
+                    $tableGenerators->push(TableGenerator::init($table));
                     $progressBar->advance();
                 } elseif ($tableType === 'VIEW') {
                     if ($skipViews || in_array($table, $skippableViews)) {
@@ -58,7 +61,7 @@ class MySQLGeneratorManager extends BaseGeneratorManager implements GeneratorMan
 
                         continue;
                     }
-                    ViewGenerator::init($table)->write($basePath);
+                    $viewGenerators->push(ViewGenerator::init($table));
                     $progressBar->advance();
                 } else {
                     $outputQueue[] = 'Not sure how to handle a table type of ' . $tableType . ' on row ' . $rowNumber;
@@ -66,6 +69,9 @@ class MySQLGeneratorManager extends BaseGeneratorManager implements GeneratorMan
                 }
             }
             $progressBar->finish();
+
+            TableGenerator::sort($tableGenerators)->each->write($basePath);
+            ViewGenerator::sort($viewGenerators)->each->write($basePath);
         }
         foreach ($outputQueue as $item) {
             $output->info($item);

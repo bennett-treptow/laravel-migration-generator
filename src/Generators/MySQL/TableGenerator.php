@@ -2,8 +2,10 @@
 
 namespace LaravelMigrationGenerator\Generators\MySQL;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use LaravelMigrationGenerator\Definitions\IndexDefinition;
 use LaravelMigrationGenerator\Generators\BaseTableGenerator;
 use LaravelMigrationGenerator\Tokenizers\MySQL\IndexTokenizer;
 use LaravelMigrationGenerator\Tokenizers\MySQL\ColumnTokenizer;
@@ -25,6 +27,45 @@ class TableGenerator extends BaseTableGenerator
     public static function driver(): string
     {
         return 'mysql';
+    }
+
+    public static function sort(Collection $generators): Collection
+    {
+        $keyedGenerators = collect($generators->toArray())
+            ->keyBy(function (TableGenerator $tableGenerator) {
+                return $tableGenerator->tableName;
+            });
+
+        $source = $keyedGenerators
+            ->map(function (TableGenerator $tableGenerator) {
+                return collect($tableGenerator->indices)
+                    ->filter(function (IndexTokenizer $indexTokenizer) {
+                        return $indexTokenizer->definition()->getIndexType() === 'foreign';
+                    })
+                    ->map(function (IndexTokenizer $indexTokenizer) {
+                        return $indexTokenizer->definition()->getForeignReferencedTable();
+                    })
+                    ->toArray();
+            });
+
+        $sortedTables = [];
+        while ($source->count() > count($sortedTables)) {
+            $source
+                ->filter(function (array $dependencies, string $tableName) use ($sortedTables) {
+                    return !in_array($tableName, $sortedTables);
+                })
+                ->each(function (array $dependencies, string $tableName) use (&$sortedTables) {
+                    if (!array_diff($dependencies, $sortedTables)) {
+                        $sortedTables[] = $tableName;
+                    }
+                });
+        }
+
+        $result = collect();
+        foreach ($sortedTables as $tableName) {
+            $result->push($keyedGenerators->get($tableName));
+        }
+        return $result;
     }
 
     public function resolveStructure()

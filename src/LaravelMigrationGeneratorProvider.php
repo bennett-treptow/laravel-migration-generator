@@ -2,11 +2,13 @@
 
 namespace LaravelMigrationGenerator;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Events\MigrationsEnded;
 use LaravelMigrationGenerator\Commands\GenerateMigrationsCommand;
+use LaravelMigrationGenerator\Helpers\Time;
 
 class LaravelMigrationGeneratorProvider extends ServiceProvider
 {
@@ -23,7 +25,7 @@ class LaravelMigrationGeneratorProvider extends ServiceProvider
         ]);
 
         if ($this->app->runningInConsole()) {
-            $this->app->instance('laravel-migration-generator:time', now());
+            $this->app->instance('laravel-migration-generator:time', new Time());
             $this->commands([
                 GenerateMigrationsCommand::class
             ]);

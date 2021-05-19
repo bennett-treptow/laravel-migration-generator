@@ -196,4 +196,46 @@ class MySQLTableGeneratorTest extends TestCase
         $this->assertSchemaHas('$table->foreign(\'import_id\', \'fk_import_id\')->references(\'id\')->on(\'imports\');', $schema);
         $this->assertSchemaHas('$table->foreign(\'import_service_id\', \'fk_import_service_id\')->references(\'id\')->on(\'import_services\');', $schema);
     }
+
+    public function test_dependency_sort()
+    {
+        $testGenerator = TableGenerator::init('test', [
+            '`import_id` bigint(20) unsigned DEFAULT NULL',
+            '`import_service_id` bigint(20) unsigned DEFAULT NULL',
+            'KEY `fk_import_id` (`import_id`)',
+            'KEY `fk_import_service_id` (`import_service_id`)',
+            'CONSTRAINT `fk_import_id` FOREIGN KEY (`import_id`) REFERENCES `imports` (`id`)',
+            'CONSTRAINT `fk_import_service_id` FOREIGN KEY (`import_service_id`) REFERENCES `import_services` (`id`)'
+        ]);
+        $importsGenerator = TableGenerator::init('imports', [
+            '`id` bigint(20) unsigned DEFAULT NULL',
+            '`import_service_id` bigint(20) unsigned DEFAULT NULL',
+            'KEY `fk_import_service_id` (`import_service_id`)',
+            'CONSTRAINT `fk_import_service_id` FOREIGN KEY (`import_service_id`) REFERENCES `import_services` (`id`)'
+        ]);
+        $importServicesGenerator = TableGenerator::init('import_services', [
+            '`id` bigint(20) unsigned DEFAULT NULL',
+        ]);
+
+        $sortedTables = TableGenerator::sort(collect([$testGenerator, $importsGenerator, $importServicesGenerator]))
+            ->map(function (TableGenerator $tableGenerator) {
+                return $tableGenerator->getTableName();
+            })->toArray();
+
+        $this->assertEquals(['import_services', 'imports', 'test'], $sortedTables);
+
+        $sortedTables = TableGenerator::sort(collect([$importServicesGenerator, $testGenerator, $importsGenerator]))
+            ->map(function (TableGenerator $tableGenerator) {
+                return $tableGenerator->getTableName();
+            })->toArray();
+
+        $this->assertEquals(['import_services', 'imports', 'test'], $sortedTables);
+
+        $sortedTables = TableGenerator::sort(collect([$importsGenerator, $importServicesGenerator, $testGenerator]))
+            ->map(function (TableGenerator $tableGenerator) {
+                return $tableGenerator->getTableName();
+            })->toArray();
+
+        $this->assertEquals(['import_services', 'imports', 'test'], $sortedTables);
+    }
 }

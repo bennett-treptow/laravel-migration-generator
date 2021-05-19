@@ -2,6 +2,7 @@
 
 namespace LaravelMigrationGenerator\Generators;
 
+use Illuminate\Support\Collection;
 use LaravelMigrationGenerator\Helpers\WritableTrait;
 use LaravelMigrationGenerator\Generators\Concerns\WritesTablesToFile;
 use LaravelMigrationGenerator\Generators\Concerns\CleansUpMorphColumns;
@@ -51,6 +52,11 @@ abstract class BaseTableGenerator implements TableGeneratorInterface
         return $instance;
     }
 
+    public static function sort(Collection $generators): Collection
+    {
+        return $generators;
+    }
+
     public function shouldResolveStructure(): bool
     {
         return count($this->rows) === 0;
@@ -70,5 +76,10 @@ abstract class BaseTableGenerator implements TableGeneratorInterface
     public function getIndices(): array
     {
         return $this->indices;
+    }
+
+    public function getTableName(): string
+    {
+        return $this->tableName;
     }
 }
