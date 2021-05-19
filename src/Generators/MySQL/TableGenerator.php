@@ -45,26 +45,68 @@ class TableGenerator extends BaseTableGenerator
                     ->map(function (IndexTokenizer $indexTokenizer) {
                         return $indexTokenizer->definition()->getForeignReferencedTable();
                     })
+                    ->filter(function (string $tableName) use ($tableGenerator) {
+                        return $tableName !== $tableGenerator->tableName;
+                    })
+                    ->unique()
+                    ->values()
                     ->toArray();
             });
 
-        $sortedTables = [];
-        while ($source->count() > count($sortedTables)) {
-            $source
-                ->filter(function (array $dependencies, string $tableName) use ($sortedTables) {
-                    return !in_array($tableName, $sortedTables);
+        // Detect and track cross dependencies between tables
+        // TODO - better solution is to remove circularity by pushing
+        //        an FK only table modification into its own migration
+        //        that runs after both tables exist
+        $circularities = $source->reduce(function (Collection $carry, array $sourceDependencies, string $sourceTableName) use ($source) {
+            $circularities = collect($sourceDependencies)
+                ->filter(function ($dependencyTableName) use ($sourceTableName, $source) {
+                    return in_array($sourceTableName, $source->get($dependencyTableName));
                 })
-                ->each(function (array $dependencies, string $tableName) use (&$sortedTables) {
-                    if (!array_diff($dependencies, $sortedTables)) {
+                ->values()
+                ->toArray();
+
+            if ($circularities) {
+                $carry->put($sourceTableName, $circularities);
+            }
+
+            return $carry;
+        }, collect());
+
+        // TODO - config setting to allow automatic resolution?
+
+        // Reduce to table names only
+        $circularities = $circularities->keys();
+
+        $sortedTables = [];
+        while ($source->isNotEmpty()) {
+            $sortedCount = count($sortedTables);
+
+            $source
+                ->each(function (array $dependencies, string $tableName) use (&$sortedTables, $circularities) {
+                    if (!$dependencies || !array_diff($dependencies, $sortedTables)) {
                         $sortedTables[] = $tableName;
                     }
                 });
+
+            // Check if stuck in circularity
+            if (count($sortedTables) === $sortedCount) {
+                if ($circularities->isNotEmpty()) {
+                    $sortedTables[] = $circularities->pop();
+                } else {
+                    throw new \LogicException('Cannot resolve table sort.');
+                }
+            }
+
+            $source = $source->filter(function (array $dependencies, string $tableName) use ($sortedTables) {
+                return !in_array($tableName, $sortedTables);
+            });
         }
 
         $result = collect();
         foreach ($sortedTables as $tableName) {
             $result->push($keyedGenerators->get($tableName));
         }
+
         return $result;
     }
 
