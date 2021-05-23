@@ -2,36 +2,37 @@
 
 namespace LaravelMigrationGenerator\Generators;
 
-use LaravelMigrationGenerator\Helpers\WritableTrait;
-use LaravelMigrationGenerator\Generators\Concerns\WritesTablesToFile;
+use LaravelMigrationGenerator\Definitions\TableDefinition;
 use LaravelMigrationGenerator\Generators\Concerns\CleansUpMorphColumns;
 use LaravelMigrationGenerator\Generators\Concerns\CleansUpColumnIndices;
 use LaravelMigrationGenerator\Generators\Concerns\CleansUpTimestampsColumn;
 use LaravelMigrationGenerator\Generators\Concerns\CleansUpForeignKeyIndices;
 use LaravelMigrationGenerator\Generators\Interfaces\TableGeneratorInterface;
-use LaravelMigrationGenerator\Tokenizers\Interfaces\IndexTokenizerInterface;
-use LaravelMigrationGenerator\Tokenizers\Interfaces\ColumnTokenizerInterface;
 
 abstract class BaseTableGenerator implements TableGeneratorInterface
 {
-    use WritableTrait;
-    use WritesTablesToFile;
     use CleansUpForeignKeyIndices;
     use CleansUpMorphColumns;
     use CleansUpTimestampsColumn;
     use CleansUpColumnIndices;
 
-    protected string $tableName;
-
     protected array $rows = [];
 
-    /** @var ColumnTokenizerInterface[] */
-    protected array $columns = [];
+    protected TableDefinition $definition;
 
-    /** @var IndexTokenizerInterface[] */
-    protected array $indices = [];
+    public function __construct(string $tableName, array $rows = [])
+    {
+        $this->definition = new TableDefinition([
+            'driver'    => static::driver(),
+            'tableName' => $tableName
+        ]);
+        $this->rows = $rows;
+    }
 
-    abstract public function getSchema($tab = ''): string;
+    public function definition(): TableDefinition
+    {
+        return $this->definition;
+    }
 
     abstract public function resolveStructure();
 
@@ -65,10 +66,5 @@ abstract class BaseTableGenerator implements TableGeneratorInterface
         $this->cleanUpTimestampsColumn();
 
         $this->cleanUpColumnsWithIndices();
-    }
-
-    public function getIndices(): array
-    {
-        return $this->indices;
     }
 }

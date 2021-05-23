@@ -3,9 +3,12 @@
 namespace LaravelMigrationGenerator\Definitions;
 
 use LaravelMigrationGenerator\Helpers\ValueToString;
+use LaravelMigrationGenerator\Helpers\WritableTrait;
 
 class IndexDefinition
 {
+    use WritableTrait;
+
     protected string $indexType;
 
     protected ?string $indexName = null; //primary keys usually don't have a name
@@ -179,12 +182,14 @@ class IndexDefinition
             if (config('laravel-migration-generator.definitions.use_defined_unique_key_index_names')) {
                 $indexName = ', \'' . $this->getIndexName() . '\'';
             }
+
             return '$table->unique(' . ValueToString::make($this->indexColumns) . $indexName . ')';
         } elseif ($this->indexType === 'index') {
             $indexName = '';
             if (config('laravel-migration-generator.definitions.use_defined_index_names')) {
                 $indexName = ', \'' . $this->getIndexName() . '\'';
             }
+
             return '$table->index(' . ValueToString::make($this->indexColumns) . $indexName . ')';
         }
 

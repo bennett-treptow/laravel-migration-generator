@@ -48,12 +48,12 @@ trait WritesViewsToFile
         return __DIR__ . '/../../../stubs/view.stub';
     }
 
-    protected function generateStub(string $stubPath, $tabCharacter = '    ')
+    protected function generateStub($tabCharacter = '    ')
     {
         $tab = str_repeat($tabCharacter, 3);
 
         $schema = $this->getSchema();
-        $stub = file_get_contents($stubPath);
+        $stub = file_get_contents($this->getStubPath());
         $stub = str_replace('[ViewName:Studly]', Str::studly($this->viewName), $stub);
         $stub = str_replace('[ViewName]', $this->viewName, $stub);
         $stub = str_replace('[Schema]', $tab . $schema, $stub);

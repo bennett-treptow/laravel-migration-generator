@@ -11,6 +11,11 @@ use LaravelMigrationGenerator\GeneratorManagers\Interfaces\GeneratorManagerInter
 
 class MySQLGeneratorManager extends BaseGeneratorManager implements GeneratorManagerInterface
 {
+    public static function driver(): string
+    {
+        return 'mysql';
+    }
+
     public function handle(string $basePath, OutputStyle $output, array $tableNames = [])
     {
         $this->createMissingDirectory($basePath);
@@ -19,6 +24,9 @@ class MySQLGeneratorManager extends BaseGeneratorManager implements GeneratorMan
         $skipViews = config('laravel-migration-generator.skip_views');
         $skippableViews = ! $skipViews ? ConfigResolver::skippableViews('mysql') : [];
         $outputQueue = [];
+
+        $tableDefinitions = [];
+        $views = [];
 
         if (count($tableNames) > 0) {
             $progressBar = $output->createProgressBar(count($tableNames));
@@ -30,7 +38,7 @@ class MySQLGeneratorManager extends BaseGeneratorManager implements GeneratorMan
                     continue;
                 }
 
-                TableGenerator::init($tableName)->write($basePath);
+                $tableDefinitions[] = TableGenerator::init($tableName)->definition();
                 $progressBar->advance();
             }
             $progressBar->finish();
@@ -49,7 +57,7 @@ class MySQLGeneratorManager extends BaseGeneratorManager implements GeneratorMan
                         continue;
                     }
 
-                    TableGenerator::init($table)->write($basePath);
+                    $tableDefinitions[] = TableGenerator::init($table)->definition();
                     $progressBar->advance();
                 } elseif ($tableType === 'VIEW') {
                     if ($skipViews || in_array($table, $skippableViews)) {
@@ -58,7 +66,7 @@ class MySQLGeneratorManager extends BaseGeneratorManager implements GeneratorMan
 
                         continue;
                     }
-                    ViewGenerator::init($table)->write($basePath);
+                    $views[] = ViewGenerator::init($table);
                     $progressBar->advance();
                 } else {
                     $outputQueue[] = 'Not sure how to handle a table type of ' . $tableType . ' on row ' . $rowNumber;
@@ -69,6 +77,14 @@ class MySQLGeneratorManager extends BaseGeneratorManager implements GeneratorMan
         }
         foreach ($outputQueue as $item) {
             $output->info($item);
+        }
+
+        $sorted = $this->sortTables($tableDefinitions);
+
+        $this->writeTableMigrations($sorted, $basePath);
+
+        foreach ($views as $view) {
+            $view->write($basePath);
         }
     }
 }

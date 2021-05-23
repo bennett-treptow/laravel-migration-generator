@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class Create[TableName:Studly]Table extends Migration
+class Create[TableNames:Studly]Tables extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,9 @@ class Create[TableName:Studly]Table extends Migration
      */
     public function up()
     {
-[TableUp]
+        \DB::transaction(function(){
+[TablesUp]
+        });
     }
 
     /**
@@ -23,6 +25,8 @@ class Create[TableName:Studly]Table extends Migration
      */
     public function down()
     {
-[TableDown]
+        \DB::transaction(function(){
+[TablesDown]
+        });
     }
 }

@@ -15,6 +15,11 @@ class ConfigResolver
         return static::resolver('table_naming_scheme', $driver);
     }
 
+    public static function dependentTableNamingScheme(string $driver)
+    {
+        return static::resolver('dependent_table_naming_scheme', $driver);
+    }
+
     public static function viewNamingScheme(string $driver)
     {
         return static::resolver('view_naming_scheme', $driver);
