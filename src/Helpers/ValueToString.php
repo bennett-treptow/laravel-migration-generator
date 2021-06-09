@@ -25,16 +25,17 @@ class ValueToString
         return $value;
     }
 
-    public static function make($value, $singleOutArray = false)
+    public static function make($value, $singleOutArray = false, $singleQuote = true)
     {
+        $quote = $singleQuote ? '\'' : '"';
         if ($value === null) {
             return 'null';
         } elseif (is_array($value)) {
             if ($singleOutArray && count($value) === 1) {
-                return '\'' . $value[0] . '\'';
+                return $quote . $value[0] . $quote;
             }
 
-            return '[' . collect($value)->map(fn ($item) => "'$item'")->implode(', ') . ']';
+            return '[' . collect($value)->map(fn ($item) => $quote . $item . $quote)->implode(', ') . ']';
         } elseif (is_integer($value) || is_float($value)) {
             return $value;
         }
@@ -43,10 +44,10 @@ class ValueToString
             return static::parseCastedValue($value);
         }
 
-        if (Str::startsWith($value, '\'') && Str::endsWith($value, '\'')) {
+        if (Str::startsWith($value, $quote) && Str::endsWith($value, $quote)) {
             return $value;
         }
 
-        return '\'' . $value . '\'';
+        return $quote . $value . $quote;
     }
 }
