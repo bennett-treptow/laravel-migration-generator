@@ -966,6 +966,18 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('$table->decimal(\'total\', 24, 6)->storedAs(\'(`quantity` * `unit_price`)\')', $columnDefinition->render());
     }
 
+    public function test_it_tokenizes_generated_as_column_example(){
+        $columnTokenizer = ColumnTokenizer::parse('`full_name` varchar(150) COLLATE utf8mb4_unicode_ci GENERATED ALWAYS AS (concat(`first_name`,\' \',`last_name`)) STORED');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('varchar', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('string', $columnDefinition->getMethodName());
+        $this->assertFalse($columnDefinition->isNullable());
+        $this->assertEquals('(concat(`first_name`,\' \',`last_name`))', $columnDefinition->getStoredAs());
+
+        $this->assertEquals('$table->string(\'full_name\', 150)->storedAs(\'(concat(`first_name`,\' \',`last_name`))\')', $columnDefinition->render());
+    }
+
     public function test_it_tokenizes_virtual_as_column()
     {
         $columnTokenizer = ColumnTokenizer::parse('`total` decimal(24,6) AS ((`quantity` * `unit_price`))');

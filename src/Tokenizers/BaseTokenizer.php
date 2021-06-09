@@ -18,17 +18,19 @@ abstract class BaseTokenizer
     {
         $this->value = $value;
         $prune = false;
-        if (preg_match("/\(\'(.+?)\s(.+?)\'\)/", $value, $matches)) {
-            //we've got an enum or set that has spaces in the text
-            //so we'll convert to a different character so it doesn't get pruned
-            $toReplace = $matches[0];
-            $value = str_replace($toReplace, str_replace(' ', self::SPACE_REPLACER, $toReplace), $value);
-            $prune = true;
+        //\(?\'(.+?)?\s(.+?)?\'\)?
+        if (preg_match_all("/'([A-Za-z ]+)'(?=[^A-Za-z])/", $value, $matches)) {
+            foreach ($matches[0] as $quoteWithSpace) {
+                //we've got an enum or set that has spaces in the text
+                //so we'll convert to a different character so it doesn't get pruned
+                $toReplace = $quoteWithSpace;
+                $value = str_replace($toReplace, str_replace(' ', self::SPACE_REPLACER, $toReplace), $value);
+                $prune = true;
+            }
         }
         $this->tokens = array_map(function ($item) {
             return trim($item, ', ');
         }, str_getcsv($value, ' ', "'"));
-
 
         if ($prune) {
             $this->tokens = array_map(function ($item) {
