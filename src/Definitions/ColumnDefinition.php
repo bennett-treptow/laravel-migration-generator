@@ -37,6 +37,10 @@ class ColumnDefinition
 
     protected bool $useCurrentOnUpdate = false;
 
+    protected ?string $storedAs = null;
+
+    protected ?string $virtualAs = null;
+
     protected bool $isUUID = false;
 
     /** @var IndexDefinition[] */
@@ -161,6 +165,16 @@ class ColumnDefinition
         return $this->useCurrentOnUpdate;
     }
 
+    public function getStoredAs(): ?string
+    {
+        return $this->storedAs;
+    }
+
+    public function getVirtualAs(): ?string
+    {
+        return $this->virtualAs;
+    }
+
     /**
      * @return bool
      */
@@ -257,6 +271,20 @@ class ColumnDefinition
     public function setAutoIncrementing(bool $autoIncrementing): ColumnDefinition
     {
         $this->autoIncrementing = $autoIncrementing;
+
+        return $this;
+    }
+
+    public function setStoredAs(?string $storedAs): ColumnDefinition
+    {
+        $this->storedAs = $storedAs;
+
+        return $this;
+    }
+
+    public function setVirtualAs(?string $virtualAs): ColumnDefinition
+    {
+        $this->virtualAs = $virtualAs;
 
         return $this;
     }
@@ -474,6 +502,14 @@ class ColumnDefinition
                 $indexName = ValueToString::make($this->indexDefinitions[0]->getIndexName());
             }
             $initialString .= '->unique(' . $indexName . ')';
+        }
+
+        if ($this->storedAs !== null) {
+            $initialString .= '->storedAs(' . ValueToString::make($this->storedAs) . ')';
+        }
+
+        if ($this->virtualAs !== null) {
+            $initialString .= '->virtualAs(' . ValueToString::make($this->virtualAs) . ')';
         }
 
         return $initialString;

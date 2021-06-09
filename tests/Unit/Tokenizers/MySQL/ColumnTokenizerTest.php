@@ -760,12 +760,14 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('$table->enum(\'status_flag\', [\'1\', \'2\', \'3\', \'4\'])->default(\'1\')', $columnDefinition->render());
     }
 
-    public function test_it_tokenizes_enum_with_spaces(){
+    public function test_it_tokenizes_enum_with_spaces()
+    {
         $columnTokenizer = ColumnTokenizer::parse('`calculate` enum(\'one\',\'and\',\'highest or\',\'lowest or\',\'sum\',\'highest position or\',\'lowest position or\') COLLATE utf8mb4_general_ci NOT NULL COMMENT \'set the way we calculate a feature value. with high or low or the sort is by position\'');
         $definition = $columnTokenizer->definition();
 
         $this->assertEquals('$table->enum(\'calculate\', [\'one\', \'and\', \'highest or\', \'lowest or\', \'sum\', \'highest position or\', \'lowest position or\'])', $definition->render());
     }
+
     //endregion
 
     //region POINT, MULTIPOINT
@@ -950,4 +952,30 @@ class ColumnTokenizerTest extends TestCase
     }
 
     //endregion
+
+    public function test_it_tokenizes_generated_as_column()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`total` decimal(24,6) GENERATED ALWAYS AS ((`quantity` * `unit_price`)) STORED');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('decimal', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('decimal', $columnDefinition->getMethodName());
+        $this->assertFalse($columnDefinition->isNullable());
+        $this->assertEquals('(`quantity` * `unit_price`)', $columnDefinition->getStoredAs());
+
+        $this->assertEquals('$table->decimal(\'total\', 24, 6)->storedAs(\'(`quantity` * `unit_price`)\')', $columnDefinition->render());
+    }
+
+    public function test_it_tokenizes_virtual_as_column()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`total` decimal(24,6) AS ((`quantity` * `unit_price`))');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('decimal', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('decimal', $columnDefinition->getMethodName());
+        $this->assertFalse($columnDefinition->isNullable());
+        $this->assertEquals('(`quantity` * `unit_price`)', $columnDefinition->getVirtualAs());
+
+        $this->assertEquals('$table->decimal(\'total\', 24, 6)->virtualAs(\'(`quantity` * `unit_price`)\')', $columnDefinition->render());
+    }
 }
