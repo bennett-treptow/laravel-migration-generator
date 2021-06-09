@@ -963,7 +963,7 @@ class ColumnTokenizerTest extends TestCase
         $this->assertFalse($columnDefinition->isNullable());
         $this->assertEquals('(`quantity` * `unit_price`)', $columnDefinition->getStoredAs());
 
-        $this->assertEquals('$table->decimal(\'total\', 24, 6)->storedAs(\'(`quantity` * `unit_price`)\')', $columnDefinition->render());
+        $this->assertEquals('$table->decimal(\'total\', 24, 6)->storedAs("(`quantity` * `unit_price`)")', $columnDefinition->render());
     }
 
     public function test_it_tokenizes_generated_as_column_example(){
@@ -975,7 +975,7 @@ class ColumnTokenizerTest extends TestCase
         $this->assertFalse($columnDefinition->isNullable());
         $this->assertEquals('(concat(`first_name`,\' \',`last_name`))', $columnDefinition->getStoredAs());
 
-        $this->assertEquals('$table->string(\'full_name\', 150)->storedAs(\'(concat(`first_name`,\' \',`last_name`))\')', $columnDefinition->render());
+        $this->assertEquals('$table->string(\'full_name\', 150)->storedAs("(concat(`first_name`,\' \',`last_name`))")', $columnDefinition->render());
     }
 
     public function test_it_tokenizes_virtual_as_column()
@@ -988,6 +988,6 @@ class ColumnTokenizerTest extends TestCase
         $this->assertFalse($columnDefinition->isNullable());
         $this->assertEquals('(`quantity` * `unit_price`)', $columnDefinition->getVirtualAs());
 
-        $this->assertEquals('$table->decimal(\'total\', 24, 6)->virtualAs(\'(`quantity` * `unit_price`)\')', $columnDefinition->render());
+        $this->assertEquals('$table->decimal(\'total\', 24, 6)->virtualAs("(`quantity` * `unit_price`)")', $columnDefinition->render());
     }
 }

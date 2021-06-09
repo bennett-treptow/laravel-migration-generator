@@ -505,11 +505,11 @@ class ColumnDefinition
         }
 
         if ($this->storedAs !== null) {
-            $initialString .= '->storedAs(' . ValueToString::make($this->storedAs) . ')';
+            $initialString .= '->storedAs(' . ValueToString::make(str_replace('"', '\"', $this->storedAs), false, false) . ')';
         }
 
         if ($this->virtualAs !== null) {
-            $initialString .= '->virtualAs(' . ValueToString::make($this->virtualAs) . ')';
+            $initialString .= '->virtualAs(' . ValueToString::make(str_replace('"', '\"', $this->virtualAs), false, false) . ')';
         }
 
         return $initialString;
