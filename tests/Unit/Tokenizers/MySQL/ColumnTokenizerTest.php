@@ -768,6 +768,14 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('$table->enum(\'calculate\', [\'one\', \'and\', \'highest or\', \'lowest or\', \'sum\', \'highest position or\', \'lowest position or\'])', $definition->render());
     }
 
+    public function test_it_tokenizes_enum_with_special_characters()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`calculate` enum(\'one\',\'and\',\'highest-or\',\'lowest^or\',\'sum%\',\'highest $ position or\',\'lowest+_<>?/ position or\',\'"quoted"\') COLLATE utf8mb4_general_ci NOT NULL COMMENT \'set the way we calculate a feature value. with high or low or the sort is by position\'');
+        $definition = $columnTokenizer->definition();
+
+        $this->assertEquals('$table->enum(\'calculate\', [\'one\', \'and\', \'highest-or\', \'lowest^or\', \'sum%\', \'highest $ position or\', \'lowest+_<>?/ position or\', \'"quoted"\'])', $definition->render());
+    }
+
     //endregion
 
     //region POINT, MULTIPOINT
