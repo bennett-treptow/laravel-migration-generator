@@ -12,6 +12,18 @@ composer require --dev bennett-treptow/laravel-migration-generator
 ```bash
 php artisan vendor:publish --provider="LaravelMigrationGenerator\LaravelMigrationGeneratorProvider"
 ```
+# Lumen Installation  
+```bash  
+composer require --dev bennett-treptow/laravel-migration-generator
+```  
+  
+Copy config file from `vendor/bennett-treptow/laravel-migration-generator/config` to your Lumen config folder  
+  
+Register service provider in bootstrap/app.php  
+```php  
+$app->register(\LaravelMigrationGenerator\LaravelMigrationGeneratorProvider::class);  
+```
+
 # Usage
 
 Whenever you have database changes or are ready to squash your database structure down to migrations, run:
