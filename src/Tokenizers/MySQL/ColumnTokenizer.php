@@ -38,6 +38,8 @@ class ColumnTokenizer extends BaseColumnTokenizer
             $this->consumeKeyConstraints();
         }
 
+        $this->consumeComment();
+
         $this->consumeGenerated();
 
         if ($this->columnDataType == 'timestamp') {
@@ -139,6 +141,17 @@ class ColumnTokenizer extends BaseColumnTokenizer
                     $this->definition->setDefaultValue((string) $this->definition->getDefaultValue());
                 }
             }
+        } else {
+            $this->putBack($piece);
+        }
+    }
+
+    protected function consumeComment()
+    {
+        $piece = $this->consume();
+        if (strtoupper($piece) === 'COMMENT') {
+            // next piece is the comment content
+            $this->definition->setComment($this->consume());
         } else {
             $this->putBack($piece);
         }

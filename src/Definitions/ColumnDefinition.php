@@ -23,6 +23,8 @@ class ColumnDefinition
 
     protected $defaultValue;
 
+    protected ?string $comment = null;
+
     protected ?string $collation = null;
 
     protected bool $autoIncrementing = false;
@@ -107,6 +109,14 @@ class ColumnDefinition
         }
 
         return $this->defaultValue;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getComment(): ?string
+    {
+        return $this->comment;
     }
 
     /**
@@ -249,6 +259,17 @@ class ColumnDefinition
     public function setDefaultValue($defaultValue)
     {
         $this->defaultValue = $defaultValue;
+
+        return $this;
+    }
+
+    /**
+     * @param string|null $comment
+     * @return ColumnDefinition
+     */
+    public function setComment(?string $comment): ColumnDefinition
+    {
+        $this->comment = $comment;
 
         return $this;
     }
@@ -510,6 +531,10 @@ class ColumnDefinition
 
         if ($this->virtualAs !== null) {
             $initialString .= '->virtualAs(' . ValueToString::make(str_replace('"', '\"', $this->virtualAs), false, false) . ')';
+        }
+
+        if ($this->comment !== null) {
+            $initialString .= '->comment(' . ValueToString::make($this->comment) . ')';
         }
 
         return $initialString;
