@@ -533,7 +533,7 @@ class ColumnDefinition
             $initialString .= '->virtualAs(' . ValueToString::make(str_replace('"', '\"', $this->virtualAs), false, false) . ')';
         }
 
-        if ($this->comment !== null) {
+        if ($this->comment !== null && config('laravel-migration-generator.definitions.with_comments')) {
             $initialString .= '->comment(' . ValueToString::make($this->comment) . ')';
         }
 
