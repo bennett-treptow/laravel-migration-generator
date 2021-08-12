@@ -990,7 +990,8 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('$table->decimal(\'total\', 24, 6)->storedAs("(`quantity` * `unit_price`)")', $columnDefinition->render());
     }
 
-    public function test_it_tokenizes_generated_as_column_example(){
+    public function test_it_tokenizes_generated_as_column_example()
+    {
         $columnTokenizer = ColumnTokenizer::parse('`full_name` varchar(150) COLLATE utf8mb4_unicode_ci GENERATED ALWAYS AS (concat(`first_name`,\' \',`last_name`)) STORED');
         $columnDefinition = $columnTokenizer->definition();
 
