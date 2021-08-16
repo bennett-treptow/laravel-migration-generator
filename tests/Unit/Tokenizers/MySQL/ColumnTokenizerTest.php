@@ -612,6 +612,21 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('$table->dateTime(\'sent_at\')->nullable()->useCurrent()', $columnDefinition->render());
     }
 
+    public function test_it_tokenizes_a_null_default_value_now_and_on_update_datetime_column()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`sent_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('sent_at', $columnDefinition->getColumnName());
+        $this->assertEquals('datetime', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('dateTime', $columnDefinition->getMethodName());
+        $this->assertCount(0, $columnDefinition->getMethodParameters());
+        $this->assertNull($columnDefinition->getDefaultValue());
+        $this->assertTrue($columnDefinition->isNullable());
+        $this->assertFalse($columnDefinition->isUnsigned());
+        $this->assertNull($columnDefinition->getCollation());
+        $this->assertEquals('$table->dateTime(\'sent_at\')->nullable()->useCurrent()->useCurrentOnUpdate()', $columnDefinition->render());
+    }
     //endregion
 
     //region TIMESTAMP

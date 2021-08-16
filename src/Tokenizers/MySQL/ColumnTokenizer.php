@@ -40,7 +40,7 @@ class ColumnTokenizer extends BaseColumnTokenizer
 
         $this->consumeGenerated();
 
-        if ($this->columnDataType == 'timestamp') {
+        if ($this->columnDataType == 'timestamp' || $this->columnDataType == 'datetime') {
             $this->consumeTimestamp();
         }
 
