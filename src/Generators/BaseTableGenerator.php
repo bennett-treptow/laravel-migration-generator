@@ -62,7 +62,9 @@ abstract class BaseTableGenerator implements TableGeneratorInterface
 
         $this->cleanUpMorphColumns();
 
-        $this->cleanUpTimestampsColumn();
+        if (! config('laravel-migration-generator.definitions.use_defined_datatype_on_timestamp')) {
+            $this->cleanUpTimestampsColumn();
+        }
 
         $this->cleanUpColumnsWithIndices();
     }
