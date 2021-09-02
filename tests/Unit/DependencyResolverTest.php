@@ -38,7 +38,8 @@ class DependencyResolverTest extends TestCase
         $this->assertEmpty($order[1]);
     }
 
-    public function test_it_finds_cyclical_dependencies(){
+    public function test_it_finds_cyclical_dependencies()
+    {
         $tableDefinition = new TableDefinition([
             'tableName'         => 'tests',
             'columnDefinitions' => [
@@ -65,6 +66,7 @@ class DependencyResolverTest extends TestCase
 
         $order = $resolver->getDependencyOrder();
         $this->assertEquals([], $order[0]);
-        $this->assertEquals([['tests', 'test_items']], $order[1]);
+        $this->assertEquals(['tests', 'test_items'], $order[1][0]);
+        $this->assertEquals(['test_items', 'tests'], $order[1][1]);
     }
 }

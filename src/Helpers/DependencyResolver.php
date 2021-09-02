@@ -25,26 +25,30 @@ class DependencyResolver
         $graph = new Graph();
 
         foreach ($this->tableDefinitions as $tableDefinition) {
-            $foreignIndices = collect($tableDefinition->getIndexDefinitions())->filter(function (IndexDefinition $def) {
-                return $def->getIndexType() == 'foreign';
-            });
+            $foreignIndices = collect($tableDefinition->getIndexDefinitions())
+                ->filter(function (IndexDefinition $def) {
+                    return $def->getIndexType() == 'foreign';
+                });
             if ($foreignIndices->count() > 0) {
-                if (! $graph->hasVertex($tableDefinition->getTableName())) {
-                    $graph->createVertex($tableDefinition->getTableName());
+                $tableName = $tableDefinition->getTableName();
+                if (! $graph->hasVertex($tableName)) {
+                    $graph->createVertex($tableName);
                 }
-                $tableVertex = $graph->getVertex($tableDefinition->getTableName());
+                $tableVertex = $graph->getVertex($tableName);
+
                 foreach ($foreignIndices as $indexDefinition) {
                     /** @var IndexDefinition $indexDefinition */
-                    if (! $graph->hasVertex($indexDefinition->getForeignReferencedTable())) {
-                        $graph->createVertex($indexDefinition->getForeignReferencedTable());
+                    $foreignTable = $indexDefinition->getForeignReferencedTable();
+                    if (! $graph->hasVertex($foreignTable)) {
+                        $graph->createVertex($foreignTable);
                     }
-                    $vertexForForeignTable = $graph->getVertex($indexDefinition->getForeignReferencedTable());
-                    if (! $tableVertex->hasEdgeTo($vertexForForeignTable)) {
-                        $tableVertex->createEdgeTo($vertexForForeignTable);
-                    }
-//                    if (! $vertexForForeignTable->hasEdgeTo($tableVertex)) {
-//                        $vertexForForeignTable->createEdgeTo($tableVertex);
+                    $vertexForForeignTable = $graph->getVertex($foreignTable);
+//                    if (! $tableVertex->hasEdgeTo($vertexForForeignTable)) {
+//                        $tableVertex->createEdgeTo($vertexForForeignTable);
 //                    }
+                    if (! $vertexForForeignTable->hasEdgeTo($tableVertex)) {
+                        $vertexForForeignTable->createEdgeTo($tableVertex);
+                    }
                 }
             }
         }
@@ -60,13 +64,15 @@ class DependencyResolver
     {
         $graph = $this->graph()->createGraphClone();
 
-//        //kahn's algorithm for topological sort
-//        //https://en.wikipedia.org/wiki/Topological_sorting
+        //kahn's algorithm for topological sort
+        //https://en.wikipedia.org/wiki/Topological_sorting
 
         $elements = []; //L
-        $verticesWithNoIncomingEdge = collect($graph->getVertices()->getVector())->filter(function (Vertex $vertex) {
-            return $vertex->getEdgesIn()->isEmpty();
-        })->toArray(); //S
+        $verticesWithNoIncomingEdge = collect($graph->getVertices()->getVector())
+            ->filter(function (Vertex $vertex) {
+                return $vertex->getEdgesIn()->isEmpty();
+            })
+            ->toArray(); //S
         while (count($verticesWithNoIncomingEdge) > 0) {
             $elements[] = $n = array_pop($verticesWithNoIncomingEdge); //N
             foreach ($graph->getVertices()->getIterator() as $m) {
