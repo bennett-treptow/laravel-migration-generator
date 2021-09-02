@@ -15,8 +15,7 @@
     "illuminate/console": "^6.0|^7.0|^8.0",
     "illuminate/database": "^6.0|^7.0|^8.0",
     "illuminate/config": "^6.0|^7.0|^8.0",
-    "clue/graph": "^0.9.2",
-    "graphp/graphviz": "^0.2.2"
+    "clue/graph": "^0.9.2"
   },
   "autoload": {
     "psr-4": {
