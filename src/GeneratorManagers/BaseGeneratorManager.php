@@ -111,7 +111,8 @@ abstract class BaseGeneratorManager implements GeneratorManagerInterface
             [$nonCirculars, $circulars] = $resolver->getDependencyOrder();
 
             foreach ($nonCirculars as $nonCircular) {
-                $finalOrder[] = $keyedTableDefinitions[$nonCircular];
+                [$nonCircularTable, $nonCircularColumns] = explode('.', $nonCircular);
+                $finalOrder[] = $keyedTableDefinitions[$nonCircularTable];
             }
             $processedCirculars = [];
 
