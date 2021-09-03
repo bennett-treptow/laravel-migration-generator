@@ -34,14 +34,16 @@ class DependencyResolverTest extends TestCase
 
         $resolver = new DependencyResolver([$tableDefinition, $foreignTableDefinition]);
         $order = $resolver->getDependencyOrder();
-        $this->assertEquals(['tests', 'test_items'], array_keys($order['nonCircular']));
-        $this->assertEmpty($order['circular']);
+        $this->assertCount(2, $order);
+        $this->assertEquals('tests', $order[0]->getTableName());
+        $this->assertEquals('test_items', $order[1]->getTableName());
     }
 
     public function test_it_finds_cyclical_dependencies()
     {
         $tableDefinition = new TableDefinition([
             'tableName'         => 'tests',
+            'driver'            => 'mysql',
             'columnDefinitions' => [
                 (new ColumnDefinition())->setColumnName('id')->setMethodName('id')->setAutoIncrementing(true)->setPrimary(true),
                 (new ColumnDefinition())->setColumnName('test_item_id')->setMethodName('bigInteger')->setNullable(false)->setUnsigned(true),
@@ -53,6 +55,7 @@ class DependencyResolverTest extends TestCase
 
         $foreignTableDefinition = new TableDefinition([
             'tableName'         => 'test_items',
+            'driver'            => 'mysql',
             'columnDefinitions' => [
                 (new ColumnDefinition())->setColumnName('id')->setMethodName('id')->setAutoIncrementing(true)->setPrimary(true),
                 (new ColumnDefinition())->setColumnName('test_id')->setMethodName('bigInteger')->setNullable(false)->setUnsigned(true),
@@ -65,18 +68,8 @@ class DependencyResolverTest extends TestCase
         $resolver = new DependencyResolver([$tableDefinition, $foreignTableDefinition]);
 
         $order = $resolver->getDependencyOrder();
-
-        $this->assertEquals([], $order['nonCircular']);
-        $this->assertCount(2, $order['circular']);
-        $this->assertEquals(['tests', 'test_items'], array_keys($order['circular'][0]));
-        $this->assertEquals(['test_items', 'tests'], array_keys($order['circular'][1]));
-
-        $testsDependency = $order['circular'][0]['tests'];
-        $testsDependency->assertHasDependentTable('test_items');
-        $testsDependency->assertHasDependencyRelation('id', 'test_items', 'test_id');
-
-        $testItemsDependency = $order['circular'][0]['test_items'];
-        $testItemsDependency->assertHasDependentTable('tests');
-        $testItemsDependency->assertHasDependencyRelation('id', 'tests', 'test_item_id');
+        $this->assertCount(4, $order);
+        $this->assertEquals('$table->foreign(\'test_id\', \'fk_test_id\')->references(\'id\')->on(\'tests\');', $order[2]->getSchema());
+        $this->assertEquals('$table->foreign(\'test_item_id\', \'fk_test_item_id\')->references(\'id\')->on(\'test_items\');', $order[3]->getSchema());
     }
 }

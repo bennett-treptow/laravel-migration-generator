@@ -2,132 +2,106 @@
 
 namespace LaravelMigrationGenerator\Helpers;
 
-use Fhaculty\Graph\Graph;
-use Fhaculty\Graph\Vertex;
-use Fhaculty\Graph\Edge\Directed;
+use MJS\TopSort\Implementations\FixedArraySort;
 use LaravelMigrationGenerator\Definitions\IndexDefinition;
+use LaravelMigrationGenerator\Definitions\TableDefinition;
 
 class DependencyResolver
 {
-    const SEPARATOR = '#';
+    /** @var array<TableDefinition> */
+    protected array $tableDefinitions = [];
 
-    /** @var array|\LaravelMigrationGenerator\Definitions\TableDefinition[] */
-    private array $tableDefinitions;
-
-    protected Graph $graph;
+    /** @var array<TableDefinition> */
+    protected array $sorted = [];
 
     public function __construct(array $tableDefinitions)
     {
         $this->tableDefinitions = $tableDefinitions;
-        $this->buildGraph();
+
+        $this->build();
     }
 
-    private function buildGraph()
+    protected function build()
     {
-        $graph = new Graph();
-
+        /** @var TableDefinition[] $keyedDefinitions */
+        $keyedDefinitions = collect($this->tableDefinitions)
+            ->keyBy(function (TableDefinition $tableDefinition) {
+                return $tableDefinition->getTableName();
+            });
+        $dependencies = [];
         foreach ($this->tableDefinitions as $tableDefinition) {
-            $foreignIndices = collect($tableDefinition->getIndexDefinitions())
-                ->filter(function (IndexDefinition $def) {
-                    return $def->getIndexType() == 'foreign';
-                });
-            if ($foreignIndices->count() > 0) {
-                $tableName = $tableDefinition->getTableName();
-                if (! $graph->hasVertex($tableName)) {
-                    $graph->createVertex($tableName);
-                }
-                $tableVertex = $graph->getVertex($tableName);
-
-                foreach ($foreignIndices as $indexDefinition) {
-                    /** @var IndexDefinition $indexDefinition */
-                    $foreignTable = $indexDefinition->getForeignReferencedTable();
-
-                    if (! $graph->hasVertex($foreignTable)) {
-                        $graph->createVertex($foreignTable);
-                    }
-                    $vertexForForeignTable = $graph->getVertex($foreignTable);
-                    $dependency = $vertexForForeignTable->getAttribute('columns', new Dependency($foreignTable));
-                    foreach ($indexDefinition->getIndexColumns() as $indexColumn) {
-                        $dependency->addDependent($indexDefinition->getForeignReferencedColumns(), $tableName, $indexColumn);
-                    }
-                    $vertexForForeignTable->setAttribute(
-                        'columns',
-                        $dependency
-                    );
-                    if (! $vertexForForeignTable->hasEdgeTo($tableVertex)) {
-                        $vertexForForeignTable->createEdgeTo($tableVertex);
-                    }
+            $dependencies[$tableDefinition->getTableName()] = [];
+        }
+        foreach ($this->tableDefinitions as $tableDefinition) {
+            foreach ($tableDefinition->getForeignKeyDefinitions() as $indexDefinition) {
+                if (! in_array($indexDefinition->getForeignReferencedTable(), $dependencies[$tableDefinition->getTableName()])) {
+                    $dependencies[$tableDefinition->getTableName()][] = $indexDefinition->getForeignReferencedTable();
                 }
             }
         }
-        $this->graph = $graph;
-    }
 
-    public function graph(): Graph
-    {
-        return $this->graph;
+        $sorter = new FixedArraySort();
+        $circulars = [];
+        $sorter->setCircularInterceptor(function ($nodes) use (&$circulars) {
+            $circulars[] = [$nodes[count($nodes) - 2], $nodes[count($nodes) - 1]];
+        });
+        foreach ($dependencies as $table => $dependencyArray) {
+            $sorter->add($table, $dependencyArray);
+        }
+        $sorted = $sorter->sort();
+        $definitions = collect($sorted)->map(function ($item) use ($keyedDefinitions) {
+            return $keyedDefinitions[$item];
+        })->toArray();
+
+        foreach ($circulars as $groups) {
+            [$start, $end] = $groups;
+            $startDefinition = $keyedDefinitions[$start];
+            $indicesForStart = collect($startDefinition->getForeignKeyDefinitions())
+                ->filter(function (IndexDefinition $index) use ($end) {
+                    return $index->getForeignReferencedTable() == $end;
+                });
+            foreach ($indicesForStart as $index) {
+                $startDefinition->removeIndexDefinition($index);
+            }
+            if(!in_array($start, $sorted)) {
+                $definitions[] = $startDefinition;
+            }
+
+            $endDefinition = $keyedDefinitions[$end];
+
+            $indicesForEnd = collect($endDefinition->getForeignKeyDefinitions())
+                ->filter(function (IndexDefinition $index) use ($start) {
+                    return $index->getForeignReferencedTable() == $start;
+                });
+            foreach ($indicesForEnd as $index) {
+                $endDefinition->removeIndexDefinition($index);
+            }
+            if(!in_array($end, $sorted)) {
+                $definitions[] = $endDefinition;
+            }
+
+            $definitions[] = new TableDefinition([
+                'tableName'         => $startDefinition->getTableName(),
+                'driver'            => $startDefinition->getDriver(),
+                'columnDefinitions' => [],
+                'indexDefinitions'  => $indicesForStart->toArray()
+            ]);
+
+            $definitions[] = new TableDefinition([
+                'tableName'         => $endDefinition->getTableName(),
+                'driver'            => $endDefinition->getDriver(),
+                'columnDefinitions' => [],
+                'indexDefinitions'  => $indicesForEnd->toArray()
+            ]);
+        }
+        $this->sorted = $definitions;
     }
 
     /**
-     * @return array
+     * @return TableDefinition[]
      */
-    public function getDependencyOrder()
+    public function getDependencyOrder(): array
     {
-        $graph = $this->graph()->createGraphClone();
-
-        //kahn's algorithm for topological sort
-        //https://en.wikipedia.org/wiki/Topological_sorting
-
-        $elements = []; //L
-        $verticesWithNoIncomingEdge = collect($graph->getVertices()->getVector())
-            ->filter(function (Vertex $vertex) {
-                return $vertex->getEdgesIn()->isEmpty();
-            })
-            ->toArray(); //S
-        while (count($verticesWithNoIncomingEdge) > 0) {
-            $elements[] = $n = array_pop($verticesWithNoIncomingEdge); //N
-            foreach ($graph->getVertices()->getIterator() as $m) {
-                /** @var Vertex $m */
-                if (! $n->hasEdgeTo($m)) {
-                    continue;
-                }
-                $edges = $n->getEdgesTo($m);
-                $e = $edges->getEdgeFirst();
-                $e->destroy();
-                if ($m->getEdgesIn()->isEmpty()) {
-                    $verticesWithNoIncomingEdge[] = $m;
-                }
-            }
-        }
-        $circularRelations = [];
-        if (! $graph->getEdges()->isEmpty()) {
-            //do something to resolve the circular relationships
-            $circularRelations = $this->getCircularDependencies($graph);
-        }
-
-        return [
-            'nonCircular' => collect($elements)->mapWithKeys(function ($vertex) {
-                return [$vertex->getId() => $vertex->getAttribute('columns')];
-            })->toArray(),
-            'circular' => $circularRelations
-        ];
-    }
-
-    public function getCircularDependencies(Graph $graph): array
-    {
-        $circularDependencies = [];
-        foreach ($graph->getVertices()->getIterator() as $vertex) {
-            /** @var Vertex $vertex */
-            foreach ($vertex->getEdgesOut()->getIterator() as $edge) {
-                /** @var Directed $edge */
-                $dependency = $edge->getVertexEnd();
-                $circularDependencies[] = [
-                    $vertex->getId()     => $vertex->getAttribute('columns'),
-                    $dependency->getId() => $dependency->getAttribute('columns')
-                ];
-            }
-        }
-
-        return $circularDependencies;
+        return $this->sorted;
     }
 }

@@ -35,8 +35,11 @@ class TableDefinition
     public function getPresentableTableName(): string
     {
         if (count($this->getColumnDefinitions()) === 0) {
-            //a fk only table from dependency resolution
-            return $this->getTableName() . '_' . $this->getIndexDefinitions()[0]->getIndexName();
+            if (count($definitions = $this->getIndexDefinitions()) > 0) {
+                $first = collect($definitions)->first();
+                //a fk only table from dependency resolution
+                return $this->getTableName() . '_' . $first->getIndexName();
+            }
         }
 
         return $this->getTableName();
@@ -84,6 +87,14 @@ class TableDefinition
         return $this->indexDefinitions;
     }
 
+    /** @return array<IndexDefinition> */
+    public function getForeignKeyDefinitions(): array
+    {
+        return collect($this->getIndexDefinitions())->filter(function ($indexDefinition) {
+            return $indexDefinition->getIndexType() == IndexDefinition::TYPE_FOREIGN;
+        })->toArray();
+    }
+
     public function setIndexDefinitions(array $indexDefinitions)
     {
         $this->indexDefinitions = $indexDefinitions;
@@ -124,7 +135,9 @@ class TableDefinition
             ->filter(fn ($index) => $index->isWritable());
 
         if ($indices->count() > 0) {
-            $schema .= "\n";
+            if (count($this->getColumnDefinitions()) > 0) {
+                $schema .= "\n";
+            }
             $schema .= $indices
                 ->map(function ($index) use ($tab) {
                     return $tab . $index->render() . ';';

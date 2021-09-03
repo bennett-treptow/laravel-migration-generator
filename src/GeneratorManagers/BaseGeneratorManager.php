@@ -5,10 +5,11 @@ namespace LaravelMigrationGenerator\GeneratorManagers;
 use LaravelMigrationGenerator\Helpers\Dependency;
 use LaravelMigrationGenerator\Helpers\ConfigResolver;
 use LaravelMigrationGenerator\Helpers\DependencyResolver;
-use LaravelMigrationGenerator\Definitions\IndexDefinition;
 use LaravelMigrationGenerator\Definitions\TableDefinition;
 use LaravelMigrationGenerator\Generators\BaseViewGenerator;
 use LaravelMigrationGenerator\GeneratorManagers\Interfaces\GeneratorManagerInterface;
+use LaravelMigrationGenerator\Helpers\DependencyResolverV2;
+use LaravelMigrationGenerator\Helpers\DependencyResolverV3;
 
 abstract class BaseGeneratorManager implements GeneratorManagerInterface
 {
@@ -90,18 +91,6 @@ abstract class BaseGeneratorManager implements GeneratorManagerInterface
         $this->writeViewMigrations($viewDefinitions->toArray(), $basePath);
     }
 
-    protected $processedCirculars = [];
-
-    private function alreadyProcessedCircular($circulars)
-    {
-        if (isset($this->processedCirculars[implode('|', $circulars)]) || isset($this->processedCirculars[implode('|', array_reverse($circulars))])) {
-            return true;
-        }
-        $this->processedCirculars[implode('|', $circulars)] = true;
-
-        return false;
-    }
-
     /**
      * @param array<TableDefinition> $tableDefinitions
      * @return array<TableDefinition>
@@ -113,84 +102,7 @@ abstract class BaseGeneratorManager implements GeneratorManagerInterface
         }
 
         if (config('laravel-migration-generator.sort_mode') == 'foreign_key') {
-            $finalOrder = collect([]);
-
-            $keyedTableDefinitions = collect($tableDefinitions)->keyBy(function ($tableDefinition) {
-                return $tableDefinition->getTableName();
-            })->toArray();
-
-            $resolver = new DependencyResolver($tableDefinitions);
-            $order = $resolver->getDependencyOrder();
-
-            foreach ($order['nonCircular'] as $nonCircularTable => $dependents) {
-                $finalOrder->push($keyedTableDefinitions[$nonCircularTable]);
-            }
-            foreach ($order['circular'] as $circular) {
-                /** @var array<string, Dependency> $circular */
-                if ($this->alreadyProcessedCircular(array_keys($circular))) {
-                    continue;
-                }
-                foreach ($circular as $parentTableName => $dependency) {
-                    if ($finalOrder->contains(function ($definition) use ($parentTableName) {
-                        return $definition->getTableName() == $parentTableName;
-                    })) {
-                        continue;
-                    }
-                    foreach ($dependency->getDependents() as $parentColumn => $tables) {
-                        foreach ($tables as $table => $columns) {
-                            foreach ($columns as $innerColumn) {
-                                /** @var TableDefinition $tableInstance */
-                                $tableInstance = $keyedTableDefinitions[$parentTableName];
-
-                                /** @var TableDefinition $dependencyInstance */
-                                $dependencyInstance = $keyedTableDefinitions[$table];
-
-                                $tableIndices = collect($tableInstance->getIndexDefinitions())
-                                    ->filter(function (IndexDefinition $definition) use ($table, $parentColumn) {
-                                        return $definition->getIndexType() == IndexDefinition::TYPE_FOREIGN && $definition->getForeignReferencedTable() == $table && in_array(
-                                            $parentColumn,
-                                            $definition->getForeignReferencedColumns()
-                                        );
-                                    })->each(function ($indexDefinition) use ($tableInstance) {
-                                        $tableInstance->removeIndexDefinition($indexDefinition);
-                                    });
-                                $finalOrder->push($tableInstance);
-
-                                $dependencyIndices = collect($dependencyInstance->getIndexDefinitions())
-                                    ->filter(function (IndexDefinition $definition) use ($parentTableName, $innerColumn) {
-                                        return $definition->getIndexType() == IndexDefinition::TYPE_FOREIGN && $definition->getForeignReferencedTable() == $parentTableName && in_array(
-                                            $innerColumn,
-                                            $definition->getIndexColumns()
-                                        );
-                                    })->each(function ($indexDefinition) use ($dependencyInstance) {
-                                        $dependencyInstance->removeIndexDefinition($indexDefinition);
-                                    });
-
-                                $finalOrder->push($dependencyInstance);
-
-                                if ($tableIndices->count() > 0) {
-                                    $finalOrder->push(new TableDefinition([
-                                        'tableName'         => $tableInstance->getTableName(),
-                                        'driver'            => $tableInstance->getDriver(),
-                                        'columnDefinitions' => [],
-                                        'indexDefinitions'  => $tableIndices->toArray()
-                                    ]));
-                                }
-                                if ($dependencyIndices->count() > 0) {
-                                    $finalOrder->push(new TableDefinition([
-                                        'tableName'         => $dependencyInstance->getTableName(),
-                                        'driver'            => $dependencyInstance->getDriver(),
-                                        'columnDefinitions' => [],
-                                        'indexDefinitions'  => $dependencyIndices->toArray()
-                                    ]));
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            return $finalOrder->toArray();
+            return (new DependencyResolver($tableDefinitions))->getDependencyOrder();
         }
 
         return $tableDefinitions;
@@ -202,8 +114,8 @@ abstract class BaseGeneratorManager implements GeneratorManagerInterface
      */
     public function writeTableMigrations(array $tableDefinitions, $basePath)
     {
-        foreach ($tableDefinitions as $tableDefinition) {
-            $tableDefinition->write($basePath);
+        foreach ($tableDefinitions as $key => $tableDefinition) {
+            $tableDefinition->write($basePath, $key);
         }
     }
 
@@ -213,8 +125,8 @@ abstract class BaseGeneratorManager implements GeneratorManagerInterface
      */
     public function writeViewMigrations(array $viewDefinitions, $basePath)
     {
-        foreach ($viewDefinitions as $view) {
-            $view->write($basePath);
+        foreach ($viewDefinitions as $key => $view) {
+            $view->write($basePath, $key);
         }
     }
 

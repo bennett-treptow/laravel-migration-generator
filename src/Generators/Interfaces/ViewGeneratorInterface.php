@@ -10,7 +10,7 @@ interface ViewGeneratorInterface
 
     public function resolveSchema();
 
-    public function write(string $basePath, string $tabCharacter = '    ');
+    public function write(string $basePath, $index, string $tabCharacter = '    ');
 
     public function getSchema(): ?string;
 }

@@ -4,7 +4,7 @@ namespace LaravelMigrationGenerator\Generators\Concerns;
 
 trait WritesToFile
 {
-    public function write(string $basePath, string $tabCharacter = '    '): void
+    public function write(string $basePath, $index = 0, string $tabCharacter = '    '): void
     {
         if (method_exists($this, 'isWritable') && ! $this->isWritable()) {
             return;
@@ -12,7 +12,7 @@ trait WritesToFile
 
         $stub = $this->generateStub($tabCharacter);
 
-        $fileName = $this->getStubFileName();
+        $fileName = $this->getStubFileName($index);
         file_put_contents($basePath . '/' . $fileName, $stub);
     }
 }

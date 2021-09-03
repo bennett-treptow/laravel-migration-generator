@@ -35,11 +35,11 @@ trait WritesTablesToFile
         return $stub;
     }
 
-    public function getStubFileName(): string
+    public function getStubFileName($index = 0): string
     {
         $driver = $this->getDriver();
         $baseStubFileName = ConfigResolver::tableNamingScheme($driver);
-        foreach ($this->stubNameVariables() as $variable => $replacement) {
+        foreach ($this->stubNameVariables($index) as $variable => $replacement) {
             if (preg_match("/\[" . $variable . "\]/i", $baseStubFileName) === 1) {
                 $baseStubFileName = preg_replace("/\[" . $variable . "\]/i", $replacement, $baseStubFileName);
             }
@@ -93,7 +93,7 @@ trait WritesTablesToFile
         return __DIR__ . '/../../../stubs/table-modify.stub';
     }
 
-    protected function stubNameVariables(): array
+    protected function stubNameVariables($index): array
     {
         $tableName = $this->getPresentableTableName();
 
@@ -101,7 +101,9 @@ trait WritesTablesToFile
             'TableName:Studly'    => Str::studly($tableName),
             'TableName:Lowercase' => strtolower($tableName),
             'TableName'           => $tableName,
-            'Timestamp'           => app('laravel-migration-generator:time')->format('Y_m_d_His')
+            'Timestamp'           => app('laravel-migration-generator:time')->format('Y_m_d_His'),
+            'Index'               => '0000_00_00_' . str_pad((string) $index, 6, '0', STR_PAD_LEFT),
+            'IndexedTimestamp'    => app('laravel-migration-generator:time')->clone()->addSeconds($index)->format('Y_m_d_His')
         ];
     }
 }
