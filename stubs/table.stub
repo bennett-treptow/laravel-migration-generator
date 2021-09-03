@@ -13,7 +13,7 @@ class Create[TableName:Studly]Table extends Migration
      */
     public function up()
     {
-[TableUp]
+        [TableUp]
     }
 
     /**
@@ -23,6 +23,6 @@ class Create[TableName:Studly]Table extends Migration
      */
     public function down()
     {
-[TableDown]
+        [TableDown]
     }
 }

@@ -3,6 +3,7 @@
 namespace LaravelMigrationGenerator\Definitions;
 
 use Illuminate\Support\Str;
+use LaravelMigrationGenerator\Helpers\Formatter;
 use LaravelMigrationGenerator\Generators\Concerns\WritesTablesToFile;
 
 class TableDefinition
@@ -124,28 +125,35 @@ class TableDefinition
 
     public function getSchema($tab = ''): string
     {
-        $schema = collect($this->getColumnDefinitions())
+        $formatter = new Formatter($tab);
+        collect($this->getColumnDefinitions())
             ->filter(fn ($col) => $col->isWritable())
-            ->map(function ($column) use ($tab) {
-                return $tab . $column->render() . ';';
-            })
-            ->implode("\n");
+            ->each(function ($column) use ($formatter) {
+                $formatter->line($column->render() . ';');
+            });
 
         $indices = collect($this->getIndexDefinitions())
             ->filter(fn ($index) => $index->isWritable());
 
         if ($indices->count() > 0) {
             if (count($this->getColumnDefinitions()) > 0) {
-                $schema .= "\n";
+                $formatter->line('');
             }
-            $schema .= $indices
-                ->map(function ($index) use ($tab) {
-                    return $tab . $index->render() . ';';
-                })
-                ->implode("\n");
+            $indices->each(function ($index) use ($formatter) {
+                $formatter->line($index->render() . ';');
+            });
         }
 
-        return $schema;
+        return $formatter->render();
+    }
+
+    public function getStubUp($tab = '')
+    {
+        if (count($this->getColumnDefinitions()) === 0) {
+            return file_get_contents($this->getStubModifyPath());
+        }
+
+        return file_get_contents($this->getStubCreatePath());
     }
 
     public function getFilledStubUp($tab = '', $variables = null)
@@ -156,7 +164,7 @@ class TableDefinition
         if (count($this->getColumnDefinitions()) === 0) {
             $tableModifyStub = file_get_contents($this->getStubModifyPath());
             foreach ($variables as $var => $replacement) {
-                $tableModifyStub = str_replace('[' . $var . ']', $replacement, $tableModifyStub);
+                $tableModifyStub = Formatter::replace($tab, '[' . $var . ']', $replacement, $tableModifyStub);
             }
 
             return $tableModifyStub;
@@ -164,7 +172,7 @@ class TableDefinition
 
         $tableUpStub = file_get_contents($this->getStubCreatePath());
         foreach ($variables as $var => $replacement) {
-            $tableUpStub = str_replace('[' . $var . ']', $replacement, $tableUpStub);
+            $tableUpStub = Formatter::replace($tab, '[' . $var . ']', $replacement, $tableUpStub);
         }
 
         return $tableUpStub;
@@ -194,27 +202,6 @@ class TableDefinition
             'TableName'           => $tableName,
             'Schema'              => $this->getSchema($tab)
         ];
-    }
-
-    public function getFilledStub($tab = '')
-    {
-        $variables = $this->getStubVariables($tab);
-
-        $stub = file_get_contents($this->getStubPath());
-
-        if (Str::contains($stub, '[TableUp]')) {
-            $stub = str_replace('[TableUp]', $this->getFilledStubUp($tab, $variables), $stub);
-        }
-
-        if (Str::contains($stub, '[TableDown]')) {
-            $stub = str_replace('[TableDown]', $this->getFilledStubDown($tab, $variables), $stub);
-        }
-
-        foreach ($variables as $var => $replacement) {
-            $stub = str_replace('[' . $var . ']', $replacement, $stub);
-        }
-
-        return $stub;
     }
 
     public function getPrimaryKey(): array
