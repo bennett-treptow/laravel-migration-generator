@@ -19,6 +19,4 @@ interface GeneratorManagerInterface
     public function getTableDefinitions(): array;
 
     public function getViewDefinitions(): array;
-
-    public function getOutputBuffer(): array;
 }

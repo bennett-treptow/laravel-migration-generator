@@ -15,20 +15,8 @@ abstract class BaseGeneratorManager implements GeneratorManagerInterface
 
     protected array $viewDefinitions = [];
 
-    protected array $outputBuffer = [];
 
     abstract public function init();
-
-    public function getOutputBuffer(): array
-    {
-        return $this->outputBuffer;
-    }
-
-    public function info($message): BaseGeneratorManager
-    {
-        $this->outputBuffer[] = $message;
-        return $this;
-    }
 
     public function createMissingDirectory($basePath)
     {
@@ -71,27 +59,35 @@ abstract class BaseGeneratorManager implements GeneratorManagerInterface
     {
         $this->init();
 
-        $tableDefinitions = $this->getTableDefinitions();
-        $viewDefinitions = $this->getViewDefinitions();
+        $tableDefinitions = collect($this->getTableDefinitions());
+        $viewDefinitions = collect($this->getViewDefinitions());
 
         $this->createMissingDirectory($basePath);
 
         if (count($tableNames) > 0) {
-            $tableDefinitions = collect($tableDefinitions)->filter(function ($tableDefinition) use ($tableNames) {
+            $tableDefinitions = $tableDefinitions->filter(function ($tableDefinition) use ($tableNames) {
                 return in_array($tableDefinition->getTableName(), $tableNames);
             })->toArray();
         }
         if (count($viewNames) > 0) {
-            $viewDefinitions = collect($viewDefinitions)->filter(function ($viewGenerator) use ($viewNames) {
+            $viewDefinitions = $viewDefinitions->filter(function ($viewGenerator) use ($viewNames) {
                 return in_array($viewGenerator->getViewName(), $viewNames);
             })->toArray();
         }
 
-        $sorted = $this->sortTables($tableDefinitions);
+        $tableDefinitions = $tableDefinitions->filter(function ($tableDefinition) {
+            return ! $this->skipTable($tableDefinition->getTableName());
+        });
+
+        $viewDefinitions = $viewDefinitions->filter(function ($viewDefinition) {
+            return ! $this->skipView($viewDefinition->getViewName());
+        });
+
+        $sorted = $this->sortTables($tableDefinitions->toArray());
 
         $this->writeTableMigrations($sorted, $basePath);
 
-        $this->writeViewMigrations($viewDefinitions, $basePath);
+        $this->writeViewMigrations($viewDefinitions->toArray(), $basePath);
     }
 
     /**

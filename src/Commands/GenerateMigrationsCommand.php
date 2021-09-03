@@ -79,10 +79,6 @@ class GenerateMigrationsCommand extends Command
         $viewNames = Arr::wrap($this->option('view'));
 
         $manager->handle($basePath, $tableNames, $viewNames);
-
-        foreach ($manager->getOutputBuffer() as $message) {
-            $this->info($message);
-        }
     }
 
     /**

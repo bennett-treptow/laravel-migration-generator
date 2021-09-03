@@ -187,7 +187,7 @@ class MySQLTableGeneratorTest extends TestCase
             'created_at datetime NOT NULL',
             'updated_at datetime NOT NULL'
         ]);
-        $schema = $generator->getSchema();
+        $schema = $generator->definition()->getSchema();
         $this->assertSchemaHas('$table->dateTime(\'created_at\')', $schema);
         $this->assertSchemaHas('$table->dateTime(\'updated_at\')', $schema);
     }
