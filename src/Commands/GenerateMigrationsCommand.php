@@ -12,7 +12,7 @@ use LaravelMigrationGenerator\GeneratorManagers\Interfaces\GeneratorManagerInter
 
 class GenerateMigrationsCommand extends Command
 {
-    protected $signature = 'generate:migrations {--path=default : The path where migrations will be output to} {--table=* : Only generate output for specified tables} {--connection=default : Use a different database connection specified in database config} {--empty-path : Clear other files in path, eg if wanting to replace all migrations}';
+    protected $signature = 'generate:migrations {--path=default : The path where migrations will be output to} {--table=* : Only generate output for specified tables} {--view=* : Only generate output for specified views} {--connection=default : Use a different database connection specified in database config} {--empty-path : Clear other files in path, eg if wanting to replace all migrations}';
 
     protected $description = 'Generate migrations from an existing database';
 
@@ -75,9 +75,13 @@ class GenerateMigrationsCommand extends Command
 
         $tableNames = Arr::wrap($this->option('table'));
 
-        $this->newLine();
+        $viewNames = Arr::wrap($this->option('view'));
 
-        $manager->handle($basePath, $this->getOutput(), $tableNames);
+        $manager->handle($basePath, $tableNames, $viewNames);
+
+        foreach ($manager->getOutputBuffer() as $message) {
+            $this->info($message);
+        }
     }
 
     /**

@@ -32,6 +32,11 @@ abstract class BaseViewGenerator implements ViewGeneratorInterface
         return $obj;
     }
 
+    public function getViewName(): string
+    {
+        return $this->viewName;
+    }
+
     public function getSchema(): ?string
     {
         return $this->schema;

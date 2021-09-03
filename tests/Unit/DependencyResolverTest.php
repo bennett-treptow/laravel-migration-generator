@@ -34,7 +34,7 @@ class DependencyResolverTest extends TestCase
 
         $resolver = new DependencyResolver([$tableDefinition, $foreignTableDefinition]);
         $order = $resolver->getDependencyOrder();
-        $this->assertEquals(['tests', 'test_items'], $order[0]);
+        $this->assertEquals(['tests.id', 'test_items.id'], $order[0]);
         $this->assertEmpty($order[1]);
     }
 
@@ -66,7 +66,7 @@ class DependencyResolverTest extends TestCase
 
         $order = $resolver->getDependencyOrder();
         $this->assertEquals([], $order[0]);
-        $this->assertEquals(['tests', 'test_items'], $order[1][0]);
-        $this->assertEquals(['test_items', 'tests'], $order[1][1]);
+        $this->assertEquals(['tests.id', 'test_items.id'], $order[1][0]);
+        $this->assertEquals(['test_items.id', 'tests.id'], $order[1][1]);
     }
 }

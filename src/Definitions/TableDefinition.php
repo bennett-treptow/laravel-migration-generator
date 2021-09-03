@@ -13,6 +13,7 @@ class TableDefinition
 
     protected string $driver;
 
+    /** @var array<ColumnDefinition> */
     protected array $columnDefinitions = [];
 
     protected array $indexDefinitions = [];
@@ -29,6 +30,16 @@ class TableDefinition
     public function getDriver(): string
     {
         return $this->driver;
+    }
+
+    public function getPresentableTableName(): string
+    {
+        if (count($this->getColumnDefinitions()) === 0) {
+            //a fk only table from dependency resolution
+            return $this->getTableName() . '_' . $this->getIndexDefinitions()[0]->getIndexName();
+        }
+
+        return $this->getTableName();
     }
 
     /**
@@ -65,6 +76,9 @@ class TableDefinition
         return $this;
     }
 
+    /**
+     * @return array<IndexDefinition>
+     */
     public function getIndexDefinitions(): array
     {
         return $this->indexDefinitions;
@@ -80,6 +94,19 @@ class TableDefinition
     public function addIndexDefinition(IndexDefinition $definition)
     {
         $this->indexDefinitions[] = $definition;
+
+        return $this;
+    }
+
+    public function removeIndexDefinition(IndexDefinition $definition)
+    {
+        foreach ($this->indexDefinitions as $key => $indexDefinition) {
+            if ($definition->getIndexName() == $definition->getIndexName()) {
+                unset($this->indexDefinitions[$key]);
+
+                break;
+            }
+        }
 
         return $this;
     }
@@ -123,15 +150,16 @@ class TableDefinition
 
     public function getFilledStubDown($tab = '', $variables = null)
     {
-        if ($variables === null) {
-            $variables = $this->getStubVariables($tab);
-        }
-        $tableDownStub = file_get_contents($this->getStubDownPath());
-        foreach ($variables as $var => $replacement) {
-            $tableDownStub = str_replace('[' . $var . ']', $replacement, $tableDownStub);
+        if (count($this->getColumnDefinitions()) === 0) {
+            $schema = 'Schema::table(\'' . $this->getTableName() . '\', function(Blueprint $table){' . "\n";
+            foreach ($this->getIndexDefinitions() as $indexDefinition) {
+                $schema .= $tab . '$table->dropForeign(\'' . $indexDefinition->getIndexName() . '\');' . "\n";
+            }
+
+            return $schema . '});';
         }
 
-        return $tableDownStub;
+        return 'Schema::dropIfExists(\'' . $this->getTableName() . '\');';
     }
 
     protected function getStubVariables($tab = '')
@@ -165,5 +193,13 @@ class TableDefinition
         }
 
         return $stub;
+    }
+
+    public function getPrimaryKey(): array
+    {
+        return collect($this->getColumnDefinitions())
+            ->filter(function (ColumnDefinition $columnDefinition) {
+                return $columnDefinition->isPrimary();
+            })->toArray();
     }
 }

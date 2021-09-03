@@ -5,7 +5,6 @@ return [
     'clear_output_path'    => env('LMG_CLEAR_OUTPUT_PATH', false),
     //default configs
     'table_naming_scheme'           => env('LMG_TABLE_NAMING_SCHEME', '[Timestamp]_create_[TableName]_table.php'),
-    'dependent_table_naming_scheme' => env('LMG_DEPENDENT_TABLE_NAMING_SCHEME', '[Timestamp]_create_[TableNames]_tables.php'),
     'view_naming_scheme'            => env('LMG_VIEW_NAMING_SCHEME', '[Timestamp]_create_[ViewName]_view.php'),
     'path'                          => env('LMG_OUTPUT_PATH', 'tests/database/migrations'),
     'skippable_tables'              => env('LMG_SKIPPABLE_TABLES', 'migrations'),

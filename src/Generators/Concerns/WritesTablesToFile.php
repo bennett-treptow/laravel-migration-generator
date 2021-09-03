@@ -13,11 +13,11 @@ trait WritesTablesToFile
 {
     use WritesToFile;
 
-    protected function generateStub($tabCharacter = '    ')
+    public function generateStub($tabCharacter = '    ')
     {
         $tab = str_repeat($tabCharacter, 4);
 
-        $tableName = $this->getTableName();
+        $tableName = $this->getPresentableTableName();
 
         $schema = $this->getSchema($tab);
         $stubPath = $this->getStubPath();
@@ -35,7 +35,7 @@ trait WritesTablesToFile
         return $stub;
     }
 
-    protected function getStubFileName(): string
+    public function getStubFileName(): string
     {
         $driver = $this->getDriver();
         $baseStubFileName = ConfigResolver::tableNamingScheme($driver);
@@ -78,24 +78,9 @@ trait WritesTablesToFile
         return __DIR__ . '/../../../stubs/table-up.stub';
     }
 
-    public function getStubDownPath(): string
-    {
-        $driver = $this->getDriver();
-
-        if (file_exists($overridden = resource_path('stubs/vendor/laravel-migration-generator/' . $driver . '-table-down.stub'))) {
-            return $overridden;
-        }
-
-        if (file_exists($overridden = resource_path('stubs/vendor/laravel-migration-generator/table-down.stub'))) {
-            return $overridden;
-        }
-
-        return __DIR__ . '/../../../stubs/table-down.stub';
-    }
-
     protected function stubNameVariables(): array
     {
-        $tableName = $this->getTableName();
+        $tableName = $this->getPresentableTableName();
 
         return [
             'TableName:Studly'    => Str::studly($tableName),

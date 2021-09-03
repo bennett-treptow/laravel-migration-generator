@@ -9,6 +9,8 @@ use LaravelMigrationGenerator\Definitions\IndexDefinition;
 
 class DependencyResolver
 {
+    const SEPARATOR = '#';
+
     /** @var array|\LaravelMigrationGenerator\Definitions\TableDefinition[] */
     private array $tableDefinitions;
 
@@ -30,7 +32,9 @@ class DependencyResolver
                     return $def->getIndexType() == 'foreign';
                 });
             if ($foreignIndices->count() > 0) {
-                $tableName = $tableDefinition->getTableName();
+                $tableName = $tableDefinition->getTableName() . '.' . collect($tableDefinition->getPrimaryKey())->map(function ($columnDefinition) {
+                    return $columnDefinition->getColumnName();
+                })->join(self::SEPARATOR);
                 if (! $graph->hasVertex($tableName)) {
                     $graph->createVertex($tableName);
                 }
@@ -39,13 +43,12 @@ class DependencyResolver
                 foreach ($foreignIndices as $indexDefinition) {
                     /** @var IndexDefinition $indexDefinition */
                     $foreignTable = $indexDefinition->getForeignReferencedTable();
-                    if (! $graph->hasVertex($foreignTable)) {
-                        $graph->createVertex($foreignTable);
+                    $foreignTableKey = $foreignTable . '.' . collect($indexDefinition->getForeignReferencedColumns())->join(self::SEPARATOR);
+
+                    if (! $graph->hasVertex($foreignTableKey)) {
+                        $graph->createVertex($foreignTableKey);
                     }
-                    $vertexForForeignTable = $graph->getVertex($foreignTable);
-//                    if (! $tableVertex->hasEdgeTo($vertexForForeignTable)) {
-//                        $tableVertex->createEdgeTo($vertexForForeignTable);
-//                    }
+                    $vertexForForeignTable = $graph->getVertex($foreignTableKey);
                     if (! $vertexForForeignTable->hasEdgeTo($tableVertex)) {
                         $vertexForForeignTable->createEdgeTo($tableVertex);
                     }
