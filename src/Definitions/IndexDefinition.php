@@ -7,6 +7,8 @@ use LaravelMigrationGenerator\Helpers\WritableTrait;
 
 class IndexDefinition
 {
+    const TYPE_FOREIGN = 'foreign';
+
     use WritableTrait;
 
     protected string $indexType;

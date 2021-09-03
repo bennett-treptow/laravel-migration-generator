@@ -140,7 +140,16 @@ class TableDefinition
         if ($variables === null) {
             $variables = $this->getStubVariables($tab);
         }
-        $tableUpStub = file_get_contents($this->getStubUpPath());
+        if (count($this->getColumnDefinitions()) === 0) {
+            $tableModifyStub = file_get_contents($this->getStubModifyPath());
+            foreach ($variables as $var => $replacement) {
+                $tableModifyStub = str_replace('[' . $var . ']', $replacement, $tableModifyStub);
+            }
+
+            return $tableModifyStub;
+        }
+
+        $tableUpStub = file_get_contents($this->getStubCreatePath());
         foreach ($variables as $var => $replacement) {
             $tableUpStub = str_replace('[' . $var . ']', $replacement, $tableUpStub);
         }

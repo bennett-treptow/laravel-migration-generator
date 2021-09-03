@@ -2,6 +2,7 @@
 
 namespace LaravelMigrationGenerator\GeneratorManagers;
 
+use LaravelMigrationGenerator\Helpers\Dependency;
 use LaravelMigrationGenerator\Helpers\ConfigResolver;
 use LaravelMigrationGenerator\Helpers\DependencyResolver;
 use LaravelMigrationGenerator\Definitions\IndexDefinition;
@@ -14,7 +15,6 @@ abstract class BaseGeneratorManager implements GeneratorManagerInterface
     protected array $tableDefinitions = [];
 
     protected array $viewDefinitions = [];
-
 
     abstract public function init();
 
@@ -90,6 +90,18 @@ abstract class BaseGeneratorManager implements GeneratorManagerInterface
         $this->writeViewMigrations($viewDefinitions->toArray(), $basePath);
     }
 
+    protected $processedCirculars = [];
+
+    private function alreadyProcessedCircular($circulars)
+    {
+        if (isset($this->processedCirculars[implode('|', $circulars)]) || isset($this->processedCirculars[implode('|', array_reverse($circulars))])) {
+            return true;
+        }
+        $this->processedCirculars[implode('|', $circulars)] = true;
+
+        return false;
+    }
+
     /**
      * @param array<TableDefinition> $tableDefinitions
      * @return array<TableDefinition>
@@ -101,76 +113,85 @@ abstract class BaseGeneratorManager implements GeneratorManagerInterface
         }
 
         if (config('laravel-migration-generator.sort_mode') == 'foreign_key') {
-            $finalOrder = [];
+            $finalOrder = collect([]);
 
             $keyedTableDefinitions = collect($tableDefinitions)->keyBy(function ($tableDefinition) {
                 return $tableDefinition->getTableName();
             })->toArray();
 
             $resolver = new DependencyResolver($tableDefinitions);
-            [$nonCirculars, $circulars] = $resolver->getDependencyOrder();
+            $order = $resolver->getDependencyOrder();
 
-            foreach ($nonCirculars as $nonCircular) {
+            foreach ($order['nonCircular'] as $nonCircular) {
                 [$nonCircularTable, $nonCircularColumns] = explode('.', $nonCircular);
-                $finalOrder[] = $keyedTableDefinitions[$nonCircularTable];
+                $finalOrder->push($keyedTableDefinitions[$nonCircularTable]);
             }
-            $processedCirculars = [];
-
-            foreach ($circulars as $circular) {
-                [$table, $dependency] = $circular;
-
-                if (isset($processedCirculars[implode(',', $circular)]) || isset($processedCirculars[implode(',', array_reverse($circular))])) {
+            foreach ($order['circular'] as $circular) {
+                /** @var array<string, Dependency> $circular */
+                if ($this->alreadyProcessedCircular(array_keys($circular))) {
                     continue;
                 }
+                foreach ($circular as $parentTableName => $dependency) {
+                    if($finalOrder->contains(function($definition) use ($parentTableName){
+                        return $definition->getTableName() == $parentTableName;
+                    })){
+                        continue;
+                    }
+                    foreach ($dependency->getDependents() as $parentColumn => $tables) {
+                        foreach ($tables as $table => $columns) {
+                            foreach ($columns as $innerColumn) {
+                                /** @var TableDefinition $tableInstance */
+                                $tableInstance = $keyedTableDefinitions[$parentTableName];
 
-                $processedCirculars[implode(',', $circular)] = true;
+                                /** @var TableDefinition $dependencyInstance */
+                                $dependencyInstance = $keyedTableDefinitions[$table];
 
-                [$tableName, $columns] = explode('.', $table);
-                $columns = explode(DependencyResolver::SEPARATOR, $columns);
+                                $tableIndices = collect($tableInstance->getIndexDefinitions())
+                                    ->filter(function (IndexDefinition $definition) use ($table, $parentColumn) {
+                                        return $definition->getIndexType() == IndexDefinition::TYPE_FOREIGN && $definition->getForeignReferencedTable() == $table && in_array(
+                                           $parentColumn,
+                                            $definition->getForeignReferencedColumns()
+                                        );
+                                    })->each(function ($indexDefinition) use ($tableInstance) {
+                                        $tableInstance->removeIndexDefinition($indexDefinition);
+                                    });
+                                $finalOrder->push($tableInstance);
 
-                [$dependencyTableName, $dependencyColumns] = explode('.', $dependency);
-                $dependencyColumns = explode(DependencyResolver::SEPARATOR, $dependencyColumns);
+                                $dependencyIndices = collect($dependencyInstance->getIndexDefinitions())
+                                    ->filter(function (IndexDefinition $definition) use ($parentTableName, $innerColumn) {
+                                        return $definition->getIndexType() == IndexDefinition::TYPE_FOREIGN && $definition->getForeignReferencedTable() == $parentTableName && in_array(
+                                            $innerColumn,
+                                            $definition->getIndexColumns()
+                                        );
+                                    })->each(function ($indexDefinition) use ($dependencyInstance) {
+                                        $dependencyInstance->removeIndexDefinition($indexDefinition);
+                                    });
 
-                /** @var TableDefinition $tableInstance */
-                $tableInstance = $keyedTableDefinitions[$tableName];
+                                $finalOrder->push($dependencyInstance);
 
-                /** @var TableDefinition $dependencyInstance */
-                $dependencyInstance = $keyedTableDefinitions[$dependencyTableName];
-
-                //grab indices from the table
-                //and remove them from the instance
-                $tableIndices = collect($tableInstance->getIndexDefinitions())
-                    ->filter(function (IndexDefinition $definition) use ($dependencyTableName, $dependencyColumns) {
-                        return $definition->getForeignReferencedTable() == $dependencyTableName && count(array_intersect($dependencyColumns, $definition->getForeignReferencedColumns())) > 0;
-                    })->each(function ($indexDefinition) use ($tableInstance) {
-                        $tableInstance->removeIndexDefinition($indexDefinition);
-                    });
-                $finalOrder[] = $tableInstance;
-
-                $dependencyIndices = collect($dependencyInstance->getIndexDefinitions())
-                    ->filter(function (IndexDefinition $definition) use ($tableName, $columns) {
-                        return $definition->getForeignReferencedTable() == $tableName && count(array_intersect($columns, $definition->getForeignReferencedColumns())) > 0;
-                    })->each(function ($indexDefinition) use ($dependencyInstance) {
-                        $dependencyInstance->removeIndexDefinition($indexDefinition);
-                    });
-                $finalOrder[] = $dependencyInstance;
-
-                $finalOrder[] = new TableDefinition([
-                    'tableName'         => $tableInstance->getTableName(),
-                    'driver'            => $tableInstance->getDriver(),
-                    'columnDefinitions' => [],
-                    'indexDefinitions'  => $tableIndices->toArray()
-                ]);
-
-                $finalOrder[] = new TableDefinition([
-                    'tableName'         => $dependencyInstance->getTableName(),
-                    'driver'            => $dependencyInstance->getDriver(),
-                    'columnDefinitions' => [],
-                    'indexDefinitions'  => $dependencyIndices->toArray()
-                ]);
+                                if ($tableIndices->count() > 0) {
+                                    $finalOrder->push(new TableDefinition([
+                                        'tableName'         => $tableInstance->getTableName(),
+                                        'driver'            => $tableInstance->getDriver(),
+                                        'columnDefinitions' => [],
+                                        'indexDefinitions'  => $tableIndices->toArray()
+                                    ]));
+                                }
+                                if ($dependencyIndices->count() > 0) {
+                                    $finalOrder->push(new TableDefinition([
+                                        'tableName'         => $dependencyInstance->getTableName(),
+                                        'driver'            => $dependencyInstance->getDriver(),
+                                        'columnDefinitions' => [],
+                                        'indexDefinitions'  => $dependencyIndices->toArray()
+                                    ]));
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
-            return $finalOrder;
+            return $finalOrder->toArray();
         }
 
         return $tableDefinitions;

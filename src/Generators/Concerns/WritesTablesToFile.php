@@ -63,19 +63,34 @@ trait WritesTablesToFile
         return __DIR__ . '/../../../stubs/table.stub';
     }
 
-    public function getStubUpPath(): string
+    public function getStubCreatePath(): string
     {
         $driver = $this->getDriver();
 
-        if (file_exists($overridden = resource_path('stubs/vendor/laravel-migration-generator/' . $driver . '-table-up.stub'))) {
+        if (file_exists($overridden = resource_path('stubs/vendor/laravel-migration-generator/' . $driver . '-table-create.stub'))) {
             return $overridden;
         }
 
-        if (file_exists($overridden = resource_path('stubs/vendor/laravel-migration-generator/table-up.stub'))) {
+        if (file_exists($overridden = resource_path('stubs/vendor/laravel-migration-generator/table-create.stub'))) {
             return $overridden;
         }
 
-        return __DIR__ . '/../../../stubs/table-up.stub';
+        return __DIR__ . '/../../../stubs/table-create.stub';
+    }
+
+    public function getStubModifyPath(): string
+    {
+        $driver = $this->getDriver();
+
+        if (file_exists($overridden = resource_path('stubs/vendor/laravel-migration-generator/' . $driver . '-table-modify.stub'))) {
+            return $overridden;
+        }
+
+        if (file_exists($overridden = resource_path('stubs/vendor/laravel-migration-generator/table-modify.stub'))) {
+            return $overridden;
+        }
+
+        return __DIR__ . '/../../../stubs/table-modify.stub';
     }
 
     protected function stubNameVariables(): array

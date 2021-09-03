@@ -32,9 +32,7 @@ class DependencyResolver
                     return $def->getIndexType() == 'foreign';
                 });
             if ($foreignIndices->count() > 0) {
-                $tableName = $tableDefinition->getTableName() . '.' . collect($tableDefinition->getPrimaryKey())->map(function ($columnDefinition) {
-                    return $columnDefinition->getColumnName();
-                })->join(self::SEPARATOR);
+                $tableName = $tableDefinition->getTableName();
                 if (! $graph->hasVertex($tableName)) {
                     $graph->createVertex($tableName);
                 }
@@ -43,12 +41,19 @@ class DependencyResolver
                 foreach ($foreignIndices as $indexDefinition) {
                     /** @var IndexDefinition $indexDefinition */
                     $foreignTable = $indexDefinition->getForeignReferencedTable();
-                    $foreignTableKey = $foreignTable . '.' . collect($indexDefinition->getForeignReferencedColumns())->join(self::SEPARATOR);
 
-                    if (! $graph->hasVertex($foreignTableKey)) {
-                        $graph->createVertex($foreignTableKey);
+                    if (! $graph->hasVertex($foreignTable)) {
+                        $graph->createVertex($foreignTable);
                     }
-                    $vertexForForeignTable = $graph->getVertex($foreignTableKey);
+                    $vertexForForeignTable = $graph->getVertex($foreignTable);
+                    $dependency = $vertexForForeignTable->getAttribute('columns', new Dependency($foreignTable));
+                    foreach ($indexDefinition->getIndexColumns() as $indexColumn) {
+                        $dependency->addDependent($indexDefinition->getForeignReferencedColumns(), $tableName, $indexColumn);
+                    }
+                    $vertexForForeignTable->setAttribute(
+                        'columns',
+                        $dependency
+                    );
                     if (! $vertexForForeignTable->hasEdgeTo($tableVertex)) {
                         $vertexForForeignTable->createEdgeTo($tableVertex);
                     }
@@ -63,6 +68,9 @@ class DependencyResolver
         return $this->graph;
     }
 
+    /**
+     * @return array
+     */
     public function getDependencyOrder()
     {
         $graph = $this->graph()->createGraphClone();
@@ -98,10 +106,10 @@ class DependencyResolver
         }
 
         return [
-            collect($elements)->map(function ($vertex) {
-                return $vertex->getId();
+            'nonCircular' => collect($elements)->mapWithKeys(function ($vertex) {
+                return [$vertex->getId() => $vertex->getAttribute('columns')];
             })->toArray(),
-            $circularRelations
+            'circular' => $circularRelations
         ];
     }
 
@@ -113,7 +121,10 @@ class DependencyResolver
             foreach ($vertex->getEdgesOut()->getIterator() as $edge) {
                 /** @var Directed $edge */
                 $dependency = $edge->getVertexEnd();
-                $circularDependencies[] = [$vertex->getId(), $dependency->getId()];
+                $circularDependencies[] = [
+                    $vertex->getId()     => $vertex->getAttribute('columns'),
+                    $dependency->getId() => $dependency->getAttribute('columns')
+                ];
             }
         }
 
