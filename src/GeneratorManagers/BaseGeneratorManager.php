@@ -122,8 +122,7 @@ abstract class BaseGeneratorManager implements GeneratorManagerInterface
             $resolver = new DependencyResolver($tableDefinitions);
             $order = $resolver->getDependencyOrder();
 
-            foreach ($order['nonCircular'] as $nonCircular) {
-                [$nonCircularTable, $nonCircularColumns] = explode('.', $nonCircular);
+            foreach ($order['nonCircular'] as $nonCircularTable => $dependents) {
                 $finalOrder->push($keyedTableDefinitions[$nonCircularTable]);
             }
             foreach ($order['circular'] as $circular) {
@@ -132,9 +131,9 @@ abstract class BaseGeneratorManager implements GeneratorManagerInterface
                     continue;
                 }
                 foreach ($circular as $parentTableName => $dependency) {
-                    if($finalOrder->contains(function($definition) use ($parentTableName){
+                    if ($finalOrder->contains(function ($definition) use ($parentTableName) {
                         return $definition->getTableName() == $parentTableName;
-                    })){
+                    })) {
                         continue;
                     }
                     foreach ($dependency->getDependents() as $parentColumn => $tables) {
@@ -149,7 +148,7 @@ abstract class BaseGeneratorManager implements GeneratorManagerInterface
                                 $tableIndices = collect($tableInstance->getIndexDefinitions())
                                     ->filter(function (IndexDefinition $definition) use ($table, $parentColumn) {
                                         return $definition->getIndexType() == IndexDefinition::TYPE_FOREIGN && $definition->getForeignReferencedTable() == $table && in_array(
-                                           $parentColumn,
+                                            $parentColumn,
                                             $definition->getForeignReferencedColumns()
                                         );
                                     })->each(function ($indexDefinition) use ($tableInstance) {
