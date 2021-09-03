@@ -37,11 +37,10 @@ class ColumnTokenizer extends BaseColumnTokenizer
             $this->consumeAutoIncrement();
             $this->consumeKeyConstraints();
         }
-        if ($this->columnDataType == 'timestamp') {
-            $this->consumeTimestamp();
-        }
 
-        if ($this->columnDataType == 'timestamp') {
+        $this->consumeGenerated();
+
+        if ($this->columnDataType == 'timestamp' || $this->columnDataType == 'datetime') {
             $this->consumeTimestamp();
         }
 
@@ -181,6 +180,54 @@ class ColumnTokenizer extends BaseColumnTokenizer
             }
         } else {
             $this->putBack($nextPiece);
+        }
+    }
+
+    private function consumeGenerated()
+    {
+        $canContinue = false;
+        $nextPiece = $this->consume();
+        if (strtoupper($nextPiece) === 'GENERATED') {
+            $piece = $this->consume();
+            if (strtoupper($piece) === 'ALWAYS') {
+                $this->consume(); // AS
+                $canContinue = true;
+            } else {
+                $this->putBack($piece);
+            }
+        } elseif (strtoupper($nextPiece) === 'AS') {
+            $canContinue = true;
+        }
+
+        if (! $canContinue) {
+            $this->putBack($nextPiece);
+
+            return;
+        }
+
+        $expressionPieces = [];
+        $parenthesisCounter = 0;
+        while ($pieceOfExpression = $this->consume()) {
+            $numOpeningParenthesis = substr_count($pieceOfExpression, '(');
+            $numClosingParenthesis = substr_count($pieceOfExpression, ')');
+            $parenthesisCounter += $numOpeningParenthesis - $numClosingParenthesis;
+
+            $expressionPieces[] = $pieceOfExpression;
+
+            if ($parenthesisCounter === 0) {
+                break;
+            }
+        }
+        $expression = implode(' ', $expressionPieces);
+        if (Str::startsWith($expression, '((') && Str::endsWith($expression, '))')) {
+            $expression = substr($expression, 1, strlen($expression) - 2);
+        }
+
+        $finalPiece = $this->consume();
+        if ($finalPiece !== null && strtoupper($finalPiece) === 'STORED') {
+            $this->definition->setStoredAs($expression)->setNullable(false);
+        } else {
+            $this->definition->setVirtualAs($expression)->setNullable(false);
         }
     }
 

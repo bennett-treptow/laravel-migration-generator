@@ -16,7 +16,8 @@ return [
         'use_defined_index_names'             => env('LMG_USE_DEFINED_INDEX_NAMES', true),
         'use_defined_foreign_key_index_names' => env('LMG_USE_DEFINED_FOREIGN_KEY_INDEX_NAMES', true),
         'use_defined_unique_key_index_names'  => env('LMG_USE_DEFINED_UNIQUE_KEY_INDEX_NAMES', true),
-        'use_defined_primary_key_index_names' => env('LMG_USE_DEFINED_PRIMARY_KEY_INDEX_NAMES', true)
+        'use_defined_primary_key_index_names' => env('LMG_USE_DEFINED_PRIMARY_KEY_INDEX_NAMES', true),
+        'use_defined_datatype_on_timestamp'   => env('LMG_USE_DEFINED_DATATYPE_ON_TIMESTAMP', false),
     ],
 
     //now driver specific configs

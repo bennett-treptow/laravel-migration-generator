@@ -75,6 +75,7 @@ class GenerateMigrationsCommand extends Command
 
         $tableNames = Arr::wrap($this->option('table'));
 
+        $this->line("\n");
         $viewNames = Arr::wrap($this->option('view'));
 
         $manager->handle($basePath, $tableNames, $viewNames);

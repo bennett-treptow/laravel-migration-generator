@@ -179,6 +179,19 @@ class MySQLTableGeneratorTest extends TestCase
         $this->assertSchemaHas('$table->timestamp(\'updated_at\')->nullable()->useCurrentOnUpdate()', $schema);
     }
 
+    public function test_doesnt_clean_timestamps_with_use_defined_datatype_on_timestamp_configuration()
+    {
+        config()->set('laravel-migration-generator.definitions.use_defined_datatype_on_timestamp', true);
+        $generator = TableGenerator::init('table', [
+            'id int auto_increment primary key',
+            'created_at datetime NOT NULL',
+            'updated_at datetime NOT NULL'
+        ]);
+        $schema = $generator->getSchema();
+        $this->assertSchemaHas('$table->dateTime(\'created_at\')', $schema);
+        $this->assertSchemaHas('$table->dateTime(\'updated_at\')', $schema);
+    }
+
     public function test_removes_index_from_column_if_fk()
     {
         $generator = TableGenerator::init('test', [

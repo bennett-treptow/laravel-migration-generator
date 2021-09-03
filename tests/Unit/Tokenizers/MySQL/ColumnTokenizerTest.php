@@ -612,6 +612,21 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('$table->dateTime(\'sent_at\')->nullable()->useCurrent()', $columnDefinition->render());
     }
 
+    public function test_it_tokenizes_a_null_default_value_now_and_on_update_datetime_column()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`sent_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('sent_at', $columnDefinition->getColumnName());
+        $this->assertEquals('datetime', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('dateTime', $columnDefinition->getMethodName());
+        $this->assertCount(0, $columnDefinition->getMethodParameters());
+        $this->assertNull($columnDefinition->getDefaultValue());
+        $this->assertTrue($columnDefinition->isNullable());
+        $this->assertFalse($columnDefinition->isUnsigned());
+        $this->assertNull($columnDefinition->getCollation());
+        $this->assertEquals('$table->dateTime(\'sent_at\')->nullable()->useCurrent()->useCurrentOnUpdate()', $columnDefinition->render());
+    }
     //endregion
 
     //region TIMESTAMP
@@ -760,12 +775,22 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('$table->enum(\'status_flag\', [\'1\', \'2\', \'3\', \'4\'])->default(\'1\')', $columnDefinition->render());
     }
 
-    public function test_it_tokenizes_enum_with_spaces(){
+    public function test_it_tokenizes_enum_with_spaces()
+    {
         $columnTokenizer = ColumnTokenizer::parse('`calculate` enum(\'one\',\'and\',\'highest or\',\'lowest or\',\'sum\',\'highest position or\',\'lowest position or\') COLLATE utf8mb4_general_ci NOT NULL COMMENT \'set the way we calculate a feature value. with high or low or the sort is by position\'');
         $definition = $columnTokenizer->definition();
 
         $this->assertEquals('$table->enum(\'calculate\', [\'one\', \'and\', \'highest or\', \'lowest or\', \'sum\', \'highest position or\', \'lowest position or\'])', $definition->render());
     }
+
+    public function test_it_tokenizes_enum_with_special_characters()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`calculate` enum(\'one\',\'and\',\'highest-or\',\'lowest^or\',\'sum%\',\'highest $ position or\',\'lowest+_<>?/ position or\',\'"quoted"\') COLLATE utf8mb4_general_ci NOT NULL COMMENT \'set the way we calculate a feature value. with high or low or the sort is by position\'');
+        $definition = $columnTokenizer->definition();
+
+        $this->assertEquals('$table->enum(\'calculate\', [\'one\', \'and\', \'highest-or\', \'lowest^or\', \'sum%\', \'highest $ position or\', \'lowest+_<>?/ position or\', \'"quoted"\'])', $definition->render());
+    }
+
     //endregion
 
     //region POINT, MULTIPOINT
@@ -950,4 +975,42 @@ class ColumnTokenizerTest extends TestCase
     }
 
     //endregion
+
+    public function test_it_tokenizes_generated_as_column()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`total` decimal(24,6) GENERATED ALWAYS AS ((`quantity` * `unit_price`)) STORED');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('decimal', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('decimal', $columnDefinition->getMethodName());
+        $this->assertFalse($columnDefinition->isNullable());
+        $this->assertEquals('(`quantity` * `unit_price`)', $columnDefinition->getStoredAs());
+
+        $this->assertEquals('$table->decimal(\'total\', 24, 6)->storedAs("(`quantity` * `unit_price`)")', $columnDefinition->render());
+    }
+
+    public function test_it_tokenizes_generated_as_column_example(){
+        $columnTokenizer = ColumnTokenizer::parse('`full_name` varchar(150) COLLATE utf8mb4_unicode_ci GENERATED ALWAYS AS (concat(`first_name`,\' \',`last_name`)) STORED');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('varchar', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('string', $columnDefinition->getMethodName());
+        $this->assertFalse($columnDefinition->isNullable());
+        $this->assertEquals('(concat(`first_name`,\' \',`last_name`))', $columnDefinition->getStoredAs());
+
+        $this->assertEquals('$table->string(\'full_name\', 150)->storedAs("(concat(`first_name`,\' \',`last_name`))")', $columnDefinition->render());
+    }
+
+    public function test_it_tokenizes_virtual_as_column()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`total` decimal(24,6) AS ((`quantity` * `unit_price`))');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('decimal', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('decimal', $columnDefinition->getMethodName());
+        $this->assertFalse($columnDefinition->isNullable());
+        $this->assertEquals('(`quantity` * `unit_price`)', $columnDefinition->getVirtualAs());
+
+        $this->assertEquals('$table->decimal(\'total\', 24, 6)->virtualAs("(`quantity` * `unit_price`)")', $columnDefinition->render());
+    }
 }
