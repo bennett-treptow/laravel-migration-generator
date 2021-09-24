@@ -40,7 +40,6 @@ class MySQLViewGeneratorTest extends TestCase
         if (! is_dir($path)) {
             mkdir($path, 0777, true);
         }
-
         $written = $generator->definition()->formatter()->write($path);
         $this->assertFileExists($written);
     }

@@ -3,6 +3,7 @@
 namespace LaravelMigrationGenerator\Formatters;
 
 use Illuminate\Support\Str;
+use LaravelMigrationGenerator\Helpers\Formatter;
 use LaravelMigrationGenerator\Helpers\ConfigResolver;
 use LaravelMigrationGenerator\Definitions\ViewDefinition;
 
@@ -18,12 +19,13 @@ class ViewFormatter
     public function stubNameVariables($index = 0)
     {
         return [
-            'ViewName:Studly'    => Str::studly($viewName = $this->definition->getViewName()),
-            'ViewName:Lowercase' => strtolower($viewName),
-            'ViewName'           => $viewName,
-            'Timestamp'          => app('laravel-migration-generator:time')->format('Y_m_d_His'),
-            'Index'              => '0000_00_00_' . str_pad((string) $index, 6, '0', STR_PAD_LEFT),
-            'IndexedTimestamp'   => app('laravel-migration-generator:time')->clone()->addSeconds($index)->format('Y_m_d_His')
+            'ViewName:Studly'       => Str::studly($viewName = $this->definition->getViewName()),
+            'ViewName:Lowercase'    => strtolower($viewName),
+            'ViewName'              => $viewName,
+            'Timestamp'             => app('laravel-migration-generator:time')->format('Y_m_d_His'),
+            'Index'                 => '0000_00_00_' . str_pad((string) $index, 6, '0', STR_PAD_LEFT),
+            'IndexedEmptyTimestamp' => '0000_00_00_' . str_pad((string) $index, 6, '0', STR_PAD_LEFT),
+            'IndexedTimestamp'      => app('laravel-migration-generator:time')->clone()->addSeconds($index)->format('Y_m_d_His')
         ];
     }
 
@@ -56,15 +58,18 @@ class ViewFormatter
         return __DIR__ . '/../../stubs/view.stub';
     }
 
-    protected function render($tabCharacter = '    ')
+    public function render($tabCharacter = '    ')
     {
-        $tab = str_repeat($tabCharacter, 3);
-
         $schema = $this->definition->getSchema();
         $stub = file_get_contents($this->getStubPath());
-        $stub = str_replace('[ViewName:Studly]', Str::studly($viewName = $this->definition->getViewName()), $stub);
-        $stub = str_replace('[ViewName]', $viewName, $stub);
-        $stub = str_replace('[Schema]', $tab . $schema, $stub);
+        $variables = [
+            '[ViewName:Studly]' => Str::studly($viewName = $this->definition->getViewName()),
+            '[ViewName]'        => $viewName,
+            '[Schema]'          => $schema
+        ];
+        foreach ($variables as $key => $value) {
+            $stub = Formatter::replace($tabCharacter, $key, $value, $stub);
+        }
 
         return $stub;
     }

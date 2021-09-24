@@ -98,12 +98,13 @@ class TableFormatter
         $tableName = $this->tableDefinition->getPresentableTableName();
 
         return [
-            'TableName:Studly'    => Str::studly($tableName),
-            'TableName:Lowercase' => strtolower($tableName),
-            'TableName'           => $tableName,
-            'Timestamp'           => app('laravel-migration-generator:time')->format('Y_m_d_His'),
-            'Index'               => '0000_00_00_' . str_pad((string) $index, 6, '0', STR_PAD_LEFT),
-            'IndexedTimestamp'    => app('laravel-migration-generator:time')->clone()->addSeconds($index)->format('Y_m_d_His')
+            'TableName:Studly'      => Str::studly($tableName),
+            'TableName:Lowercase'   => strtolower($tableName),
+            'TableName'             => $tableName,
+            'Timestamp'             => app('laravel-migration-generator:time')->format('Y_m_d_His'),
+            'Index'                 => (string) $index,
+            'IndexedEmptyTimestamp' => '0000_00_00_' . str_pad((string) $index, 6, '0', STR_PAD_LEFT),
+            'IndexedTimestamp'      => app('laravel-migration-generator:time')->clone()->addSeconds($index)->format('Y_m_d_His')
         ];
     }
 
