@@ -46,10 +46,10 @@ class Formatter
         if (preg_match('/^(\s+)?' . preg_quote($toReplace) . '/m', $body, $matches) !== false) {
             $gap = $matches[1] ?? '';
             $numSpaces = strlen($this->tabCharacter);
-            if (strlen($gap) === 0) {
+            if ($numSpaces === 0) {
                 $startingTabIndent = 0;
             } else {
-                $startingTabIndent = ceil($numSpaces / strlen($gap));
+                $startingTabIndent = (int) (strlen($gap) / $numSpaces);
             }
 
             return preg_replace('/' . preg_quote($toReplace) . '/', $this->render($startingTabIndent), $body);
@@ -61,7 +61,9 @@ class Formatter
     public static function replace($tabCharacter, $toReplace, $replacement, $body)
     {
         $formatter = new static($tabCharacter);
-        $formatter->line($replacement);
+        foreach (explode("\n", $replacement) as $line) {
+            $formatter->line($line);
+        }
 
         return $formatter->replaceOnLine($toReplace, $body);
     }

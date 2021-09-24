@@ -33,7 +33,6 @@ class TableGenerator extends BaseTableGenerator
             $lines = array_map(fn ($item) => trim($item), $lines);
             $this->rows = $lines;
         } else {
-            $this->markAsWritable(false);
             $this->rows = [];
         }
     }

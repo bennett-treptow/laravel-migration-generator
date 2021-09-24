@@ -2,11 +2,11 @@
 
 namespace LaravelMigrationGenerator\GeneratorManagers;
 
+use LaravelMigrationGenerator\Definitions\ViewDefinition;
 use LaravelMigrationGenerator\Helpers\Dependency;
 use LaravelMigrationGenerator\Helpers\ConfigResolver;
 use LaravelMigrationGenerator\Helpers\DependencyResolver;
 use LaravelMigrationGenerator\Definitions\TableDefinition;
-use LaravelMigrationGenerator\Generators\BaseViewGenerator;
 use LaravelMigrationGenerator\GeneratorManagers\Interfaces\GeneratorManagerInterface;
 use LaravelMigrationGenerator\Helpers\DependencyResolverV2;
 use LaravelMigrationGenerator\Helpers\DependencyResolverV3;
@@ -35,7 +35,7 @@ abstract class BaseGeneratorManager implements GeneratorManagerInterface
     }
 
     /**
-     * @return array<BaseViewGenerator>
+     * @return array<ViewDefinition>
      */
     public function getViewDefinitions(): array
     {
@@ -49,9 +49,9 @@ abstract class BaseGeneratorManager implements GeneratorManagerInterface
         return $this;
     }
 
-    public function addViewDefinition(BaseViewGenerator $generator): BaseGeneratorManager
+    public function addViewDefinition(ViewDefinition $definition): BaseGeneratorManager
     {
-        $this->viewDefinitions[] = $generator;
+        $this->viewDefinitions[] = $definition;
 
         return $this;
     }
@@ -115,18 +115,18 @@ abstract class BaseGeneratorManager implements GeneratorManagerInterface
     public function writeTableMigrations(array $tableDefinitions, $basePath)
     {
         foreach ($tableDefinitions as $key => $tableDefinition) {
-            $tableDefinition->write($basePath, $key);
+            $tableDefinition->formatter()->write($basePath, $key);
         }
     }
 
     /**
-     * @param array<BaseViewGenerator> $viewDefinitions
+     * @param array<ViewDefinition> $viewDefinitions
      * @param $basePath
      */
     public function writeViewMigrations(array $viewDefinitions, $basePath)
     {
         foreach ($viewDefinitions as $key => $view) {
-            $view->write($basePath, $key);
+            $view->formatter()->write($basePath);
         }
     }
 

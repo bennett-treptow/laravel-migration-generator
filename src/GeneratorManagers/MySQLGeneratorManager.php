@@ -25,7 +25,7 @@ class MySQLGeneratorManager extends BaseGeneratorManager implements GeneratorMan
             if ($tableType === 'BASE TABLE') {
                 $this->addTableDefinition(TableGenerator::init($table)->definition());
             } elseif ($tableType === 'VIEW') {
-                $this->addViewDefinition(ViewGenerator::init($table));
+                $this->addViewDefinition(ViewGenerator::init($table)->definition());
             }
         }
     }

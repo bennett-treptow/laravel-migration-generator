@@ -2,48 +2,35 @@
 
 namespace LaravelMigrationGenerator\Generators;
 
-use LaravelMigrationGenerator\Helpers\WritableTrait;
-use LaravelMigrationGenerator\Generators\Concerns\WritesViewsToFile;
+use LaravelMigrationGenerator\Definitions\ViewDefinition;
 use LaravelMigrationGenerator\Generators\Interfaces\ViewGeneratorInterface;
 
 abstract class BaseViewGenerator implements ViewGeneratorInterface
 {
-    use WritableTrait;
-    use WritesViewsToFile;
-
-    protected string $viewName;
-
-    protected ?string $schema;
+    protected ViewDefinition $definition;
 
     public function __construct(string $viewName, ?string $schema = null)
     {
-        $this->viewName = $viewName;
-        $this->schema = $schema;
+        $this->definition = new ViewDefinition([
+            'driver'   => static::driver(),
+            'viewName' => $viewName,
+            'schema'   => $schema
+        ]);
+    }
+
+    public function definition(): ViewDefinition
+    {
+        return $this->definition;
     }
 
     public static function init(string $viewName, ?string $schema = null)
     {
         $obj = new static($viewName, $schema);
-        if ($obj->shouldResolveStructure()) {
+        if ($schema === null) {
             $obj->resolveSchema();
         }
         $obj->parse();
 
         return $obj;
-    }
-
-    public function getViewName(): string
-    {
-        return $this->viewName;
-    }
-
-    public function getSchema(): ?string
-    {
-        return $this->schema;
-    }
-
-    public function shouldResolveStructure(): bool
-    {
-        return $this->schema === null;
     }
 }

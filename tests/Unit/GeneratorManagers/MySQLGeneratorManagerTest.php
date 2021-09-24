@@ -50,6 +50,6 @@ class MySQLGeneratorManagerTest extends TestCase
         ]);
         $sorted = $mocked->sortTables($mocked->getTableDefinitions());
         $this->assertCount(4, $sorted);
-        $this->assertStringContainsString('$table->dropForeign', $sorted[3]->generateStub());
+        $this->assertStringContainsString('$table->dropForeign', $sorted[3]->formatter()->stubTableDown());
     }
 }

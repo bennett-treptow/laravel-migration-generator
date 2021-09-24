@@ -69,7 +69,7 @@ class DependencyResolverTest extends TestCase
 
         $order = $resolver->getDependencyOrder();
         $this->assertCount(4, $order);
-        $this->assertEquals('$table->foreign(\'test_id\', \'fk_test_id\')->references(\'id\')->on(\'tests\');', $order[2]->getSchema());
-        $this->assertEquals('$table->foreign(\'test_item_id\', \'fk_test_item_id\')->references(\'id\')->on(\'test_items\');', $order[3]->getSchema());
+        $this->assertEquals('$table->foreign(\'test_id\', \'fk_test_id\')->references(\'id\')->on(\'tests\');', $order[2]->formatter()->getSchema());
+        $this->assertEquals('$table->foreign(\'test_item_id\', \'fk_test_item_id\')->references(\'id\')->on(\'test_items\');', $order[3]->formatter()->getSchema());
     }
 }

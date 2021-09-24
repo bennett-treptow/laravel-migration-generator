@@ -2,9 +2,8 @@
 
 namespace LaravelMigrationGenerator\GeneratorManagers\Interfaces;
 
-use Illuminate\Console\OutputStyle;
 use LaravelMigrationGenerator\Definitions\TableDefinition;
-use LaravelMigrationGenerator\Generators\BaseViewGenerator;
+use LaravelMigrationGenerator\Definitions\ViewDefinition;
 
 interface GeneratorManagerInterface
 {
@@ -14,7 +13,7 @@ interface GeneratorManagerInterface
 
     public function addTableDefinition(TableDefinition $definition);
 
-    public function addViewDefinition(BaseViewGenerator $generator);
+    public function addViewDefinition(ViewDefinition $definition);
 
     public function getTableDefinitions(): array;
 
