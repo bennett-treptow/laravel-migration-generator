@@ -14,8 +14,8 @@ trait CleansUpTimestampsColumn
     protected function cleanUpTimestampsColumn(): void
     {
         $timestampColumns = [];
-        foreach ($this->columns as &$column) {
-            $columnName = $column->definition()->getColumnName();
+        foreach ($this->definition()->getColumnDefinitions() as &$column) {
+            $columnName = $column->getColumnName();
             if ($columnName === 'created_at') {
                 $timestampColumns['created_at'] = $column;
             } elseif ($columnName === 'updated_at') {
@@ -23,13 +23,13 @@ trait CleansUpTimestampsColumn
             }
             if (count($timestampColumns) === 2) {
                 foreach ($timestampColumns as $timestampColumn) {
-                    if ($timestampColumn->definition()->useCurrent() || $timestampColumn->definition()->useCurrentOnUpdate()) {
+                    if ($timestampColumn->useCurrent() || $timestampColumn->useCurrentOnUpdate()) {
                         //don't convert to a `timestamps()` method if useCurrent is used
 
                         return;
                     }
                 }
-                $timestampColumns['created_at']->definition()
+                $timestampColumns['created_at']
                     ->setColumnName(null)
                     ->setMethodName('timestamps')
                     ->setNullable(false);

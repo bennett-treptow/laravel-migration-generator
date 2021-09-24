@@ -13,9 +13,7 @@ class Create[TableName:Studly]Table extends Migration
      */
     public function up()
     {
-        Schema::create('[TableName]', function (Blueprint $table) {
-[Schema]
-        });
+        [TableUp]
     }
 
     /**
@@ -25,6 +23,6 @@ class Create[TableName:Studly]Table extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('[TableName]');
+        [TableDown]
     }
 }

@@ -1,3 +1,32 @@
+## Upgrade from 3.* to 4.0
+
+### Foreign Key Sorting
+New foreign key dependency sorting options, available as an env variable to potentially not sort by foreign key dependencies if not necessary.
+Update your `config/laravel-migration-generator.php` to have a new `sort_mode` key:
+
+```dotenv
+'sort_mode' => env('LMG_SORT_MODE', 'foreign_key'),
+```
+
+### New Stubs
+New stubs for a `create` and a `modify` version for tables.
+If you want to change how a `Schema::create` or `Schema::table` is output as, create a new `table-create.stub` or `table-modify.stub` and their driver variants as well if desired.
+
+### New Table and View Naming Tokens
+
+Three new tokens were added for the table stubs: `[Index]`, `[IndexedEmptyTimestamp]`, and `[IndexedTimestamp]`.
+For use with foreign key / sorting in general to enforce a final sorting.
+
+`[Index]` is the numeric key (0,1,2,...) that the migration holds in the sort order.
+
+`[IndexedEmptyTimestamp]` is the `[Index]` but prefixed with the necessary digits and underscores for the file to be recognized as a migration. `0000_00_00_000001_migration.php`
+
+`[IndexedTimestamp]` is the current time incremented by `[Index]` seconds. So first migration would be the current time, second migration would be +1 second, third +2 seconds, etc.
+
+### New Table Stub Tokens
+Two new tokens were added for table stubs: `[TableUp]` and `[TableDown]`.
+See latest `stubs/table.stub`. It is suggested to upgrade all of your stubs using the latest stubs available by `vendor:publish --force`
+
 ## Upgrade from 2.2.* to 3.0.0
 
 `skippable_tables` is now a comma delimited string instead of an array so they are compatible with .env files.

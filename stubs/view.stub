@@ -30,7 +30,7 @@ class Create[ViewName:Studly]View extends Migration
     private function createView()
     {
         return <<<SQL
-[Schema]
+            [Schema]
         SQL;
     }
 

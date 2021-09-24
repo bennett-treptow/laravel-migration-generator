@@ -64,6 +64,7 @@ Want to customize the migration stubs? Make sure you've published the vendor ass
 | LMG_SKIPPABLE_TABLES | migrations | comma delimited string | The tables to be skipped |
 | LMG_SKIP_VIEWS | false | boolean | When true, skip all views |
 | LMG_SKIPPABLE_VIEWS | '' | comma delimited string | The views to be skipped |
+| LMG_SORT_MODE | 'foreign_key' | string | The sorting mode to be used. Options: `foreign_key` |
 | LMG_PREFER_UNSIGNED_PREFIX | true | boolean | When true, uses `unsigned` variant methods instead of the `->unsigned()` modifier. |
 | LMG_USE_DEFINED_INDEX_NAMES | true | boolean | When true, uses index names defined by the database as the name parameter for index methods |
 | LMG_USE_DEFINED_FOREIGN_KEY_INDEX_NAMES | true | boolean | When true, uses foreign key index names defined by the database as the name parameter for foreign key methods |
@@ -107,6 +108,9 @@ Table stubs have the following tokens available for the naming scheme:
 | `[TableName:Studly]` | Users | Table's name with `Str::studly()` applied to it (useful for standardizing table names if they are inconsistent) |
 | `[TableName:Lowercase]` | users | Table's name with `strtolower` applied to it (useful for standardizing table names if they are inconsistent) |
 | `[Timestamp]` | 2021_04_25_110000 | The standard migration timestamp format, at the time of calling the command: `Y_m_d_His` |
+| `[Index]` | 0 | The key of the migration in the sorted order, for use with enforcing a sort order |
+| `[IndexedEmptyTimestamp]` | 0000_00_00_000041 | The standard migration timestamp format, but filled with 0s and incremented by `[Index]` seconds |
+| `[IndexedTimestamp]` | 2021_04_25_110003 | The standard migration timestamp format, at the time of calling the command: `Y_m_d_His` incremented by `[Index]` seconds |
 
 
 ### Table Schema Stub Tokens
@@ -116,6 +120,8 @@ Table schema stubs have the following tokens available:
 | ----- | ----------- |
 | `[TableName]` | Table's name, same as what is defined in the database |
 | `[TableName:Studly]` | Table's name with `Str::studly()` applied to it, for use with the class name |
+| `[TableUp]` | Table's `up()` function |
+| `[TableDown]` | Table's `down()` function |
 | `[Schema]` | The table's generated schema |
 
 
@@ -128,6 +134,9 @@ View stubs have the following tokens available for the naming scheme:
 | `[ViewName:Studly]` | UserEarnings | View's name with `Str::studly()` applied to it (useful for standardizing view names if they are inconsistent) |
 | `[ViewName:Lowercase]` | user_earnings | View's name with `strtolower` applied to it (useful for standardizing view names if they are inconsistent) |
 | `[Timestamp]` | 2021_04_25_110000 | The standard migration timestamp format, at the time of calling the command: `Y_m_d_His` |
+| `[Index]` | 0 | The key of the migration in the sorted order, for use with enforcing a sort order |
+| `[IndexedEmptyTimestamp]` | 0000_00_00_000041 | The standard migration timestamp format, but filled with 0s and incremented by `[Index]` seconds |
+| `[IndexedTimestamp]` | 2021_04_25_110003 | The standard migration timestamp format, at the time of calling the command: `Y_m_d_His` incremented by `[Index]` seconds |
 
 ### View Schema Stub Tokens
 View schema stubs have the following tokens available:

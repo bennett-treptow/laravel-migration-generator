@@ -15,27 +15,29 @@ class ViewGenerator extends BaseViewGenerator implements ViewGeneratorInterface
 
     public function resolveSchema()
     {
-        $structure = DB::select('SHOW CREATE VIEW `' . $this->viewName . '`');
+        $structure = DB::select('SHOW CREATE VIEW `' . $this->definition()->getViewName() . '`');
         $structure = $structure[0];
         $structure = (array) $structure;
         if (isset($structure['Create View'])) {
-            $this->schema = $structure['Create View'];
+            $this->definition()->setSchema($structure['Create View']);
         }
     }
 
     public function parse()
     {
-        if (preg_match('/CREATE(.*?)VIEW/', $this->schema, $matches)) {
-            $this->schema = str_replace($matches[1], ' ', $this->schema);
+        $schema = $this->definition()->getSchema();
+        if (preg_match('/CREATE(.*?)VIEW/', $schema, $matches)) {
+            $schema = str_replace($matches[1], ' ', $schema);
         }
 
-        if (preg_match_all('/isnull\((.+?)\)/', $this->schema, $matches)) {
+        if (preg_match_all('/isnull\((.+?)\)/', $schema, $matches)) {
             foreach ($matches[0] as $key => $match) {
-                $this->schema = str_replace($match, $matches[1][$key] . ' IS NULL', $this->schema);
+                $schema = str_replace($match, $matches[1][$key] . ' IS NULL', $schema);
             }
         }
-        if (preg_match('/collate utf8mb4_unicode_ci/', $this->schema)) {
-            $this->schema = str_replace('collate utf8mb4_unicode_ci', '', $this->schema);
+        if (preg_match('/collate utf8mb4_unicode_ci/', $schema)) {
+            $schema = str_replace('collate utf8mb4_unicode_ci', '', $schema);
         }
+        $this->definition()->setSchema($schema);
     }
 }

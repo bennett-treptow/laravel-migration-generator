@@ -13,16 +13,19 @@ trait CleansUpForeignKeyIndices
 {
     protected function cleanUpForeignKeyIndices(): void
     {
-        foreach ($this->indices as $index) {
-            if ($index->definition()->getIndexType() === 'index') {
+        $indexDefinitions = $this->definition()->getIndexDefinitions();
+        foreach ($indexDefinitions as $index) {
+            /** @var \LaravelMigrationGenerator\Definitions\IndexDefinition $index */
+            if ($index->getIndexType() === 'index') {
                 //look for corresponding foreign key for this index
-                $columns = $index->definition()->getIndexColumns();
-                $indexName = $index->definition()->getIndexName();
+                $columns = $index->getIndexColumns();
+                $indexName = $index->getIndexName();
 
-                foreach ($this->indices as $innerIndex) {
-                    if ($innerIndex->definition()->getIndexName() !== $indexName) {
-                        if ($innerIndex->definition()->getIndexType() === 'foreign') {
-                            $cols = $innerIndex->definition()->getIndexColumns();
+                foreach ($indexDefinitions as $innerIndex) {
+                    /** @var \LaravelMigrationGenerator\Definitions\IndexDefinition $innerIndex */
+                    if ($innerIndex->getIndexName() !== $indexName) {
+                        if ($innerIndex->getIndexType() === 'foreign') {
+                            $cols = $innerIndex->getIndexColumns();
                             if (count(array_intersect($columns, $cols)) === count($columns)) {
                                 //has same columns
                                 $index->markAsWritable(false);
