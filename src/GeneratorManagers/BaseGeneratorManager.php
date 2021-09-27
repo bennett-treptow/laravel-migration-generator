@@ -88,7 +88,7 @@ abstract class BaseGeneratorManager implements GeneratorManagerInterface
 
         $this->writeTableMigrations($sorted, $basePath);
 
-        $this->writeViewMigrations($viewDefinitions->toArray(), $basePath);
+        $this->writeViewMigrations($viewDefinitions->toArray(), $basePath, count($sorted));
     }
 
     /**
@@ -123,10 +123,10 @@ abstract class BaseGeneratorManager implements GeneratorManagerInterface
      * @param array<ViewDefinition> $viewDefinitions
      * @param $basePath
      */
-    public function writeViewMigrations(array $viewDefinitions, $basePath)
+    public function writeViewMigrations(array $viewDefinitions, $basePath, $tableCount = 0)
     {
         foreach ($viewDefinitions as $key => $view) {
-            $view->formatter()->write($basePath);
+            $view->formatter()->write($basePath, $tableCount + $key);
         }
     }
 
@@ -158,6 +158,6 @@ abstract class BaseGeneratorManager implements GeneratorManagerInterface
             return true;
         }
 
-        return ! in_array($view, $this->skippableViews());
+        return in_array($view, $this->skippableViews());
     }
 }
