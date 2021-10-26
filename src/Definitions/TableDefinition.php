@@ -109,7 +109,7 @@ class TableDefinition
     public function removeIndexDefinition(IndexDefinition $definition)
     {
         foreach ($this->indexDefinitions as $key => $indexDefinition) {
-            if ($definition->getIndexName() == $definition->getIndexName()) {
+            if ($definition->getIndexName() == $indexDefinition->getIndexName()) {
                 unset($this->indexDefinitions[$key]);
 
                 break;
