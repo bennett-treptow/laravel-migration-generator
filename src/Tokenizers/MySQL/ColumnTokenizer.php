@@ -47,10 +47,6 @@ class ColumnTokenizer extends BaseColumnTokenizer
             $this->consumeTimestamp();
         }
 
-        if ($this->columnDataType == 'timestamp') {
-            $this->consumeTimestamp();
-        }
-
         return $this;
     }
 
