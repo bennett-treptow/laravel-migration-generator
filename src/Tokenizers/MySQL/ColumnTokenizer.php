@@ -26,6 +26,9 @@ class ColumnTokenizer extends BaseColumnTokenizer
             $this->consumeZeroFill();
         }
         if ($this->isTextType()) {
+            //possibly has a character set
+            $this->consumeCharacterSet();
+
             //has collation data most likely
             $this->consumeCollation();
         }
@@ -40,7 +43,11 @@ class ColumnTokenizer extends BaseColumnTokenizer
 
         $this->consumeGenerated();
 
-        if ($this->columnDataType == 'timestamp' || $this->columnDataType == 'datetime') {
+        if ($this->columnDataType == 'timestamp') {
+            $this->consumeTimestamp();
+        }
+
+        if ($this->columnDataType == 'timestamp') {
             $this->consumeTimestamp();
         }
 
@@ -136,6 +143,20 @@ class ColumnTokenizer extends BaseColumnTokenizer
                 }
             }
         } else {
+            $this->putBack($piece);
+        }
+    }
+
+    protected function consumeCharacterSet()
+    {
+        $piece = $this->consume();
+
+        if (strtoupper($piece) === 'CHARACTER') {
+            $this->consume(); // SET, throw it away
+
+            $this->definition->setCharacterSet($this->consume());
+        } else {
+            //something else
             $this->putBack($piece);
         }
     }

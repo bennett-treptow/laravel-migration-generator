@@ -4,7 +4,6 @@ namespace LaravelMigrationGenerator\Definitions;
 
 use Illuminate\Support\Str;
 use LaravelMigrationGenerator\Helpers\ValueToString;
-use LaravelMigrationGenerator\Helpers\WritableTrait;
 
 /**
  * Class ColumnDefinition
@@ -25,6 +24,8 @@ class ColumnDefinition
     protected bool $nullable = true;
 
     protected $defaultValue;
+
+    protected ?string $characterSet = null;
 
     protected ?string $collation = null;
 
@@ -110,6 +111,14 @@ class ColumnDefinition
         }
 
         return $this->defaultValue;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCharacterSet(): ?string
+    {
+        return $this->characterSet;
     }
 
     /**
@@ -252,6 +261,17 @@ class ColumnDefinition
     public function setDefaultValue($defaultValue)
     {
         $this->defaultValue = $defaultValue;
+
+        return $this;
+    }
+
+    /**
+     * @param string|null $collation
+     * @return ColumnDefinition
+     */
+    public function setCharacterSet(?string $characterSet): ColumnDefinition
+    {
+        $this->characterSet = $characterSet;
 
         return $this;
     }
