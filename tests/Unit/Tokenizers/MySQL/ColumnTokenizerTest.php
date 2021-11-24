@@ -68,12 +68,12 @@ class ColumnTokenizerTest extends TestCase
 
     public function test_it_tokenizes_char_column_with_character_and_collation()
     {
-        $columnTokenizer = ColumnTokenizer::parse('`country` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT "US"');
+        $columnTokenizer = ColumnTokenizer::parse('`country` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT \'US\'');
         $columnDefinition = $columnTokenizer->definition();
 
         $this->assertEquals('country', $columnDefinition->getColumnName());
         $this->assertEquals('char', $columnTokenizer->getColumnDataType());
-        $this->assertEquals('string', $columnDefinition->getMethodName());
+        $this->assertEquals('char', $columnDefinition->getMethodName());
         $this->assertCount(1, $columnDefinition->getMethodParameters());
         $this->assertFalse($columnDefinition->isNullable());
         $this->assertEquals('utf8mb4_unicode_ci', $columnDefinition->getCollation());
