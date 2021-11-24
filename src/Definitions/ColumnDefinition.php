@@ -4,6 +4,7 @@ namespace LaravelMigrationGenerator\Definitions;
 
 use Illuminate\Support\Str;
 use LaravelMigrationGenerator\Helpers\ValueToString;
+use LaravelMigrationGenerator\Helpers\WritableTrait;
 
 /**
  * Class ColumnDefinition
