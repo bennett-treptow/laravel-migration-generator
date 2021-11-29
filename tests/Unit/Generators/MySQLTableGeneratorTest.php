@@ -119,7 +119,7 @@ class MySQLTableGeneratorTest extends TestCase
         ]);
 
         $schema = $generator->definition()->formatter()->getSchema();
-        $this->assertSchemaHas('$table->uuidMorphs(\'user\')->nullable();', $schema);
+        $this->assertSchemaHas('$table->nullableUuidMorphs(\'user\');', $schema);
     }
 
     public function test_doesnt_clean_non_auto_inc_id_to_laravel_method()

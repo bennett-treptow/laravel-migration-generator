@@ -14,7 +14,7 @@ class ColumnDefinitionTest extends TestCase
         $indexDefinition = (new IndexDefinition())->setIndexName('test')->setIndexType('index');
         $columnDefinition->addIndexDefinition($indexDefinition);
 
-        $this->assertEquals('$table->string(\'testing\')->nullable()->index(\'test\')', $columnDefinition->render());
+        $this->assertEquals('$table->string(\'testing\')->index(\'test\')', $columnDefinition->render());
     }
 
     public function test_it_prunes_empty_primary_key_index()
@@ -22,7 +22,6 @@ class ColumnDefinitionTest extends TestCase
         $columnDefinition = (new ColumnDefinition())
             ->setPrimary(true)
             ->setColumnName('testing')
-            ->setNullable(false)
             ->setUnsigned(true)
             ->setMethodName('integer');
         $indexDefinition = (new IndexDefinition())
