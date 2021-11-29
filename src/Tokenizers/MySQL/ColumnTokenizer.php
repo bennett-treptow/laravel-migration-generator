@@ -136,7 +136,6 @@ class ColumnTokenizer extends BaseColumnTokenizer
                     }
                 } else {
                     $this->definition->setDefaultValue((string) $this->definition->getDefaultValue());
-                    $this->definition->setNullable(false);
                 }
             }
         } else {
