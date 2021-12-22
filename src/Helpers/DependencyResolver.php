@@ -1,10 +1,10 @@
 <?php
 
-namespace LaravelMigrationGenerator\Helpers;
+namespace BennettTreptow\LaravelMigrationGenerator\Helpers;
 
 use MJS\TopSort\Implementations\FixedArraySort;
-use LaravelMigrationGenerator\Definitions\IndexDefinition;
-use LaravelMigrationGenerator\Definitions\TableDefinition;
+use BennettTreptow\LaravelMigrationGenerator\Definitions\IndexDefinition;
+use BennettTreptow\LaravelMigrationGenerator\Definitions\TableDefinition;
 
 class DependencyResolver
 {

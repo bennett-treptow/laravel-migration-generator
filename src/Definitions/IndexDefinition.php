@@ -1,9 +1,9 @@
 <?php
 
-namespace LaravelMigrationGenerator\Definitions;
+namespace BennettTreptow\LaravelMigrationGenerator\Definitions;
 
-use LaravelMigrationGenerator\Helpers\ValueToString;
-use LaravelMigrationGenerator\Helpers\WritableTrait;
+use BennettTreptow\LaravelMigrationGenerator\Helpers\ValueToString;
+use BennettTreptow\LaravelMigrationGenerator\Helpers\WritableTrait;
 
 class IndexDefinition
 {

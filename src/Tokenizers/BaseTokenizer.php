@@ -1,6 +1,6 @@
 <?php
 
-namespace LaravelMigrationGenerator\Tokenizers;
+namespace BennettTreptow\LaravelMigrationGenerator\Tokenizers;
 
 abstract class BaseTokenizer
 {

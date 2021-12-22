@@ -1,16 +1,16 @@
 <?php
 
-namespace LaravelMigrationGenerator\Generators\MySQL;
+namespace BennettTreptow\LaravelMigrationGenerator\Generators\MySQL;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
-use LaravelMigrationGenerator\Generators\BaseTableGenerator;
-use LaravelMigrationGenerator\Tokenizers\MySQL\IndexTokenizer;
-use LaravelMigrationGenerator\Tokenizers\MySQL\ColumnTokenizer;
+use BennettTreptow\LaravelMigrationGenerator\Generators\BaseTableGenerator;
+use BennettTreptow\LaravelMigrationGenerator\Tokenizers\MySQL\IndexTokenizer;
+use BennettTreptow\LaravelMigrationGenerator\Tokenizers\MySQL\ColumnTokenizer;
 
 /**
  * Class TableGenerator
- * @package LaravelMigrationGenerator\Generators\MySQL
+ * @package BennettTreptow\LaravelMigrationGenerator\Generators\MySQL
  */
 class TableGenerator extends BaseTableGenerator
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace LaravelMigrationGenerator\Definitions;
+namespace BennettTreptow\LaravelMigrationGenerator\Definitions;
 
-use LaravelMigrationGenerator\Formatters\TableFormatter;
+use BennettTreptow\LaravelMigrationGenerator\Formatters\TableFormatter;
 
 class TableDefinition
 {

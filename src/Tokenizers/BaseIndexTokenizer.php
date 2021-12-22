@@ -1,9 +1,9 @@
 <?php
 
-namespace LaravelMigrationGenerator\Tokenizers;
+namespace BennettTreptow\LaravelMigrationGenerator\Tokenizers;
 
-use LaravelMigrationGenerator\Definitions\IndexDefinition;
-use LaravelMigrationGenerator\Tokenizers\Interfaces\IndexTokenizerInterface;
+use BennettTreptow\LaravelMigrationGenerator\Definitions\IndexDefinition;
+use BennettTreptow\LaravelMigrationGenerator\Tokenizers\Interfaces\IndexTokenizerInterface;
 
 abstract class BaseIndexTokenizer extends BaseTokenizer implements IndexTokenizerInterface
 {

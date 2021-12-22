@@ -1,8 +1,8 @@
 <?php
 
-namespace LaravelMigrationGenerator\Tokenizers\MySQL;
+namespace BennettTreptow\LaravelMigrationGenerator\Tokenizers\MySQL;
 
-use LaravelMigrationGenerator\Tokenizers\BaseIndexTokenizer;
+use BennettTreptow\LaravelMigrationGenerator\Tokenizers\BaseIndexTokenizer;
 
 class IndexTokenizer extends BaseIndexTokenizer
 {

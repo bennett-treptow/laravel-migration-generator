@@ -3,7 +3,7 @@
 namespace Tests\Tokenizers\MySQL;
 
 use Tests\TestCase;
-use LaravelMigrationGenerator\Tokenizers\MySQL\IndexTokenizer;
+use BennettTreptow\LaravelMigrationGenerator\Tokenizers\MySQL\IndexTokenizer;
 
 class IndexTokenizerTest extends TestCase
 {

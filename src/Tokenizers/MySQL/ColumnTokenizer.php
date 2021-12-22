@@ -1,11 +1,11 @@
 <?php
 
-namespace LaravelMigrationGenerator\Tokenizers\MySQL;
+namespace BennettTreptow\LaravelMigrationGenerator\Tokenizers\MySQL;
 
 use Illuminate\Support\Str;
 use Illuminate\Database\Schema\Builder;
-use LaravelMigrationGenerator\Helpers\ValueToString;
-use LaravelMigrationGenerator\Tokenizers\BaseColumnTokenizer;
+use BennettTreptow\LaravelMigrationGenerator\Helpers\ValueToString;
+use BennettTreptow\LaravelMigrationGenerator\Tokenizers\BaseColumnTokenizer;
 
 class ColumnTokenizer extends BaseColumnTokenizer
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace LaravelMigrationGenerator\Generators\Interfaces;
+namespace BennettTreptow\LaravelMigrationGenerator\Generators\Interfaces;
 
 interface ViewGeneratorInterface
 {
