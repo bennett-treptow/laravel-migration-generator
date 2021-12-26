@@ -39,7 +39,7 @@ class TableDefinition
             }
         }
 
-        return $this->getTableName();
+        return str_replace('.', '_', $this->getTableName());
     }
 
     /**
