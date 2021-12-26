@@ -88,7 +88,8 @@ class GenerateMigrationsCommand extends Command
     protected function resolveGeneratorManager(string $driver)
     {
         $supported = [
-            'mysql' => MySQLGeneratorManager::class
+            'mysql' => MySQLGeneratorManager::class,
+            'pgsql' => PgSQLGeneratorManager::class,
         ];
 
         if (! isset($supported[$driver])) {
