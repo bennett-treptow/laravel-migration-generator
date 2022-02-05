@@ -68,12 +68,12 @@ abstract class BaseGeneratorManager implements GeneratorManagerInterface
         if (count($tableNames) > 0) {
             $tableDefinitions = $tableDefinitions->filter(function ($tableDefinition) use ($tableNames) {
                 return in_array($tableDefinition->getTableName(), $tableNames);
-            })->toArray();
+            });
         }
         if (count($viewNames) > 0) {
             $viewDefinitions = $viewDefinitions->filter(function ($viewGenerator) use ($viewNames) {
                 return in_array($viewGenerator->getViewName(), $viewNames);
-            })->toArray();
+            });
         }
 
         $tableDefinitions = $tableDefinitions->filter(function ($tableDefinition) {
