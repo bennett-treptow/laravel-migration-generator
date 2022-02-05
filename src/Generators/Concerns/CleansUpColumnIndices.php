@@ -13,36 +13,37 @@ trait CleansUpColumnIndices
 {
     protected function cleanUpColumnsWithIndices(): void
     {
-        foreach ($this->indices as &$index) {
+        foreach ($this->definition()->getIndexDefinitions() as &$index) {
+            /** @var \LaravelMigrationGenerator\Definitions\IndexDefinition $index */
             if (! $index->isWritable()) {
                 continue;
             }
-            $columns = $index->definition()->getIndexColumns();
+            $columns = $index->getIndexColumns();
 
             foreach ($columns as $indexColumn) {
-                foreach ($this->columns as $column) {
-                    if ($column->definition()->getColumnName() === $indexColumn) {
-                        $indexType = $index->definition()->getIndexType();
-                        $isMultiColumnIndex = $index->definition()->isMultiColumnIndex();
+                foreach ($this->definition()->getColumnDefinitions() as $column) {
+                    if ($column->getColumnName() === $indexColumn) {
+                        $indexType = $index->getIndexType();
+                        $isMultiColumnIndex = $index->isMultiColumnIndex();
 
                         if ($indexType === 'primary' && ! $isMultiColumnIndex) {
-                            $column->definition()->setPrimary(true)->addIndexDefinition($index->definition());
+                            $column->setPrimary(true)->addIndexDefinition($index);
                             $index->markAsWritable(false);
                         } elseif ($indexType === 'index' && ! $isMultiColumnIndex) {
                             $isForeignKeyIndex = false;
-                            foreach ($this->indices as $innerIndex) {
-                                if ($innerIndex->definition()->getIndexType() === 'foreign' && ! $innerIndex->definition()->isMultiColumnIndex() && $innerIndex->definition()->getIndexColumns()[0] == $column->definition()->getColumnName()) {
+                            foreach ($this->definition()->getIndexDefinitions() as $innerIndex) {
+                                if ($innerIndex->getIndexType() === 'foreign' && ! $innerIndex->isMultiColumnIndex() && $innerIndex->getIndexColumns()[0] == $column->getColumnName()) {
                                     $isForeignKeyIndex = true;
 
                                     break;
                                 }
                             }
                             if ($isForeignKeyIndex === false) {
-                                $column->definition()->setIndex(true)->addIndexDefinition($index->definition());
+                                $column->setIndex(true)->addIndexDefinition($index);
                             }
                             $index->markAsWritable(false);
                         } elseif ($indexType === 'unique' && ! $isMultiColumnIndex) {
-                            $column->definition()->setUnique(true)->addIndexDefinition($index->definition());
+                            $column->setUnique(true)->addIndexDefinition($index);
                             $index->markAsWritable(false);
                         }
                     }

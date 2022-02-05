@@ -31,9 +31,9 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('varchar', $columnTokenizer->getColumnDataType());
         $this->assertEquals('string', $columnDefinition->getMethodName());
         $this->assertEquals(200, $columnDefinition->getMethodParameters()[0]);
-        $this->assertTrue($columnDefinition->isNullable());
+        $this->assertNull($columnDefinition->isNullable());
         $this->assertEquals('utf8mb4_unicode_ci', $columnDefinition->getCollation());
-        $this->assertEquals('$table->string(\'favorite_color\', 200)->nullable()', $columnDefinition->render());
+        $this->assertEquals('$table->string(\'favorite_color\', 200)', $columnDefinition->render());
     }
 
     public function test_it_tokenizes_a_null_varchar_default_value_column()
@@ -45,10 +45,10 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('varchar', $columnTokenizer->getColumnDataType());
         $this->assertEquals('string', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
-        $this->assertTrue($columnDefinition->isNullable());
+        $this->assertNull($columnDefinition->isNullable());
         $this->assertEquals('utf8mb4_unicode_ci', $columnDefinition->getCollation());
         $this->assertEquals('orange', $columnDefinition->getDefaultValue());
-        $this->assertEquals('$table->string(\'favorite_color\')->nullable()->default(\'orange\')', $columnDefinition->render());
+        $this->assertEquals('$table->string(\'favorite_color\')->default(\'orange\')', $columnDefinition->render());
     }
 
     public function test_it_tokenizes_a_null_varchar_default_value_null_column()
@@ -82,6 +82,21 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('$table->string(\'favorite_color\')->nullable()->comment(\'favorite color\')', $columnDefinition->render());
     }
 
+    public function test_it_tokenizes_char_column_with_character_and_collation()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`country` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT \'US\'');
+        $columnDefinition = $columnTokenizer->definition();
+
+        $this->assertEquals('country', $columnDefinition->getColumnName());
+        $this->assertEquals('char', $columnTokenizer->getColumnDataType());
+        $this->assertEquals('char', $columnDefinition->getMethodName());
+        $this->assertCount(1, $columnDefinition->getMethodParameters());
+        $this->assertNull($columnDefinition->isNullable());
+        $this->assertEquals('utf8mb4_unicode_ci', $columnDefinition->getCollation());
+        $this->assertEquals('utf8mb4', $columnDefinition->getCharacterSet());
+        $this->assertEquals('$table->char(\'country\', 2)->default(\'US\')', $columnDefinition->render());
+    }
+
     //endregion
 
     //region TEXT & Variants
@@ -108,9 +123,9 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('tinytext', $columnTokenizer->getColumnDataType());
         $this->assertEquals('string', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
-        $this->assertTrue($columnDefinition->isNullable());
+        $this->assertNull($columnDefinition->isNullable());
         $this->assertNull($columnDefinition->getCollation());
-        $this->assertEquals('$table->string(\'notes\')->nullable()', $columnDefinition->render());
+        $this->assertEquals('$table->string(\'notes\')', $columnDefinition->render());
     }
 
     public function test_it_tokenizes_a_not_null_text_column()
@@ -136,9 +151,9 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('text', $columnTokenizer->getColumnDataType());
         $this->assertEquals('text', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
-        $this->assertTrue($columnDefinition->isNullable());
+        $this->assertNull($columnDefinition->isNullable());
         $this->assertNull($columnDefinition->getCollation());
-        $this->assertEquals('$table->text(\'notes\')->nullable()', $columnDefinition->render());
+        $this->assertEquals('$table->text(\'notes\')', $columnDefinition->render());
     }
 
     public function test_it_tokenizes_a_not_null_mediumtext_column()
@@ -164,9 +179,9 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('mediumtext', $columnTokenizer->getColumnDataType());
         $this->assertEquals('mediumText', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
-        $this->assertTrue($columnDefinition->isNullable());
+        $this->assertNull($columnDefinition->isNullable());
         $this->assertNull($columnDefinition->getCollation());
-        $this->assertEquals('$table->mediumText(\'notes\')->nullable()', $columnDefinition->render());
+        $this->assertEquals('$table->mediumText(\'notes\')', $columnDefinition->render());
     }
 
     public function test_it_tokenizes_a_not_null_longtext_column()
@@ -192,9 +207,9 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('longtext', $columnTokenizer->getColumnDataType());
         $this->assertEquals('longText', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
-        $this->assertTrue($columnDefinition->isNullable());
+        $this->assertNull($columnDefinition->isNullable());
         $this->assertNull($columnDefinition->getCollation());
-        $this->assertEquals('$table->longText(\'notes\')->nullable()', $columnDefinition->render());
+        $this->assertEquals('$table->longText(\'notes\')', $columnDefinition->render());
     }
 
     //endregion
@@ -323,9 +338,9 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('float', $columnTokenizer->getColumnDataType());
         $this->assertEquals('float', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
-        $this->assertTrue($columnDefinition->isNullable());
+        $this->assertNull($columnDefinition->isNullable());
         $this->assertNull($columnDefinition->getCollation());
-        $this->assertEquals('$table->float(\'parameter\')->nullable()', $columnDefinition->render());
+        $this->assertEquals('$table->float(\'parameter\')', $columnDefinition->render());
     }
 
     public function test_it_tokenizes_float_null_with_params_column()
@@ -338,9 +353,9 @@ class ColumnTokenizerTest extends TestCase
         $this->assertCount(2, $columnDefinition->getMethodParameters());
         $this->assertEquals(4, $columnDefinition->getMethodParameters()[0]);
         $this->assertEquals(2, $columnDefinition->getMethodParameters()[1]);
-        $this->assertTrue($columnDefinition->isNullable());
+        $this->assertNull($columnDefinition->isNullable());
         $this->assertNull($columnDefinition->getCollation());
-        $this->assertEquals('$table->float(\'parameter\', 4, 2)->nullable()', $columnDefinition->render());
+        $this->assertEquals('$table->float(\'parameter\', 4, 2)', $columnDefinition->render());
     }
 
     public function test_it_tokenizes_float_without_params_default_value_column()
@@ -382,9 +397,9 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('float', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertEquals(1.0, $columnDefinition->getDefaultValue());
-        $this->assertTrue($columnDefinition->isNullable());
+        $this->assertNull($columnDefinition->isNullable());
         $this->assertNull($columnDefinition->getCollation());
-        $this->assertEquals('$table->float(\'parameter\')->nullable()->default(1.0)', $columnDefinition->render());
+        $this->assertEquals('$table->float(\'parameter\')->default(1.0)', $columnDefinition->render());
     }
 
     public function test_it_tokenizes_float_null_with_params_default_value_column()
@@ -398,9 +413,9 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals(4, $columnDefinition->getMethodParameters()[0]);
         $this->assertEquals(2, $columnDefinition->getMethodParameters()[1]);
         $this->assertEquals(1.00, $columnDefinition->getDefaultValue());
-        $this->assertTrue($columnDefinition->isNullable());
+        $this->assertNull($columnDefinition->isNullable());
         $this->assertNull($columnDefinition->getCollation());
-        $this->assertEquals('$table->float(\'parameter\', 4, 2)->nullable()->default(1.00)', $columnDefinition->render());
+        $this->assertEquals('$table->float(\'parameter\', 4, 2)->default(1.00)', $columnDefinition->render());
     }
 
     //endregion
@@ -590,10 +605,10 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('dateTime', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertNull($columnDefinition->getDefaultValue());
-        $this->assertTrue($columnDefinition->isNullable());
+        $this->assertNull($columnDefinition->isNullable());
         $this->assertFalse($columnDefinition->isUnsigned());
         $this->assertNull($columnDefinition->getCollation());
-        $this->assertEquals('$table->dateTime(\'sent_at\')->nullable()', $columnDefinition->render());
+        $this->assertEquals('$table->dateTime(\'sent_at\')', $columnDefinition->render());
     }
 
     public function test_it_tokenizes_a_null_default_value_datetime_column()
@@ -622,10 +637,10 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('dateTime', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertNull($columnDefinition->getDefaultValue());
-        $this->assertTrue($columnDefinition->isNullable());
+        $this->assertNull($columnDefinition->isNullable());
         $this->assertFalse($columnDefinition->isUnsigned());
         $this->assertNull($columnDefinition->getCollation());
-        $this->assertEquals('$table->dateTime(\'sent_at\')->nullable()->useCurrent()', $columnDefinition->render());
+        $this->assertEquals('$table->dateTime(\'sent_at\')->useCurrent()', $columnDefinition->render());
     }
 
     public function test_it_tokenizes_a_null_default_value_now_and_on_update_datetime_column()
@@ -638,10 +653,10 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('dateTime', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertNull($columnDefinition->getDefaultValue());
-        $this->assertTrue($columnDefinition->isNullable());
+        $this->assertNull($columnDefinition->isNullable());
         $this->assertFalse($columnDefinition->isUnsigned());
         $this->assertNull($columnDefinition->getCollation());
-        $this->assertEquals('$table->dateTime(\'sent_at\')->nullable()->useCurrent()->useCurrentOnUpdate()', $columnDefinition->render());
+        $this->assertEquals('$table->dateTime(\'sent_at\')->useCurrent()->useCurrentOnUpdate()', $columnDefinition->render());
     }
     //endregion
 
@@ -672,10 +687,10 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('timestamp', $columnDefinition->getMethodName());
         $this->assertCount(0, $columnDefinition->getMethodParameters());
         $this->assertNull($columnDefinition->getDefaultValue());
-        $this->assertTrue($columnDefinition->isNullable());
+        $this->assertNull($columnDefinition->isNullable());
         $this->assertFalse($columnDefinition->isUnsigned());
         $this->assertNull($columnDefinition->getCollation());
-        $this->assertEquals('$table->timestamp(\'sent_at\')->nullable()', $columnDefinition->render());
+        $this->assertEquals('$table->timestamp(\'sent_at\')', $columnDefinition->render());
     }
 
     public function test_it_tokenizes_a_not_null_use_current_timestamp_timestamp_column()
@@ -739,9 +754,9 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('enum', $columnDefinition->getMethodName());
         $this->assertCount(4, $columnDefinition->getMethodParameters()[0]);
         $this->assertEqualsCanonicalizing([1, 2, 3, 4], $columnDefinition->getMethodParameters()[0]);
-        $this->assertTrue($columnDefinition->isNullable());
+        $this->assertNull($columnDefinition->isNullable());
         $this->assertNull($columnDefinition->getCollation());
-        $this->assertEquals('$table->enum(\'status_flag\', [\'1\', \'2\', \'3\', \'4\'])->nullable()', $columnDefinition->render());
+        $this->assertEquals('$table->enum(\'status_flag\', [\'1\', \'2\', \'3\', \'4\'])', $columnDefinition->render());
     }
 
     public function test_it_tokenizes_not_null_enum_column()

@@ -2,12 +2,8 @@
 
 namespace LaravelMigrationGenerator\Tokenizers;
 
-use LaravelMigrationGenerator\Helpers\WritableTrait;
-
 abstract class BaseTokenizer
 {
-    use WritableTrait;
-
     protected $tokens = [];
 
     private string $value;

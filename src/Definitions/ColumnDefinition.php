@@ -4,6 +4,7 @@ namespace LaravelMigrationGenerator\Definitions;
 
 use Illuminate\Support\Str;
 use LaravelMigrationGenerator\Helpers\ValueToString;
+use LaravelMigrationGenerator\Helpers\WritableTrait;
 
 /**
  * Class ColumnDefinition
@@ -11,6 +12,8 @@ use LaravelMigrationGenerator\Helpers\ValueToString;
  */
 class ColumnDefinition
 {
+    use WritableTrait;
+
     protected string $methodName;
 
     protected array $methodParameters = [];
@@ -19,11 +22,13 @@ class ColumnDefinition
 
     protected bool $unsigned = false;
 
-    protected bool $nullable = true;
+    protected ?bool $nullable = null;
 
     protected $defaultValue;
 
     protected ?string $comment = null;
+
+    protected ?string $characterSet = null;
 
     protected ?string $collation = null;
 
@@ -92,9 +97,9 @@ class ColumnDefinition
     }
 
     /**
-     * @return bool
+     * @return ?bool
      */
-    public function isNullable(): bool
+    public function isNullable(): ?bool
     {
         return $this->nullable;
     }
@@ -117,6 +122,14 @@ class ColumnDefinition
     public function getComment(): ?string
     {
         return $this->comment;
+    }
+  
+    /**
+     * @return string|null
+     */
+    public function getCharacterSet(): ?string
+    {
+        return $this->characterSet;
     }
 
     /**
@@ -242,10 +255,10 @@ class ColumnDefinition
     }
 
     /**
-     * @param bool $nullable
+     * @param ?bool $nullable
      * @return ColumnDefinition
      */
-    public function setNullable(bool $nullable): ColumnDefinition
+    public function setNullable(?bool $nullable): ColumnDefinition
     {
         $this->nullable = $nullable;
 
@@ -270,6 +283,17 @@ class ColumnDefinition
     public function setComment(?string $comment): ColumnDefinition
     {
         $this->comment = $comment;
+
+        return $this;
+    }
+
+    /**
+     * @param string|null $collation
+     * @return ColumnDefinition
+     */
+    public function setCharacterSet(?string $characterSet): ColumnDefinition
+    {
+        $this->characterSet = $characterSet;
 
         return $this;
     }
@@ -387,7 +411,7 @@ class ColumnDefinition
 
     protected function isNullableMethod($methodName)
     {
-        return ! in_array($methodName, ['softDeletes', 'morphs', 'nullableMorphs', 'rememberToken']);
+        return ! in_array($methodName, ['softDeletes', 'morphs', 'nullableMorphs', 'rememberToken', 'nullableUuidMorphs']) && !$this->isPrimaryKeyMethod($methodName);
     }
 
     protected function isPrimaryKeyMethod($methodName)
@@ -434,11 +458,15 @@ class ColumnDefinition
             }
         }
 
-        if ($this->methodName === 'morphs' && $this->nullable) {
+        if ($this->methodName === 'morphs' && $this->nullable === true) {
             return [$this->columnName, 'nullableMorphs', []];
         }
 
-        if ($this->methodName === 'string' && $this->columnName === 'remember_token' && $this->nullable) {
+        if ($this->methodName === 'uuidMorphs' && $this->nullable === true) {
+            return [$this->columnName, 'nullableUuidMorphs', []];
+        }
+
+        if ($this->methodName === 'string' && $this->columnName === 'remember_token' && $this->nullable === true) {
             return [null, 'rememberToken', []];
         }
         if ($this->isUUID() && $this->methodName !== 'uuidMorphs') {
@@ -480,14 +508,19 @@ class ColumnDefinition
         if ($this->unsigned && $this->canBeUnsigned($finalMethodName) && ! Str::startsWith($finalMethodName, 'unsigned')) {
             $initialString .= '->unsigned()';
         }
-        if ($this->nullable && $this->isNullableMethod($finalMethodName)) {
-            $initialString .= '->nullable()';
-        }
+
         if ($this->defaultValue === 'NULL') {
             $this->defaultValue = null;
             $this->nullable = true;
         }
-        if (($this->nullable && $this->defaultValue !== null) || $this->defaultValue !== null) {
+
+        if($this->isNullableMethod($finalMethodName)){
+            if($this->nullable === true){
+                $initialString .= '->nullable()';
+            }
+        }
+
+        if ($this->defaultValue !== null) {
             $initialString .= '->default(';
             $initialString .= ValueToString::make($this->defaultValue, false);
             $initialString .= ')';

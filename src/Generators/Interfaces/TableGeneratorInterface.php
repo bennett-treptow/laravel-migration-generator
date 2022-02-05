@@ -2,6 +2,8 @@
 
 namespace LaravelMigrationGenerator\Generators\Interfaces;
 
+use LaravelMigrationGenerator\Definitions\TableDefinition;
+
 interface TableGeneratorInterface
 {
     public static function driver(): string;
@@ -10,13 +12,9 @@ interface TableGeneratorInterface
 
     public function resolveStructure();
 
-    public function getSchema($tab = ''): string;
-
     public function parse();
 
     public function cleanUp();
 
-    public function write(string $basePath, string $tabCharacter = '    ');
-
-    public function getIndices();
+    public function definition(): TableDefinition;
 }

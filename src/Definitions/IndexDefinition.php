@@ -3,9 +3,14 @@
 namespace LaravelMigrationGenerator\Definitions;
 
 use LaravelMigrationGenerator\Helpers\ValueToString;
+use LaravelMigrationGenerator\Helpers\WritableTrait;
 
 class IndexDefinition
 {
+    const TYPE_FOREIGN = 'foreign';
+
+    use WritableTrait;
+
     protected string $indexType;
 
     protected ?string $indexName = null; //primary keys usually don't have a name

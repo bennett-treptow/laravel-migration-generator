@@ -31,7 +31,7 @@ class MySQLTableGeneratorTest extends TestCase
             'CONSTRAINT `fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE'
         ]);
 
-        $schema = $generator->getSchema();
+        $schema = $generator->definition()->formatter()->getSchema();
         $this->assertSchemaHas('$table->increments(\'id\');', $schema);
         $this->assertSchemaHas('$table->unsignedInteger(\'user_id\');', $schema);
         $this->assertSchemaHas('$table->string(\'note\');', $schema);
@@ -65,7 +65,7 @@ class MySQLTableGeneratorTest extends TestCase
             mkdir($path, 0777, true);
         }
 
-        $generator->write($path);
+        $generator->definition()->formatter()->write($path);
 
         $this->assertFileExists($path . '/0000_00_00_000000_create_table_table.php');
     }
@@ -79,7 +79,7 @@ class MySQLTableGeneratorTest extends TestCase
             '`note` varchar(255) NOT NULL'
         ]);
 
-        $schema = $generator->getSchema();
+        $schema = $generator->definition()->formatter()->getSchema();
         $this->assertSchemaHas('$table->morphs(\'user\');', $schema);
     }
 
@@ -92,7 +92,7 @@ class MySQLTableGeneratorTest extends TestCase
             '`note` varchar(255) NOT NULL'
         ]);
 
-        $schema = $generator->getSchema();
+        $schema = $generator->definition()->formatter()->getSchema();
         $this->assertStringNotContainsString('$table->morphs(\'user\');', $schema);
     }
 
@@ -105,7 +105,7 @@ class MySQLTableGeneratorTest extends TestCase
             '`note` varchar(255) NOT NULL'
         ]);
 
-        $schema = $generator->getSchema();
+        $schema = $generator->definition()->formatter()->getSchema();
         $this->assertSchemaHas('$table->uuidMorphs(\'user\');', $schema);
     }
 
@@ -118,8 +118,8 @@ class MySQLTableGeneratorTest extends TestCase
             '`note` varchar(255) NOT NULL'
         ]);
 
-        $schema = $generator->getSchema();
-        $this->assertSchemaHas('$table->uuidMorphs(\'user\')->nullable();', $schema);
+        $schema = $generator->definition()->formatter()->getSchema();
+        $this->assertSchemaHas('$table->nullableUuidMorphs(\'user\');', $schema);
     }
 
     public function test_doesnt_clean_non_auto_inc_id_to_laravel_method()
@@ -129,7 +129,7 @@ class MySQLTableGeneratorTest extends TestCase
             'PRIMARY KEY `id`'
         ]);
 
-        $schema = $generator->getSchema();
+        $schema = $generator->definition()->formatter()->getSchema();
         $this->assertSchemaHas('$table->unsignedInteger(\'id\')->primary();', $schema);
     }
 
@@ -140,7 +140,7 @@ class MySQLTableGeneratorTest extends TestCase
             'PRIMARY KEY `id`'
         ]);
 
-        $schema = $generator->getSchema();
+        $schema = $generator->definition()->formatter()->getSchema();
         $this->assertSchemaHas('$table->increments(\'id\');', $schema);
     }
 
@@ -151,7 +151,7 @@ class MySQLTableGeneratorTest extends TestCase
             'PRIMARY KEY `id`'
         ]);
 
-        $schema = $generator->getSchema();
+        $schema = $generator->definition()->formatter()->getSchema();
         $this->assertSchemaHas('$table->id();', $schema);
     }
 
@@ -162,7 +162,7 @@ class MySQLTableGeneratorTest extends TestCase
             'created_at timestamp not null default CURRENT_TIMESTAMP',
             'updated_at timestamp null on update CURRENT_TIMESTAMP'
         ]);
-        $schema = $generator->getSchema();
+        $schema = $generator->definition()->formatter()->getSchema();
         $this->assertSchemaHas('$table->timestamp(\'created_at\')->useCurrent()', $schema);
         $this->assertSchemaHas('$table->timestamp(\'updated_at\')->nullable()->useCurrentOnUpdate()', $schema);
     }
@@ -174,7 +174,7 @@ class MySQLTableGeneratorTest extends TestCase
             'created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
             'updated_at timestamp null on update CURRENT_TIMESTAMP'
         ]);
-        $schema = $generator->getSchema();
+        $schema = $generator->definition()->formatter()->getSchema();
         $this->assertSchemaHas('$table->timestamp(\'created_at\')->useCurrent()->useCurrentOnUpdate()', $schema);
         $this->assertSchemaHas('$table->timestamp(\'updated_at\')->nullable()->useCurrentOnUpdate()', $schema);
     }
@@ -187,7 +187,7 @@ class MySQLTableGeneratorTest extends TestCase
             'created_at datetime NOT NULL',
             'updated_at datetime NOT NULL'
         ]);
-        $schema = $generator->getSchema();
+        $schema = $generator->definition()->formatter()->getSchema();
         $this->assertSchemaHas('$table->dateTime(\'created_at\')', $schema);
         $this->assertSchemaHas('$table->dateTime(\'updated_at\')', $schema);
     }
@@ -203,7 +203,7 @@ class MySQLTableGeneratorTest extends TestCase
             'CONSTRAINT `fk_import_service_id` FOREIGN KEY (`import_service_id`) REFERENCES `import_services` (`id`)'
         ]);
 
-        $schema = $generator->getSchema();
+        $schema = $generator->definition()->formatter()->getSchema();
         $this->assertSchemaHas('$table->unsignedBigInteger(\'import_id\')->nullable();', $schema);
         $this->assertSchemaHas('$table->unsignedBigInteger(\'import_service_id\')->nullable();', $schema);
         $this->assertSchemaHas('$table->foreign(\'import_id\', \'fk_import_id\')->references(\'id\')->on(\'imports\');', $schema);

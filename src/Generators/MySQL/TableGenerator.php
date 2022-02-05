@@ -11,17 +11,9 @@ use LaravelMigrationGenerator\Tokenizers\MySQL\ColumnTokenizer;
 /**
  * Class TableGenerator
  * @package LaravelMigrationGenerator\Generators\MySQL
- * @property IndexTokenizer[] $indices
- * @property ColumnTokenizer[] $columns
  */
 class TableGenerator extends BaseTableGenerator
 {
-    public function __construct(string $tableName, array $rows = [])
-    {
-        $this->tableName = $tableName;
-        $this->rows = $rows;
-    }
-
     public static function driver(): string
     {
         return 'mysql';
@@ -29,7 +21,7 @@ class TableGenerator extends BaseTableGenerator
 
     public function resolveStructure()
     {
-        $structure = DB::select('SHOW CREATE TABLE `' . $this->tableName . '`');
+        $structure = DB::select('SHOW CREATE TABLE `' . $this->definition()->getTableName() . '`');
         $structure = $structure[0];
         $structure = (array) $structure;
         if (isset($structure['Create Table'])) {
@@ -41,7 +33,6 @@ class TableGenerator extends BaseTableGenerator
             $lines = array_map(fn ($item) => trim($item), $lines);
             $this->rows = $lines;
         } else {
-            $this->markAsWritable(false);
             $this->rows = [];
         }
     }
@@ -56,35 +47,11 @@ class TableGenerator extends BaseTableGenerator
         foreach ($this->rows as $line) {
             if ($this->isColumnLine($line)) {
                 $tokenizer = ColumnTokenizer::parse($line);
-                $this->columns[] = $tokenizer;
+                $this->definition()->addColumnDefinition($tokenizer->definition());
             } else {
                 $tokenizer = IndexTokenizer::parse($line);
-                $this->indices[] = $tokenizer;
+                $this->definition()->addIndexDefinition($tokenizer->definition());
             }
         }
-    }
-
-    public function getSchema($tab = ''): string
-    {
-        $schema = collect($this->columns)
-            ->filter(fn ($col) => $col->isWritable())
-            ->map(function ($column) use ($tab) {
-                return $tab . $column->definition()->render() . ';';
-            })
-            ->implode("\n");
-
-        $indices = collect($this->indices)
-            ->filter(fn ($index) => $index->isWritable());
-
-        if ($indices->count() > 0) {
-            $schema .= "\n";
-            $schema .= $indices
-                ->map(function ($index) use ($tab) {
-                    return $tab . $index->definition()->render() . ';';
-                })
-                ->implode("\n");
-        }
-
-        return $schema;
     }
 }

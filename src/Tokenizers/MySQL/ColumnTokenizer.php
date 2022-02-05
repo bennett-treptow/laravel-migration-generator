@@ -26,6 +26,9 @@ class ColumnTokenizer extends BaseColumnTokenizer
             $this->consumeZeroFill();
         }
         if ($this->isTextType()) {
+            //possibly has a character set
+            $this->consumeCharacterSet();
+
             //has collation data most likely
             $this->consumeCollation();
         }
@@ -149,6 +152,20 @@ class ColumnTokenizer extends BaseColumnTokenizer
             // next piece is the comment content
             $this->definition->setComment($this->consume());
         } else {
+          $this->putBack($piece);
+        }
+    }
+  
+    protected function consumeCharacterSet()
+    {
+        $piece = $this->consume();
+
+        if (strtoupper($piece) === 'CHARACTER') {
+            $this->consume(); // SET, throw it away
+
+            $this->definition->setCharacterSet($this->consume());
+        } else {
+            //something else
             $this->putBack($piece);
         }
     }
