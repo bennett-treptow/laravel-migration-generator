@@ -32,8 +32,7 @@ trait CleansUpTimestampsColumn
                 $timestampColumns['created_at']
                     ->setColumnName(null)
                     ->setMethodName('timestamps')
-                    ->setNullable(false)
-                    ->setComment(null);
+                    ->setNullable(false);
                 $timestampColumns['updated_at']->markAsWritable(false);
 
                 break;
