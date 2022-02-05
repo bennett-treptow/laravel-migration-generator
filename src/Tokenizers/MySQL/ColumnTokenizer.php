@@ -47,6 +47,8 @@ class ColumnTokenizer extends BaseColumnTokenizer
             $this->consumeTimestamp();
         }
 
+        $this->consumeComment();
+
         return $this;
     }
 
@@ -143,6 +145,17 @@ class ColumnTokenizer extends BaseColumnTokenizer
         }
     }
 
+    protected function consumeComment()
+    {
+        $piece = $this->consume();
+        if (strtoupper($piece) === 'COMMENT') {
+            // next piece is the comment content
+            $this->definition->setComment($this->consume());
+        } else {
+          $this->putBack($piece);
+        }
+    }
+  
     protected function consumeCharacterSet()
     {
         $piece = $this->consume();
