@@ -133,6 +133,13 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('$table->string(\'favorite_color\')->nullable()->comment("favorite color is \"green\"")', $columnDefinition->render());
     }
 
+    public function test_it_tokenizes_varchar_with_default_and_comment(){
+        $columnTokenizer = ColumnTokenizer::parse("`testing` varchar(255) DEFAULT 'this is ''it''' COMMENT 'this is the \"comment\"'");
+        $columnDefinition = $columnTokenizer->definition();
+        $this->assertEquals('this is \'it\'', $columnDefinition->getDefaultValue());
+        $this->assertEquals('this is the "comment"', $columnDefinition->getComment());
+    }
+
     public function test_it_tokenizes_char_column_with_character_and_collation()
     {
         $columnTokenizer = ColumnTokenizer::parse('`country` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT \'US\'');
