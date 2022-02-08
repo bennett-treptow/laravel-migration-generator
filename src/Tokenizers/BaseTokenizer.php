@@ -9,13 +9,25 @@ abstract class BaseTokenizer
     private string $value;
 
     private const SPACE_REPLACER = '&!@';
+    private const SINGLE_QUOTE_REPLACER = '!*@';
 
     public function __construct(string $value)
     {
         $this->value = $value;
         $prune = false;
+        $pruneSingleQuotes = false;
         //\(?\'(.+?)?\s(.+?)?\'\)?
-        if (preg_match_all("/'(.+?)'(?=\S)/", $value, $matches)) {
+
+        //first get rid of any single quoted stuff with '' around it
+        if(preg_match_all('/\'\'(.+?)\'\'/', $value, $matches)){
+            foreach($matches[0] as $key => $singleQuoted){
+                $toReplace = $singleQuoted;
+                $value = str_replace($toReplace, self::SINGLE_QUOTE_REPLACER.$matches[1][$key].self::SINGLE_QUOTE_REPLACER, $value);
+                $pruneSingleQuotes = true;
+            }
+        }
+
+        if (preg_match_all("/'(.+?)'/", $value, $matches)) {
             foreach ($matches[0] as $quoteWithSpace) {
                 //we've got an enum or set that has spaces in the text
                 //so we'll convert to a different character so it doesn't get pruned
@@ -31,6 +43,11 @@ abstract class BaseTokenizer
         if ($prune) {
             $this->tokens = array_map(function ($item) {
                 return str_replace(self::SPACE_REPLACER, ' ', $item);
+            }, $this->tokens);
+        }
+        if($pruneSingleQuotes){
+            $this->tokens = array_map(function ($item) {
+                return str_replace(self::SINGLE_QUOTE_REPLACER, '\'', $item);
             }, $this->tokens);
         }
     }
