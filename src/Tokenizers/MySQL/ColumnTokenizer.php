@@ -111,6 +111,13 @@ class ColumnTokenizer extends BaseColumnTokenizer
             //something else
             $this->putBack($piece);
         }
+
+        if(Str::contains($this->columnDataType, 'text')){
+            //text column types are explicitly nullable unless set to NOT NULL
+            if($this->definition->isNullable() === null){
+                $this->definition->setNullable(true);
+            }
+        }
     }
 
     protected function consumeDefaultValue()
