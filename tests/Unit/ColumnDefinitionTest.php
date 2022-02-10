@@ -3,8 +3,8 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use LaravelMigrationGenerator\Definitions\IndexDefinition;
-use LaravelMigrationGenerator\Definitions\ColumnDefinition;
+use BennettTreptow\LaravelMigrationGenerator\Definitions\IndexDefinition;
+use BennettTreptow\LaravelMigrationGenerator\Definitions\ColumnDefinition;
 
 class ColumnDefinitionTest extends TestCase
 {

@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use LaravelMigrationGenerator\Helpers\Formatter;
+use BennettTreptow\LaravelMigrationGenerator\Helpers\Formatter;
 
 class FormatterTest extends TestCase
 {

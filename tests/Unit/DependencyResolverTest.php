@@ -3,10 +3,10 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use LaravelMigrationGenerator\Helpers\DependencyResolver;
-use LaravelMigrationGenerator\Definitions\IndexDefinition;
-use LaravelMigrationGenerator\Definitions\TableDefinition;
-use LaravelMigrationGenerator\Definitions\ColumnDefinition;
+use BennettTreptow\LaravelMigrationGenerator\Helpers\DependencyResolver;
+use BennettTreptow\LaravelMigrationGenerator\Definitions\IndexDefinition;
+use BennettTreptow\LaravelMigrationGenerator\Definitions\TableDefinition;
+use BennettTreptow\LaravelMigrationGenerator\Definitions\ColumnDefinition;
 
 class DependencyResolverTest extends TestCase
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace LaravelMigrationGenerator\GeneratorManagers;
+namespace BennettTreptow\LaravelMigrationGenerator\GeneratorManagers;
 
 use Illuminate\Support\Facades\DB;
-use LaravelMigrationGenerator\Generators\MySQL\ViewGenerator;
-use LaravelMigrationGenerator\Generators\MySQL\TableGenerator;
-use LaravelMigrationGenerator\GeneratorManagers\Interfaces\GeneratorManagerInterface;
+use BennettTreptow\LaravelMigrationGenerator\Generators\MySQL\ViewGenerator;
+use BennettTreptow\LaravelMigrationGenerator\Generators\MySQL\TableGenerator;
+use BennettTreptow\LaravelMigrationGenerator\GeneratorManagers\Interfaces\GeneratorManagerInterface;
 
 class MySQLGeneratorManager extends BaseGeneratorManager implements GeneratorManagerInterface
 {

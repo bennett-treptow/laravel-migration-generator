@@ -1,10 +1,10 @@
 <?php
 
-namespace LaravelMigrationGenerator\Generators\MySQL;
+namespace BennettTreptow\LaravelMigrationGenerator\Generators\MySQL;
 
 use Illuminate\Support\Facades\DB;
-use LaravelMigrationGenerator\Generators\BaseViewGenerator;
-use LaravelMigrationGenerator\Generators\Interfaces\ViewGeneratorInterface;
+use BennettTreptow\LaravelMigrationGenerator\Generators\BaseViewGenerator;
+use BennettTreptow\LaravelMigrationGenerator\Generators\Interfaces\ViewGeneratorInterface;
 
 class ViewGenerator extends BaseViewGenerator implements ViewGeneratorInterface
 {

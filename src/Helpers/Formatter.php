@@ -1,6 +1,6 @@
 <?php
 
-namespace LaravelMigrationGenerator\Helpers;
+namespace BennettTreptow\LaravelMigrationGenerator\Helpers;
 
 class Formatter
 {

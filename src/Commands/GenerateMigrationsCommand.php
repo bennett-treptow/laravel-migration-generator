@@ -1,14 +1,15 @@
 <?php
 
-namespace LaravelMigrationGenerator\Commands;
+namespace BennettTreptow\LaravelMigrationGenerator\Commands;
 
 use Illuminate\Support\Arr;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
-use LaravelMigrationGenerator\Helpers\ConfigResolver;
-use LaravelMigrationGenerator\GeneratorManagers\MySQLGeneratorManager;
-use LaravelMigrationGenerator\GeneratorManagers\Interfaces\GeneratorManagerInterface;
+use BennettTreptow\LaravelMigrationGenerator\Helpers\ConfigResolver;
+use BennettTreptow\LaravelMigrationGenerator\GeneratorManagers\MySQLGeneratorManager;
+use BennettTreptow\LaravelMigrationGenerator\GeneratorManagers\PgSQLGeneratorManager;
+use BennettTreptow\LaravelMigrationGenerator\GeneratorManagers\Interfaces\GeneratorManagerInterface;
 
 class GenerateMigrationsCommand extends Command
 {
@@ -87,7 +88,8 @@ class GenerateMigrationsCommand extends Command
     protected function resolveGeneratorManager(string $driver)
     {
         $supported = [
-            'mysql' => MySQLGeneratorManager::class
+            'mysql' => MySQLGeneratorManager::class,
+            'pgsql' => PgSQLGeneratorManager::class,
         ];
 
         if (! isset($supported[$driver])) {

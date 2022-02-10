@@ -1,12 +1,12 @@
 <?php
 
-namespace LaravelMigrationGenerator\Generators\Concerns;
+namespace BennettTreptow\LaravelMigrationGenerator\Generators\Concerns;
 
-use LaravelMigrationGenerator\Generators\BaseTableGenerator;
+use BennettTreptow\LaravelMigrationGenerator\Generators\BaseTableGenerator;
 
 /**
  * Trait CleansUpForeignKeyIndices
- * @package LaravelMigrationGenerator\Generators\Concerns
+ * @package BennettTreptow\LaravelMigrationGenerator\Generators\Concerns
  * @mixin BaseTableGenerator
  */
 trait CleansUpForeignKeyIndices

@@ -1,6 +1,6 @@
 <?php
 
-namespace LaravelMigrationGenerator\Generators\Concerns;
+namespace BennettTreptow\LaravelMigrationGenerator\Generators\Concerns;
 
 trait WritesToFile
 {

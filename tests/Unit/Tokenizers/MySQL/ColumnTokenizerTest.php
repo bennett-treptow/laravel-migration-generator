@@ -3,7 +3,7 @@
 namespace Tests\Unit\Tokenizers\MySQL;
 
 use Tests\TestCase;
-use LaravelMigrationGenerator\Tokenizers\MySQL\ColumnTokenizer;
+use BennettTreptow\LaravelMigrationGenerator\Tokenizers\MySQL\ColumnTokenizer;
 
 class ColumnTokenizerTest extends TestCase
 {

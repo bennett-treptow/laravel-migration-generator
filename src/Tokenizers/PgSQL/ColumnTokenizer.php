@@ -1,6 +1,6 @@
 <?php
 
-namespace BennettTreptow\LaravelMigrationGenerator\Tokenizers\MySQL;
+namespace BennettTreptow\LaravelMigrationGenerator\Tokenizers\PgSQL;
 
 use Illuminate\Support\Str;
 use Illuminate\Database\Schema\Builder;
@@ -12,7 +12,7 @@ class ColumnTokenizer extends BaseColumnTokenizer
     protected $columnDataType;
 
     /**
-     * MySQL provides a ZEROFILL property for ints which is not an ANSI compliant modifier
+     * PgSQL provides a ZEROFILL property for ints which is not an ANSI compliant modifier
      * @var bool
      */
     protected $zeroFill = false;
@@ -46,8 +46,6 @@ class ColumnTokenizer extends BaseColumnTokenizer
         if ($this->columnDataType == 'timestamp' || $this->columnDataType == 'datetime') {
             $this->consumeTimestamp();
         }
-
-        $this->consumeComment();
 
         return $this;
     }
@@ -111,13 +109,6 @@ class ColumnTokenizer extends BaseColumnTokenizer
             //something else
             $this->putBack($piece);
         }
-
-        if(Str::contains($this->columnDataType, 'text')){
-            //text column types are explicitly nullable unless set to NOT NULL
-            if($this->definition->isNullable() === null){
-                $this->definition->setNullable(true);
-            }
-        }
     }
 
     protected function consumeDefaultValue()
@@ -152,17 +143,6 @@ class ColumnTokenizer extends BaseColumnTokenizer
         }
     }
 
-    protected function consumeComment()
-    {
-        $piece = $this->consume();
-        if (strtoupper($piece) === 'COMMENT') {
-            // next piece is the comment content
-            $this->definition->setComment($this->consume());
-        } else {
-          $this->putBack($piece);
-        }
-    }
-  
     protected function consumeCharacterSet()
     {
         $piece = $this->consume();

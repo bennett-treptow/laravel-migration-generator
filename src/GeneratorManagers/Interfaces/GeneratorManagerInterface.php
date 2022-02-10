@@ -1,9 +1,9 @@
 <?php
 
-namespace LaravelMigrationGenerator\GeneratorManagers\Interfaces;
+namespace BennettTreptow\LaravelMigrationGenerator\GeneratorManagers\Interfaces;
 
-use LaravelMigrationGenerator\Definitions\TableDefinition;
-use LaravelMigrationGenerator\Definitions\ViewDefinition;
+use BennettTreptow\LaravelMigrationGenerator\Definitions\TableDefinition;
+use BennettTreptow\LaravelMigrationGenerator\Definitions\ViewDefinition;
 
 interface GeneratorManagerInterface
 {

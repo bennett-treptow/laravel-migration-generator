@@ -1,8 +1,8 @@
 <?php
 
-namespace LaravelMigrationGenerator\Tokenizers\Interfaces;
+namespace BennettTreptow\LaravelMigrationGenerator\Tokenizers\Interfaces;
 
-use LaravelMigrationGenerator\Definitions\IndexDefinition;
+use BennettTreptow\LaravelMigrationGenerator\Definitions\IndexDefinition;
 
 interface IndexTokenizerInterface
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace LaravelMigrationGenerator\Generators\Interfaces;
+namespace BennettTreptow\LaravelMigrationGenerator\Generators\Interfaces;
 
-use LaravelMigrationGenerator\Definitions\TableDefinition;
+use BennettTreptow\LaravelMigrationGenerator\Definitions\TableDefinition;
 
 interface TableGeneratorInterface
 {

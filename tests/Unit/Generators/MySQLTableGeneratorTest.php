@@ -4,7 +4,7 @@ namespace Tests\Unit\Generators;
 
 use Tests\TestCase;
 use Illuminate\Support\Facades\Config;
-use LaravelMigrationGenerator\Generators\MySQL\TableGenerator;
+use BennettTreptow\LaravelMigrationGenerator\Generators\MySQL\TableGenerator;
 
 class MySQLTableGeneratorTest extends TestCase
 {

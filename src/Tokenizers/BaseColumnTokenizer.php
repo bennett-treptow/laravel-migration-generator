@@ -1,9 +1,9 @@
 <?php
 
-namespace LaravelMigrationGenerator\Tokenizers;
+namespace BennettTreptow\LaravelMigrationGenerator\Tokenizers;
 
-use LaravelMigrationGenerator\Definitions\ColumnDefinition;
-use LaravelMigrationGenerator\Tokenizers\Interfaces\ColumnTokenizerInterface;
+use BennettTreptow\LaravelMigrationGenerator\Definitions\ColumnDefinition;
+use BennettTreptow\LaravelMigrationGenerator\Tokenizers\Interfaces\ColumnTokenizerInterface;
 
 abstract class BaseColumnTokenizer extends BaseTokenizer implements ColumnTokenizerInterface
 {

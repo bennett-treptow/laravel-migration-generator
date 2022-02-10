@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use LaravelMigrationGenerator\LaravelMigrationGeneratorProvider;
+use BennettTreptow\LaravelMigrationGenerator\LaravelMigrationGeneratorProvider;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {

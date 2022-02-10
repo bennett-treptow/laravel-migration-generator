@@ -1,15 +1,15 @@
 <?php
 
-namespace LaravelMigrationGenerator\GeneratorManagers;
+namespace BennettTreptow\LaravelMigrationGenerator\GeneratorManagers;
 
-use LaravelMigrationGenerator\Definitions\ViewDefinition;
-use LaravelMigrationGenerator\Helpers\Dependency;
-use LaravelMigrationGenerator\Helpers\ConfigResolver;
-use LaravelMigrationGenerator\Helpers\DependencyResolver;
-use LaravelMigrationGenerator\Definitions\TableDefinition;
-use LaravelMigrationGenerator\GeneratorManagers\Interfaces\GeneratorManagerInterface;
-use LaravelMigrationGenerator\Helpers\DependencyResolverV2;
-use LaravelMigrationGenerator\Helpers\DependencyResolverV3;
+use BennettTreptow\LaravelMigrationGenerator\Definitions\ViewDefinition;
+use BennettTreptow\LaravelMigrationGenerator\Helpers\Dependency;
+use BennettTreptow\LaravelMigrationGenerator\Helpers\ConfigResolver;
+use BennettTreptow\LaravelMigrationGenerator\Helpers\DependencyResolver;
+use BennettTreptow\LaravelMigrationGenerator\Definitions\TableDefinition;
+use BennettTreptow\LaravelMigrationGenerator\GeneratorManagers\Interfaces\GeneratorManagerInterface;
+use BennettTreptow\LaravelMigrationGenerator\Helpers\DependencyResolverV2;
+use BennettTreptow\LaravelMigrationGenerator\Helpers\DependencyResolverV3;
 
 abstract class BaseGeneratorManager implements GeneratorManagerInterface
 {

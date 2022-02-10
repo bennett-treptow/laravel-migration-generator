@@ -1,14 +1,14 @@
 <?php
 
-namespace LaravelMigrationGenerator\Definitions;
+namespace BennettTreptow\LaravelMigrationGenerator\Definitions;
 
 use Illuminate\Support\Str;
-use LaravelMigrationGenerator\Helpers\ValueToString;
-use LaravelMigrationGenerator\Helpers\WritableTrait;
+use BennettTreptow\LaravelMigrationGenerator\Helpers\ValueToString;
+use BennettTreptow\LaravelMigrationGenerator\Helpers\WritableTrait;
 
 /**
  * Class ColumnDefinition
- * @package LaravelMigrationGenerator\Definitions
+ * @package BennettTreptow\LaravelMigrationGenerator\Definitions
  */
 class ColumnDefinition
 {

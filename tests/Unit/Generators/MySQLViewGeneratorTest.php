@@ -3,7 +3,7 @@
 namespace Tests\Unit\Generators;
 
 use Tests\TestCase;
-use LaravelMigrationGenerator\Generators\MySQL\ViewGenerator;
+use BennettTreptow\LaravelMigrationGenerator\Generators\MySQL\ViewGenerator;
 
 class MySQLViewGeneratorTest extends TestCase
 {

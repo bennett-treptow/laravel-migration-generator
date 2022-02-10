@@ -1,12 +1,12 @@
 <?php
 
-namespace LaravelMigrationGenerator;
+namespace BennettTreptow\LaravelMigrationGenerator;
 
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Events\MigrationsEnded;
-use LaravelMigrationGenerator\Commands\GenerateMigrationsCommand;
+use BennettTreptow\LaravelMigrationGenerator\Commands\GenerateMigrationsCommand;
 
 class LaravelMigrationGeneratorProvider extends ServiceProvider
 {
