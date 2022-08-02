@@ -11,15 +11,23 @@ class ValueToString
         return 'float$:' . $value;
     }
 
+    public static function castBinary($value)
+    {
+        return 'binary$:' . $value;
+    }
+
     public static function isCastedValue($value)
     {
-        return Str::startsWith($value, ['float$:']);
+        return Str::startsWith($value, ['float$:', 'binary$:']);
     }
 
     public static function parseCastedValue($value)
     {
         if (Str::startsWith($value, 'float$:')) {
             return str_replace('float$:', '', $value);
+        }
+        if(Str::startsWith($value, 'binary$:')) {
+            return 'b\''.str_replace('binary$:', '', $value).'\'';
         }
 
         return $value;

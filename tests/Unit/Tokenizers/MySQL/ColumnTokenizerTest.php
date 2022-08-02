@@ -140,6 +140,14 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('this is the "comment"', $columnDefinition->getComment());
     }
 
+    public function test_it_tokenizes_varchar_with_boolean_literal_default(){
+        $columnTokenizer = ColumnTokenizer::parse("`testing` bit(2) DEFAULT b'10'");
+        $columnDefinition = $columnTokenizer->definition();
+        $this->assertEquals('bit', $columnDefinition->getMethodName());
+        $this->assertEquals('b\'10\'', $columnDefinition->getDefaultValue());
+        $this->assertEquals("\$table->bit('testing', 2)->default(b'10')", $columnDefinition->render());
+    }
+
     public function test_it_tokenizes_char_column_with_character_and_collation()
     {
         $columnTokenizer = ColumnTokenizer::parse('`country` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT \'US\'');
