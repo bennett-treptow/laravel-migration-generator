@@ -194,6 +194,19 @@ class IndexTokenizerTest extends TestCase
         $this->assertEquals('$table->foreign(\'user_id\', \'fk_bank_accounts_user_id\')->references(\'id\')->on(\'users\')->onUpdate(\'cascade\')->onDelete(\'cascade\')', $indexDefinition->render());
     }
 
+    public function test_it_tokenizes_foreign_key_with_multiple_columns(){
+        $indexTokenizer = IndexTokenizer::parse('CONSTRAINT `table2_ibfk_1` FOREIGN KEY (`table2-foreign1`, `table2-foreign2`) REFERENCES `table1` (`table1-field1`, `table1-field2`) ON DELETE CASCADE ON UPDATE CASCADE');
+        $definition = $indexTokenizer->definition();
+
+        $this->assertEquals('foreign', $definition->getIndexType());
+        $this->assertTrue($definition->isMultiColumnIndex());
+        $this->assertCount(2, $definition->getIndexColumns());
+        $this->assertEquals('table1', $definition->getForeignReferencedTable());
+        $this->assertSame(['table1-field1', 'table1-field2'], $definition->getForeignReferencedColumns());
+        $this->assertSame(['table2-foreign1', 'table2-foreign2'], $definition->getIndexColumns());
+        $this->assertEquals('$table->foreign([\'table2-foreign1\', \'table2-foreign2\'], \'table2_ibfk_1\')->references([\'table1-field1\', \'table1-field2\'])->on(\'table1\')->onDelete(\'cascade\')->onUpdate(\'cascade\')', $definition->render());
+    }
+
     public function test_it_tokenizes_foreign_key_with_update_restrict()
     {
         $indexTokenizer = IndexTokenizer::parse('CONSTRAINT `fk_bank_accounts_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON UPDATE NO ACTION');
