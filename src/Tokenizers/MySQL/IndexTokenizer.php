@@ -56,7 +56,17 @@ class IndexTokenizer extends BaseIndexTokenizer
         if (strtoupper($piece) === 'FOREIGN') {
             $this->consume(); //KEY
 
-            $columns = $this->columnsToArray($this->consume());
+            $columns = [];
+            $token = $this->consume();
+
+            while(!is_null($token)) {
+                $columns = array_merge($columns, $this->columnsToArray($token));
+                $token = $this->consume();
+                if(strtoupper($token) === 'REFERENCES') {
+                    $this->putBack($token);
+                    break;
+                }
+            }
             $this->definition->setIndexColumns($columns);
 
             $this->consume(); //REFERENCES
@@ -64,7 +74,17 @@ class IndexTokenizer extends BaseIndexTokenizer
             $referencedTable = $this->parseColumn($this->consume());
             $this->definition->setForeignReferencedTable($referencedTable);
 
-            $referencedColumns = $this->columnsToArray($this->consume());
+            $referencedColumns = [];
+            $token = $this->consume();
+            while(!is_null($token)){
+                $referencedColumns = array_merge($referencedColumns, $this->columnsToArray($token));
+                $token = $this->consume();
+                if(strtoupper($token) === 'ON'){
+                    $this->putBack($token);
+                    break;
+                }
+            }
+
             $this->definition->setForeignReferencedColumns($referencedColumns);
 
             $this->consumeConstraintActions();
