@@ -1,6 +1,6 @@
 <?php
 
-namespace BennettTreptow\LaravelMigrationGenerator\Tokenizers\MySQL;
+namespace BennettTreptow\LaravelMigrationGenerator\Tokenizers\PgSQL;
 
 use Illuminate\Support\Str;
 use Illuminate\Database\Schema\Builder;
@@ -12,7 +12,7 @@ class ColumnTokenizer extends BaseColumnTokenizer
     protected $columnDataType;
 
     /**
-     * MySQL provides a ZEROFILL property for ints which is not an ANSI compliant modifier
+     * PgSQL provides a ZEROFILL property for ints which is not an ANSI compliant modifier
      * @var bool
      */
     protected $zeroFill = false;
@@ -46,8 +46,6 @@ class ColumnTokenizer extends BaseColumnTokenizer
         if ($this->columnDataType == 'timestamp' || $this->columnDataType == 'datetime') {
             $this->consumeTimestamp();
         }
-
-        $this->consumeComment();
 
         return $this;
     }
@@ -111,13 +109,6 @@ class ColumnTokenizer extends BaseColumnTokenizer
             //something else
             $this->putBack($piece);
         }
-
-        if(Str::contains($this->columnDataType, 'text')){
-            //text column types are explicitly nullable unless set to NOT NULL
-            if($this->definition->isNullable() === null){
-                $this->definition->setNullable(true);
-            }
-        }
     }
 
     protected function consumeDefaultValue()
@@ -134,22 +125,17 @@ class ColumnTokenizer extends BaseColumnTokenizer
                 $this->definition
                     ->setDefaultValue(null)
                     ->setUseCurrent(true);
-            } elseif(preg_match("/b'([01]+)'/i", $this->definition->getDefaultValue(), $matches)){
-                // Binary digit, so let's convert to PHP's version
-                $this->definition->setDefaultValue(ValueToString::castBinary($matches[1]));
             }
             if ($this->definition->getDefaultValue() !== null) {
                 if ($this->isNumberType()) {
                     if (Str::contains(strtoupper($this->columnDataType), 'INT')) {
-                        $this->definition->setDefaultValue((int)$this->definition->getDefaultValue());
+                        $this->definition->setDefaultValue((int) $this->definition->getDefaultValue());
                     } else {
                         //floats get converted to strings improperly, gotta do a string cast
                         $this->definition->setDefaultValue(ValueToString::castFloat($this->definition->getDefaultValue()));
                     }
                 } else {
-                    if(!$this->isBinaryType()) {
-                        $this->definition->setDefaultValue((string)$this->definition->getDefaultValue());
-                    }
+                    $this->definition->setDefaultValue((string) $this->definition->getDefaultValue());
                 }
             }
         } else {
@@ -157,17 +143,6 @@ class ColumnTokenizer extends BaseColumnTokenizer
         }
     }
 
-    protected function consumeComment()
-    {
-        $piece = $this->consume();
-        if (strtoupper($piece) === 'COMMENT') {
-            // next piece is the comment content
-            $this->definition->setComment($this->consume());
-        } else {
-          $this->putBack($piece);
-        }
-    }
-  
     protected function consumeCharacterSet()
     {
         $piece = $this->consume();
@@ -368,10 +343,6 @@ class ColumnTokenizer extends BaseColumnTokenizer
     protected function isArrayType()
     {
         return Str::contains($this->columnDataType, ['enum', 'set']);
-    }
-
-    protected function isBinaryType(){
-        return Str::contains($this->columnDataType, ['bit']);
     }
 
     /**

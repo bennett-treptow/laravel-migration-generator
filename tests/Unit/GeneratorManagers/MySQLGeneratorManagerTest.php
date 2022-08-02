@@ -4,10 +4,10 @@ namespace Tests\Unit\GeneratorManagers;
 
 use Tests\TestCase;
 use Mockery\MockInterface;
-use LaravelMigrationGenerator\Definitions\IndexDefinition;
-use LaravelMigrationGenerator\Definitions\TableDefinition;
-use LaravelMigrationGenerator\Definitions\ColumnDefinition;
-use LaravelMigrationGenerator\GeneratorManagers\MySQLGeneratorManager;
+use BennettTreptow\LaravelMigrationGenerator\Definitions\IndexDefinition;
+use BennettTreptow\LaravelMigrationGenerator\Definitions\TableDefinition;
+use BennettTreptow\LaravelMigrationGenerator\Definitions\ColumnDefinition;
+use BennettTreptow\LaravelMigrationGenerator\GeneratorManagers\MySQLGeneratorManager;
 
 class MySQLGeneratorManagerTest extends TestCase
 {

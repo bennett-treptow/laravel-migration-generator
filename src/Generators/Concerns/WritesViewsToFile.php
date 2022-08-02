@@ -1,9 +1,9 @@
 <?php
 
-namespace LaravelMigrationGenerator\Generators\Concerns;
+namespace BennettTreptow\LaravelMigrationGenerator\Generators\Concerns;
 
 use Illuminate\Support\Str;
-use LaravelMigrationGenerator\Helpers\ConfigResolver;
+use BennettTreptow\LaravelMigrationGenerator\Helpers\ConfigResolver;
 
 trait WritesViewsToFile
 {

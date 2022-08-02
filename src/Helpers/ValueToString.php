@@ -1,6 +1,6 @@
 <?php
 
-namespace LaravelMigrationGenerator\Helpers;
+namespace BennettTreptow\LaravelMigrationGenerator\Helpers;
 
 use Illuminate\Support\Str;
 

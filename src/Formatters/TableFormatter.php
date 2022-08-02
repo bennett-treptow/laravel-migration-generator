@@ -1,11 +1,11 @@
 <?php
 
-namespace LaravelMigrationGenerator\Formatters;
+namespace BennettTreptow\LaravelMigrationGenerator\Formatters;
 
 use Illuminate\Support\Str;
-use LaravelMigrationGenerator\Helpers\Formatter;
-use LaravelMigrationGenerator\Helpers\ConfigResolver;
-use LaravelMigrationGenerator\Definitions\TableDefinition;
+use BennettTreptow\LaravelMigrationGenerator\Helpers\Formatter;
+use BennettTreptow\LaravelMigrationGenerator\Helpers\ConfigResolver;
+use BennettTreptow\LaravelMigrationGenerator\Definitions\TableDefinition;
 
 class TableFormatter
 {

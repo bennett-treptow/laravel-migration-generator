@@ -1,8 +1,8 @@
 <?php
 
-namespace LaravelMigrationGenerator\Tokenizers\Interfaces;
+namespace BennettTreptow\LaravelMigrationGenerator\Tokenizers\Interfaces;
 
-use LaravelMigrationGenerator\Definitions\ColumnDefinition;
+use BennettTreptow\LaravelMigrationGenerator\Definitions\ColumnDefinition;
 
 interface ColumnTokenizerInterface
 {

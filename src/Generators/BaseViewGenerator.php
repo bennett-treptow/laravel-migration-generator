@@ -1,9 +1,9 @@
 <?php
 
-namespace LaravelMigrationGenerator\Generators;
+namespace BennettTreptow\LaravelMigrationGenerator\Generators;
 
-use LaravelMigrationGenerator\Definitions\ViewDefinition;
-use LaravelMigrationGenerator\Generators\Interfaces\ViewGeneratorInterface;
+use BennettTreptow\LaravelMigrationGenerator\Definitions\ViewDefinition;
+use BennettTreptow\LaravelMigrationGenerator\Generators\Interfaces\ViewGeneratorInterface;
 
 abstract class BaseViewGenerator implements ViewGeneratorInterface
 {

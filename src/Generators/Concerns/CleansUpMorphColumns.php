@@ -1,15 +1,15 @@
 <?php
 
-namespace LaravelMigrationGenerator\Generators\Concerns;
+namespace BennettTreptow\LaravelMigrationGenerator\Generators\Concerns;
 
 use Illuminate\Support\Str;
-use LaravelMigrationGenerator\Definitions\ColumnDefinition;
-use LaravelMigrationGenerator\Generators\BaseTableGenerator;
-use LaravelMigrationGenerator\Tokenizers\Interfaces\ColumnTokenizerInterface;
+use BennettTreptow\LaravelMigrationGenerator\Definitions\ColumnDefinition;
+use BennettTreptow\LaravelMigrationGenerator\Generators\BaseTableGenerator;
+use BennettTreptow\LaravelMigrationGenerator\Tokenizers\Interfaces\ColumnTokenizerInterface;
 
 /**
  * Trait CleansUpMorphColumns
- * @package LaravelMigrationGenerator\Generators\Concerns
+ * @package BennettTreptow\LaravelMigrationGenerator\Generators\Concerns
  * @mixin BaseTableGenerator
  */
 trait CleansUpMorphColumns

@@ -1,13 +1,13 @@
 <?php
 
-namespace LaravelMigrationGenerator\Generators;
+namespace BennettTreptow\LaravelMigrationGenerator\Generators;
 
-use LaravelMigrationGenerator\Definitions\TableDefinition;
-use LaravelMigrationGenerator\Generators\Concerns\CleansUpMorphColumns;
-use LaravelMigrationGenerator\Generators\Concerns\CleansUpColumnIndices;
-use LaravelMigrationGenerator\Generators\Concerns\CleansUpTimestampsColumn;
-use LaravelMigrationGenerator\Generators\Concerns\CleansUpForeignKeyIndices;
-use LaravelMigrationGenerator\Generators\Interfaces\TableGeneratorInterface;
+use BennettTreptow\LaravelMigrationGenerator\Definitions\TableDefinition;
+use BennettTreptow\LaravelMigrationGenerator\Generators\Concerns\CleansUpMorphColumns;
+use BennettTreptow\LaravelMigrationGenerator\Generators\Concerns\CleansUpColumnIndices;
+use BennettTreptow\LaravelMigrationGenerator\Generators\Concerns\CleansUpTimestampsColumn;
+use BennettTreptow\LaravelMigrationGenerator\Generators\Concerns\CleansUpForeignKeyIndices;
+use BennettTreptow\LaravelMigrationGenerator\Generators\Interfaces\TableGeneratorInterface;
 
 abstract class BaseTableGenerator implements TableGeneratorInterface
 {

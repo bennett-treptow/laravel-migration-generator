@@ -1,8 +1,8 @@
 <?php
 
-namespace LaravelMigrationGenerator\Definitions;
+namespace BennettTreptow\LaravelMigrationGenerator\Definitions;
 
-use LaravelMigrationGenerator\Formatters\ViewFormatter;
+use BennettTreptow\LaravelMigrationGenerator\Formatters\ViewFormatter;
 
 class ViewDefinition
 {
