@@ -35,7 +35,8 @@
     "post-autoload-dump": [
       "@php ./vendor/bin/testbench package:discover --ansi"
     ],
-    "test": ["vendor/bin/phpunit"]
+    "test": ["vendor/bin/phpunit"],
+    "lint": "vendor/bin/php-cs-fixer fix"
   },
   "extra": {
     "laravel": {

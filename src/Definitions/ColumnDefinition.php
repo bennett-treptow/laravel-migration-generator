@@ -123,7 +123,7 @@ class ColumnDefinition
     {
         return $this->comment;
     }
-  
+
     /**
      * @return string|null
      */
@@ -411,7 +411,7 @@ class ColumnDefinition
 
     protected function isNullableMethod($methodName)
     {
-        return ! in_array($methodName, ['softDeletes', 'morphs', 'nullableMorphs', 'rememberToken', 'nullableUuidMorphs']) && !$this->isPrimaryKeyMethod($methodName);
+        return ! in_array($methodName, ['softDeletes', 'morphs', 'nullableMorphs', 'rememberToken', 'nullableUuidMorphs']) && ! $this->isPrimaryKeyMethod($methodName);
     }
 
     protected function isPrimaryKeyMethod($methodName)
@@ -514,8 +514,8 @@ class ColumnDefinition
             $this->nullable = true;
         }
 
-        if($this->isNullableMethod($finalMethodName)){
-            if($this->nullable === true){
+        if ($this->isNullableMethod($finalMethodName)) {
+            if ($this->nullable === true) {
                 $initialString .= '->nullable()';
             }
         }

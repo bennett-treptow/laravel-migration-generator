@@ -112,9 +112,9 @@ class ColumnTokenizer extends BaseColumnTokenizer
             $this->putBack($piece);
         }
 
-        if(Str::contains($this->columnDataType, 'text')){
+        if (Str::contains($this->columnDataType, 'text')) {
             //text column types are explicitly nullable unless set to NOT NULL
-            if($this->definition->isNullable() === null){
+            if ($this->definition->isNullable() === null) {
                 $this->definition->setNullable(true);
             }
         }
@@ -134,21 +134,21 @@ class ColumnTokenizer extends BaseColumnTokenizer
                 $this->definition
                     ->setDefaultValue(null)
                     ->setUseCurrent(true);
-            } elseif(preg_match("/b'([01]+)'/i", $this->definition->getDefaultValue(), $matches)){
+            } elseif (preg_match("/b'([01]+)'/i", $this->definition->getDefaultValue(), $matches)) {
                 // Binary digit, so let's convert to PHP's version
                 $this->definition->setDefaultValue(ValueToString::castBinary($matches[1]));
             }
             if ($this->definition->getDefaultValue() !== null) {
                 if ($this->isNumberType()) {
                     if (Str::contains(strtoupper($this->columnDataType), 'INT')) {
-                        $this->definition->setDefaultValue((int)$this->definition->getDefaultValue());
+                        $this->definition->setDefaultValue((int) $this->definition->getDefaultValue());
                     } else {
                         //floats get converted to strings improperly, gotta do a string cast
                         $this->definition->setDefaultValue(ValueToString::castFloat($this->definition->getDefaultValue()));
                     }
                 } else {
-                    if(!$this->isBinaryType()) {
-                        $this->definition->setDefaultValue((string)$this->definition->getDefaultValue());
+                    if (! $this->isBinaryType()) {
+                        $this->definition->setDefaultValue((string) $this->definition->getDefaultValue());
                     }
                 }
             }
@@ -164,10 +164,10 @@ class ColumnTokenizer extends BaseColumnTokenizer
             // next piece is the comment content
             $this->definition->setComment($this->consume());
         } else {
-          $this->putBack($piece);
+            $this->putBack($piece);
         }
     }
-  
+
     protected function consumeCharacterSet()
     {
         $piece = $this->consume();
@@ -370,7 +370,8 @@ class ColumnTokenizer extends BaseColumnTokenizer
         return Str::contains($this->columnDataType, ['enum', 'set']);
     }
 
-    protected function isBinaryType(){
+    protected function isBinaryType()
+    {
         return Str::contains($this->columnDataType, ['bit']);
     }
 

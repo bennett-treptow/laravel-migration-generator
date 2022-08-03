@@ -5,7 +5,6 @@ namespace LaravelMigrationGenerator\Generators\Concerns;
 use Illuminate\Support\Str;
 use LaravelMigrationGenerator\Definitions\ColumnDefinition;
 use LaravelMigrationGenerator\Generators\BaseTableGenerator;
-use LaravelMigrationGenerator\Tokenizers\Interfaces\ColumnTokenizerInterface;
 
 /**
  * Trait CleansUpMorphColumns

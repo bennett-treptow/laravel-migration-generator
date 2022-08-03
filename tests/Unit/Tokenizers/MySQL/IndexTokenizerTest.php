@@ -194,7 +194,8 @@ class IndexTokenizerTest extends TestCase
         $this->assertEquals('$table->foreign(\'user_id\', \'fk_bank_accounts_user_id\')->references(\'id\')->on(\'users\')->onUpdate(\'cascade\')->onDelete(\'cascade\')', $indexDefinition->render());
     }
 
-    public function test_it_tokenizes_foreign_key_with_multiple_columns(){
+    public function test_it_tokenizes_foreign_key_with_multiple_columns()
+    {
         $indexTokenizer = IndexTokenizer::parse('CONSTRAINT `table2_ibfk_1` FOREIGN KEY (`table2-foreign1`, `table2-foreign2`) REFERENCES `table1` (`table1-field1`, `table1-field2`) ON DELETE CASCADE ON UPDATE CASCADE');
         $definition = $indexTokenizer->definition();
 
