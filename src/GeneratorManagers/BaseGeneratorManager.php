@@ -2,14 +2,11 @@
 
 namespace LaravelMigrationGenerator\GeneratorManagers;
 
-use LaravelMigrationGenerator\Definitions\ViewDefinition;
-use LaravelMigrationGenerator\Helpers\Dependency;
 use LaravelMigrationGenerator\Helpers\ConfigResolver;
+use LaravelMigrationGenerator\Definitions\ViewDefinition;
 use LaravelMigrationGenerator\Helpers\DependencyResolver;
 use LaravelMigrationGenerator\Definitions\TableDefinition;
 use LaravelMigrationGenerator\GeneratorManagers\Interfaces\GeneratorManagerInterface;
-use LaravelMigrationGenerator\Helpers\DependencyResolverV2;
-use LaravelMigrationGenerator\Helpers\DependencyResolverV3;
 
 abstract class BaseGeneratorManager implements GeneratorManagerInterface
 {

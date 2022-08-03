@@ -63,7 +63,7 @@ class DependencyResolver
             foreach ($indicesForStart as $index) {
                 $startDefinition->removeIndexDefinition($index);
             }
-            if(!in_array($start, $sorted)) {
+            if (! in_array($start, $sorted)) {
                 $definitions[] = $startDefinition;
             }
 
@@ -76,7 +76,7 @@ class DependencyResolver
             foreach ($indicesForEnd as $index) {
                 $endDefinition->removeIndexDefinition($index);
             }
-            if(!in_array($end, $sorted)) {
+            if (! in_array($end, $sorted)) {
                 $definitions[] = $endDefinition;
             }
 

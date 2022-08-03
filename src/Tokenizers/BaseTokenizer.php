@@ -18,14 +18,14 @@ abstract class BaseTokenizer
         $pruneSingleQuotes = false;
 
         //first get rid of any single quoted stuff with '' around it
-        if(preg_match_all('/\'\'(.+?)\'\'/', $value, $matches)){
-            foreach($matches[0] as $key => $singleQuoted){
+        if (preg_match_all('/\'\'(.+?)\'\'/', $value, $matches)) {
+            foreach ($matches[0] as $key => $singleQuoted) {
                 $toReplace = $singleQuoted;
-                $value = str_replace($toReplace, self::SINGLE_QUOTE_REPLACER.$matches[1][$key].self::SINGLE_QUOTE_REPLACER, $value);
+                $value = str_replace($toReplace, self::SINGLE_QUOTE_REPLACER . $matches[1][$key] . self::SINGLE_QUOTE_REPLACER, $value);
                 $pruneSingleQuotes = true;
             }
         }
-        if(preg_match('/\'\'/', $value)){
+        if (preg_match('/\'\'/', $value)) {
             $value = str_replace('\'\'', '$$EMPTY_STRING', $value);
         }
 
@@ -48,7 +48,7 @@ abstract class BaseTokenizer
                 return str_replace(self::SPACE_REPLACER, ' ', $item);
             }, $this->tokens);
         }
-        if($pruneSingleQuotes){
+        if ($pruneSingleQuotes) {
             $this->tokens = array_map(function ($item) {
                 return str_replace(self::SINGLE_QUOTE_REPLACER, '\'', $item);
             }, $this->tokens);

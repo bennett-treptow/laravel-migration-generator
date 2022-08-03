@@ -133,21 +133,24 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('$table->string(\'favorite_color\')->nullable()->comment("favorite color is \"green\"")', $columnDefinition->render());
     }
 
-    public function test_it_tokenizes_varchar_with_default_and_comment(){
+    public function test_it_tokenizes_varchar_with_default_and_comment()
+    {
         $columnTokenizer = ColumnTokenizer::parse("`testing` varchar(255) DEFAULT 'this is ''it''' COMMENT 'this is the \"comment\"'");
         $columnDefinition = $columnTokenizer->definition();
         $this->assertEquals('this is \'it\'', $columnDefinition->getDefaultValue());
         $this->assertEquals('this is the "comment"', $columnDefinition->getComment());
     }
 
-    public function test_it_tokenizes_varchar_with_default_empty_string_and_comment(){
+    public function test_it_tokenizes_varchar_with_default_empty_string_and_comment()
+    {
         $columnTokenizer = ColumnTokenizer::parse("`testing` varchar(255) DEFAULT '' COMMENT 'this is the \"comment\"'");
         $columnDefinition = $columnTokenizer->definition();
         $this->assertEquals('', $columnDefinition->getDefaultValue());
         $this->assertEquals('this is the "comment"', $columnDefinition->getComment());
     }
 
-    public function test_it_tokenizes_varchar_with_boolean_literal_default(){
+    public function test_it_tokenizes_varchar_with_boolean_literal_default()
+    {
         $columnTokenizer = ColumnTokenizer::parse("`testing` bit(2) DEFAULT b'10'");
         $columnDefinition = $columnTokenizer->definition();
         $this->assertEquals('bit', $columnDefinition->getMethodName());
@@ -731,6 +734,7 @@ class ColumnTokenizerTest extends TestCase
         $this->assertNull($columnDefinition->getCollation());
         $this->assertEquals('$table->dateTime(\'sent_at\')->useCurrent()->useCurrentOnUpdate()', $columnDefinition->render());
     }
+
     //endregion
 
     //region TIMESTAMP

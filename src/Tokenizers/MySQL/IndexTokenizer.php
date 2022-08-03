@@ -59,11 +59,12 @@ class IndexTokenizer extends BaseIndexTokenizer
             $columns = [];
             $token = $this->consume();
 
-            while(!is_null($token)) {
+            while (! is_null($token)) {
                 $columns = array_merge($columns, $this->columnsToArray($token));
                 $token = $this->consume();
-                if(strtoupper($token) === 'REFERENCES') {
+                if (strtoupper($token) === 'REFERENCES') {
                     $this->putBack($token);
+
                     break;
                 }
             }
@@ -76,11 +77,12 @@ class IndexTokenizer extends BaseIndexTokenizer
 
             $referencedColumns = [];
             $token = $this->consume();
-            while(!is_null($token)){
+            while (! is_null($token)) {
                 $referencedColumns = array_merge($referencedColumns, $this->columnsToArray($token));
                 $token = $this->consume();
-                if(strtoupper($token) === 'ON'){
+                if (strtoupper($token) === 'ON') {
                     $this->putBack($token);
+
                     break;
                 }
             }
