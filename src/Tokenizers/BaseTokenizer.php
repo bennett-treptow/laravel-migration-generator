@@ -16,7 +16,6 @@ abstract class BaseTokenizer
         $this->value = $value;
         $prune = false;
         $pruneSingleQuotes = false;
-        //\(?\'(.+?)?\s(.+?)?\'\)?
 
         //first get rid of any single quoted stuff with '' around it
         if(preg_match_all('/\'\'(.+?)\'\'/', $value, $matches)){
@@ -25,6 +24,9 @@ abstract class BaseTokenizer
                 $value = str_replace($toReplace, self::SINGLE_QUOTE_REPLACER.$matches[1][$key].self::SINGLE_QUOTE_REPLACER, $value);
                 $pruneSingleQuotes = true;
             }
+        }
+        if(preg_match('/\'\'/', $value)){
+            $value = str_replace('\'\'', '$$EMPTY_STRING', $value);
         }
 
         if (preg_match_all("/'(.+?)'/", $value, $matches)) {
@@ -36,6 +38,7 @@ abstract class BaseTokenizer
                 $prune = true;
             }
         }
+        $value = str_replace('$$EMPTY_STRING', '\'\'', $value);
         $this->tokens = array_map(function ($item) {
             return trim($item, ', ');
         }, str_getcsv($value, ' ', "'"));

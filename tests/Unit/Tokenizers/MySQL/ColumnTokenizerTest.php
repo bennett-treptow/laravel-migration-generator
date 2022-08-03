@@ -140,6 +140,13 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('this is the "comment"', $columnDefinition->getComment());
     }
 
+    public function test_it_tokenizes_varchar_with_default_empty_string_and_comment(){
+        $columnTokenizer = ColumnTokenizer::parse("`testing` varchar(255) DEFAULT '' COMMENT 'this is the \"comment\"'");
+        $columnDefinition = $columnTokenizer->definition();
+        $this->assertEquals('', $columnDefinition->getDefaultValue());
+        $this->assertEquals('this is the "comment"', $columnDefinition->getComment());
+    }
+
     public function test_it_tokenizes_varchar_with_boolean_literal_default(){
         $columnTokenizer = ColumnTokenizer::parse("`testing` bit(2) DEFAULT b'10'");
         $columnDefinition = $columnTokenizer->definition();
