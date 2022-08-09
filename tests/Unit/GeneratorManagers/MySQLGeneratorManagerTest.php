@@ -64,9 +64,19 @@ class MySQLGeneratorManagerTest extends TestCase
         });
 
         $definition = (new TableDefinition())->setTableName('wp_posts');
-
         $mocked->addTableDefinition($definition);
         $this->assertEquals('posts', $definition->getTableName());
+
+        $definition = (new TableDefinition())->setTableName('posts');
+        $mocked->addTableDefinition($definition);
+        $this->assertEquals('posts', $definition->getTableName());
+
+
+        config()->set('database.connections.' . $connection . '.prefix', '');
+
+        $definition = (new TableDefinition())->setTableName('wp_posts');
+        $mocked->addTableDefinition($definition);
+        $this->assertEquals('wp_posts', $definition->getTableName());
 
         $definition = (new TableDefinition())->setTableName('posts');
         $mocked->addTableDefinition($definition);
