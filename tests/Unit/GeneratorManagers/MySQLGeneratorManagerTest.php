@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\GeneratorManagers;
 
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 use Mockery\MockInterface;
 use LaravelMigrationGenerator\Definitions\IndexDefinition;
@@ -51,5 +52,23 @@ class MySQLGeneratorManagerTest extends TestCase
         $sorted = $mocked->sortTables($mocked->getTableDefinitions());
         $this->assertCount(4, $sorted);
         $this->assertStringContainsString('$table->dropForeign', $sorted[3]->formatter()->stubTableDown());
+    }
+
+    public function test_can_remove_database_prefix(){
+        $connection = DB::getDefaultConnection();
+        config()->set('database.connections.'.$connection.'.prefix', 'wp_');
+
+        $mocked = $this->partialMock(MySQLGeneratorManager::class, function (MockInterface $mock) {
+            $mock->shouldReceive('init');
+        });
+
+        $definition = (new TableDefinition())->setTableName('wp_posts');
+
+        $mocked->addTableDefinition($definition);
+        $this->assertEquals('posts', $definition->getTableName());
+
+        $definition = (new TableDefinition())->setTableName('posts');
+        $mocked->addTableDefinition($definition);
+        $this->assertEquals('posts', $definition->getTableName());
     }
 }
