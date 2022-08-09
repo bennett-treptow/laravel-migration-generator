@@ -2,9 +2,9 @@
 
 namespace Tests\Unit\GeneratorManagers;
 
-use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 use Mockery\MockInterface;
+use Illuminate\Support\Facades\DB;
 use LaravelMigrationGenerator\Definitions\IndexDefinition;
 use LaravelMigrationGenerator\Definitions\TableDefinition;
 use LaravelMigrationGenerator\Definitions\ColumnDefinition;
@@ -54,9 +54,10 @@ class MySQLGeneratorManagerTest extends TestCase
         $this->assertStringContainsString('$table->dropForeign', $sorted[3]->formatter()->stubTableDown());
     }
 
-    public function test_can_remove_database_prefix(){
+    public function test_can_remove_database_prefix()
+    {
         $connection = DB::getDefaultConnection();
-        config()->set('database.connections.'.$connection.'.prefix', 'wp_');
+        config()->set('database.connections.' . $connection . '.prefix', 'wp_');
 
         $mocked = $this->partialMock(MySQLGeneratorManager::class, function (MockInterface $mock) {
             $mock->shouldReceive('init');
