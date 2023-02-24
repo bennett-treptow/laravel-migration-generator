@@ -1,49 +1,51 @@
 {
-  "name": "bennett-treptow/laravel-migration-generator",
-  "description": "Generate migrations from existing database structures",
-  "minimum-stability": "stable",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Bennett Treptow",
-      "email": "me@btreptow.com"
-    }
-  ],
-  "require": {
-    "php": "^7.4|^8.0",
-    "illuminate/support": "^6.0|^7.0|^8.0|^9.0",
-    "illuminate/console": "^6.0|^7.0|^8.0|^9.0",
-    "illuminate/database": "^6.0|^7.0|^8.0|^9.0",
-    "illuminate/config": "^6.0|^7.0|^8.0|^9.0",
-    "marcj/topsort": "^2.0"
-  },
-  "autoload": {
-    "psr-4": {
-      "LaravelMigrationGenerator\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Tests\\": "tests/"
-    }
-  },
-  "require-dev": {
-    "orchestra/testbench": "^6.17",
-    "friendsofphp/php-cs-fixer": "^2.16"
-  },
-  "scripts": {
-    "post-autoload-dump": [
-      "@php ./vendor/bin/testbench package:discover --ansi"
+    "name": "bennett-treptow/laravel-migration-generator",
+    "description": "Generate migrations from existing database structures",
+    "minimum-stability": "stable",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bennett Treptow",
+            "email": "me@btreptow.com"
+        }
     ],
-    "test": ["vendor/bin/phpunit"],
-    "lint": "vendor/bin/php-cs-fixer fix"
-  },
-  "extra": {
-    "laravel": {
-      "providers": [
-        "LaravelMigrationGenerator\\LaravelMigrationGeneratorProvider"
-      ]
-    }
-  },
-  "prefer-stable": true
+    "require": {
+        "php": "^7.4|^8.0",
+        "illuminate/support": "^6.0|^7.0|^8.0|^9.0|^10.0",
+        "illuminate/console": "^6.0|^7.0|^8.0|^9.0|^10.0",
+        "illuminate/database": "^6.0|^7.0|^8.0|^9.0|^10.0",
+        "illuminate/config": "^6.0|^7.0|^8.0|^9.0|^10.0",
+        "marcj/topsort": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "LaravelMigrationGenerator\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "orchestra/testbench": "^6.17|^8.0",
+        "friendsofphp/php-cs-fixer": "^2.16|^3.14"
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "@php ./vendor/bin/testbench package:discover --ansi"
+        ],
+        "test": [
+            "vendor/bin/phpunit"
+        ],
+        "lint": "vendor/bin/php-cs-fixer fix"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "LaravelMigrationGenerator\\LaravelMigrationGeneratorProvider"
+            ]
+        }
+    },
+    "prefer-stable": true
 }
