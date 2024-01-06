@@ -79,7 +79,7 @@ class ColumnTokenizer extends BaseColumnTokenizer
             $columnType = explode('(', $columnType)[0];
         }
 
-        $this->columnDataType = $columnType;
+        $this->columnDataType = strtolower($columnType);
 
         $this->resolveColumnMethod();
         if ($hasConstraints) {
