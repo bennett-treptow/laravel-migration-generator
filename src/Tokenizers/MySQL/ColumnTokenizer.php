@@ -72,7 +72,7 @@ class ColumnTokenizer extends BaseColumnTokenizer
 
     protected function consumeColumnType()
     {
-        $originalColumnType = $columnType = strtolower($this->consume());
+        $originalColumnType = $columnType = $this->consume();
         $hasConstraints = Str::contains($columnType, '(');
 
         if ($hasConstraints) {
