@@ -71,7 +71,6 @@ class MySQLGeneratorManagerTest extends TestCase
         $mocked->addTableDefinition($definition);
         $this->assertEquals('posts', $definition->getTableName());
 
-
         config()->set('database.connections.' . $connection . '.prefix', '');
 
         $definition = (new TableDefinition())->setTableName('wp_posts');
