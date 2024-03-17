@@ -10,12 +10,17 @@ abstract class BaseTokenizer
 
     private const SPACE_REPLACER = '&!@';
     private const SINGLE_QUOTE_REPLACER = '!*@';
+    private const EMPTY_STRING_REPLACER = '$$EMPTY_STRING';
 
     public function __construct(string $value)
     {
         $this->value = $value;
         $prune = false;
         $pruneSingleQuotes = false;
+
+        if (preg_match("/(DEFAULT|COMMENT) ''/", $value, $matches)) {
+            $value = str_replace($matches[1] . ' \'\'', $matches[1] . ' ' . self::EMPTY_STRING_REPLACER, $value);
+        }
 
         //first get rid of any single quoted stuff with '' around it
         if (preg_match_all('/\'\'(.+?)\'\'/', $value, $matches)) {
@@ -24,9 +29,6 @@ abstract class BaseTokenizer
                 $value = str_replace($toReplace, self::SINGLE_QUOTE_REPLACER . $matches[1][$key] . self::SINGLE_QUOTE_REPLACER, $value);
                 $pruneSingleQuotes = true;
             }
-        }
-        if (preg_match('/\'\'/', $value)) {
-            $value = str_replace('\'\'', '$$EMPTY_STRING', $value);
         }
 
         if (preg_match_all("/'(.+?)'/", $value, $matches)) {
@@ -38,7 +40,7 @@ abstract class BaseTokenizer
                 $prune = true;
             }
         }
-        $value = str_replace('$$EMPTY_STRING', '\'\'', $value);
+        $value = str_replace(self::EMPTY_STRING_REPLACER, '\'\'', $value);
         $this->tokens = array_map(function ($item) {
             return trim($item, ', ');
         }, str_getcsv($value, ' ', "'"));
