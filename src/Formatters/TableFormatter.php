@@ -3,9 +3,9 @@
 namespace LaravelMigrationGenerator\Formatters;
 
 use Illuminate\Support\Str;
-use LaravelMigrationGenerator\Helpers\Formatter;
-use LaravelMigrationGenerator\Helpers\ConfigResolver;
 use LaravelMigrationGenerator\Definitions\TableDefinition;
+use LaravelMigrationGenerator\Helpers\ConfigResolver;
+use LaravelMigrationGenerator\Helpers\Formatter;
 
 class TableFormatter
 {
@@ -40,8 +40,8 @@ class TableFormatter
         $driver = $this->tableDefinition->getDriver();
         $baseStubFileName = ConfigResolver::tableNamingScheme($driver);
         foreach ($this->stubNameVariables($index) as $variable => $replacement) {
-            if (preg_match("/\[" . $variable . "\]/i", $baseStubFileName) === 1) {
-                $baseStubFileName = preg_replace("/\[" . $variable . "\]/i", $replacement, $baseStubFileName);
+            if (preg_match("/\[".$variable."\]/i", $baseStubFileName) === 1) {
+                $baseStubFileName = preg_replace("/\[".$variable."\]/i", $replacement, $baseStubFileName);
             }
         }
 
@@ -52,7 +52,7 @@ class TableFormatter
     {
         $driver = $this->tableDefinition->getDriver();
 
-        if (file_exists($overridden = resource_path('stubs/vendor/laravel-migration-generator/' . $driver . '-table.stub'))) {
+        if (file_exists($overridden = resource_path('stubs/vendor/laravel-migration-generator/'.$driver.'-table.stub'))) {
             return $overridden;
         }
 
@@ -60,14 +60,14 @@ class TableFormatter
             return $overridden;
         }
 
-        return __DIR__ . '/../../stubs/table.stub';
+        return __DIR__.'/../../stubs/table.stub';
     }
 
     public function getStubCreatePath(): string
     {
         $driver = $this->tableDefinition->getDriver();
 
-        if (file_exists($overridden = resource_path('stubs/vendor/laravel-migration-generator/' . $driver . '-table-create.stub'))) {
+        if (file_exists($overridden = resource_path('stubs/vendor/laravel-migration-generator/'.$driver.'-table-create.stub'))) {
             return $overridden;
         }
 
@@ -75,14 +75,14 @@ class TableFormatter
             return $overridden;
         }
 
-        return __DIR__ . '/../../stubs/table-create.stub';
+        return __DIR__.'/../../stubs/table-create.stub';
     }
 
     public function getStubModifyPath(): string
     {
         $driver = $this->tableDefinition->getDriver();
 
-        if (file_exists($overridden = resource_path('stubs/vendor/laravel-migration-generator/' . $driver . '-table-modify.stub'))) {
+        if (file_exists($overridden = resource_path('stubs/vendor/laravel-migration-generator/'.$driver.'-table-modify.stub'))) {
             return $overridden;
         }
 
@@ -90,7 +90,7 @@ class TableFormatter
             return $overridden;
         }
 
-        return __DIR__ . '/../../stubs/table-modify.stub';
+        return __DIR__.'/../../stubs/table-modify.stub';
     }
 
     public function stubNameVariables($index): array
@@ -98,13 +98,13 @@ class TableFormatter
         $tableName = $this->tableDefinition->getPresentableTableName();
 
         return [
-            'TableName:Studly'      => Str::studly($tableName),
-            'TableName:Lowercase'   => strtolower($tableName),
-            'TableName'             => $tableName,
-            'Timestamp'             => app('laravel-migration-generator:time')->format('Y_m_d_His'),
-            'Index'                 => (string) $index,
-            'IndexedEmptyTimestamp' => '0000_00_00_' . str_pad((string) $index, 6, '0', STR_PAD_LEFT),
-            'IndexedTimestamp'      => app('laravel-migration-generator:time')->clone()->addSeconds($index)->format('Y_m_d_His')
+            'TableName:Studly' => Str::studly($tableName),
+            'TableName:Lowercase' => strtolower($tableName),
+            'TableName' => $tableName,
+            'Timestamp' => app('laravel-migration-generator:time')->format('Y_m_d_His'),
+            'Index' => (string) $index,
+            'IndexedEmptyTimestamp' => '0000_00_00_'.str_pad((string) $index, 6, '0', STR_PAD_LEFT),
+            'IndexedTimestamp' => app('laravel-migration-generator:time')->clone()->addSeconds($index)->format('Y_m_d_His'),
         ];
     }
 
@@ -114,7 +114,7 @@ class TableFormatter
         collect($this->tableDefinition->getColumnDefinitions())
             ->filter(fn ($col) => $col->isWritable())
             ->each(function ($column) use ($formatter) {
-                $formatter->line($column->render() . ';');
+                $formatter->line($column->render().';');
             });
 
         $indices = collect($this->tableDefinition->getIndexDefinitions())
@@ -125,7 +125,7 @@ class TableFormatter
                 $formatter->line('');
             }
             $indices->each(function ($index) use ($formatter) {
-                $formatter->line($index->render() . ';');
+                $formatter->line($index->render().';');
             });
         }
 
@@ -140,7 +140,7 @@ class TableFormatter
         if (count($this->tableDefinition->getColumnDefinitions()) === 0) {
             $tableModifyStub = file_get_contents($this->getStubModifyPath());
             foreach ($variables as $var => $replacement) {
-                $tableModifyStub = Formatter::replace($tab, '[' . $var . ']', $replacement, $tableModifyStub);
+                $tableModifyStub = Formatter::replace($tab, '['.$var.']', $replacement, $tableModifyStub);
             }
 
             return $tableModifyStub;
@@ -148,7 +148,7 @@ class TableFormatter
 
         $tableUpStub = file_get_contents($this->getStubCreatePath());
         foreach ($variables as $var => $replacement) {
-            $tableUpStub = Formatter::replace($tab, '[' . $var . ']', $replacement, $tableUpStub);
+            $tableUpStub = Formatter::replace($tab, '['.$var.']', $replacement, $tableUpStub);
         }
 
         return $tableUpStub;
@@ -157,26 +157,26 @@ class TableFormatter
     public function stubTableDown($tab = ''): string
     {
         if (count($this->tableDefinition->getColumnDefinitions()) === 0) {
-            $schema = 'Schema::table(\'' . $this->tableDefinition->getTableName() . '\', function(Blueprint $table){' . "\n";
+            $schema = 'Schema::table(\''.$this->tableDefinition->getTableName().'\', function(Blueprint $table){'."\n";
             foreach ($this->tableDefinition->getForeignKeyDefinitions() as $indexDefinition) {
-                $schema .= $tab . '$table->dropForeign(\'' . $indexDefinition->getIndexName() . '\');' . "\n";
+                $schema .= $tab.'$table->dropForeign(\''.$indexDefinition->getIndexName().'\');'."\n";
             }
 
-            return $schema . '});';
+            return $schema.'});';
         }
 
-        return 'Schema::dropIfExists(\'' . $this->tableDefinition->getTableName() . '\');';
+        return 'Schema::dropIfExists(\''.$this->tableDefinition->getTableName().'\');';
     }
 
     protected function getStubVariables($tab = '')
     {
         $tableName = $this->tableDefinition->getTableName();
 
-        return  [
-            'TableName:Studly'    => Str::studly($tableName),
+        return [
+            'TableName:Studly' => Str::studly($tableName),
             'TableName:Lowercase' => strtolower($tableName),
-            'TableName'           => $tableName,
-            'Schema'              => $this->getSchema($tab)
+            'TableName' => $tableName,
+            'Schema' => $this->getSchema($tab),
         ];
     }
 
@@ -185,7 +185,7 @@ class TableFormatter
         $stub = $this->render($tabCharacter);
 
         $fileName = $this->getStubFileName($index);
-        file_put_contents($final = $basePath . '/' . $fileName, $stub);
+        file_put_contents($final = $basePath.'/'.$fileName, $stub);
 
         return $final;
     }

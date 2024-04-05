@@ -6,7 +6,7 @@ use LaravelMigrationGenerator\Generators\BaseTableGenerator;
 
 /**
  * Trait CleansUpForeignKeyIndices
- * @package LaravelMigrationGenerator\Generators\Concerns
+ *
  * @mixin BaseTableGenerator
  */
 trait CleansUpForeignKeyIndices

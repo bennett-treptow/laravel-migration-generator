@@ -8,7 +8,6 @@ use LaravelMigrationGenerator\Helpers\WritableTrait;
 
 /**
  * Class ColumnDefinition
- * @package LaravelMigrationGenerator\Definitions
  */
 class ColumnDefinition
 {
@@ -64,33 +63,21 @@ class ColumnDefinition
 
     //region Getters
 
-    /**
-     * @return string
-     */
     public function getMethodName(): string
     {
         return $this->methodName;
     }
 
-    /**
-     * @return array
-     */
     public function getMethodParameters(): array
     {
         return $this->methodParameters;
     }
 
-    /**
-     * @return string|null
-     */
     public function getColumnName(): ?string
     {
         return $this->columnName;
     }
 
-    /**
-     * @return bool
-     */
     public function isUnsigned(): bool
     {
         return $this->unsigned;
@@ -116,73 +103,46 @@ class ColumnDefinition
         return $this->defaultValue;
     }
 
-    /**
-     * @return string|null
-     */
     public function getComment(): ?string
     {
         return $this->comment;
     }
 
-    /**
-     * @return string|null
-     */
     public function getCharacterSet(): ?string
     {
         return $this->characterSet;
     }
 
-    /**
-     * @return string|null
-     */
     public function getCollation(): ?string
     {
         return $this->collation;
     }
 
-    /**
-     * @return bool
-     */
     public function isAutoIncrementing(): bool
     {
         return $this->autoIncrementing;
     }
 
-    /**
-     * @return bool
-     */
     public function isIndex(): bool
     {
         return $this->index;
     }
 
-    /**
-     * @return bool
-     */
     public function isPrimary(): bool
     {
         return $this->primary;
     }
 
-    /**
-     * @return bool
-     */
     public function isUnique(): bool
     {
         return $this->unique;
     }
 
-    /**
-     * @return bool
-     */
     public function useCurrent(): bool
     {
         return $this->useCurrent;
     }
 
-    /**
-     * @return bool
-     */
     public function useCurrentOnUpdate(): bool
     {
         return $this->useCurrentOnUpdate;
@@ -198,9 +158,6 @@ class ColumnDefinition
         return $this->virtualAs;
     }
 
-    /**
-     * @return bool
-     */
     public function isUUID(): bool
     {
         return $this->isUUID;
@@ -210,10 +167,6 @@ class ColumnDefinition
 
     //region Setters
 
-    /**
-     * @param string $methodName
-     * @return ColumnDefinition
-     */
     public function setMethodName(string $methodName): ColumnDefinition
     {
         $this->methodName = $methodName;
@@ -221,10 +174,6 @@ class ColumnDefinition
         return $this;
     }
 
-    /**
-     * @param array $methodParameters
-     * @return ColumnDefinition
-     */
     public function setMethodParameters(array $methodParameters): ColumnDefinition
     {
         $this->methodParameters = $methodParameters;
@@ -232,10 +181,6 @@ class ColumnDefinition
         return $this;
     }
 
-    /**
-     * @param string|null $columnName
-     * @return ColumnDefinition
-     */
     public function setColumnName(?string $columnName): ColumnDefinition
     {
         $this->columnName = $columnName;
@@ -243,10 +188,6 @@ class ColumnDefinition
         return $this;
     }
 
-    /**
-     * @param bool $unsigned
-     * @return ColumnDefinition
-     */
     public function setUnsigned(bool $unsigned): ColumnDefinition
     {
         $this->unsigned = $unsigned;
@@ -255,8 +196,7 @@ class ColumnDefinition
     }
 
     /**
-     * @param ?bool $nullable
-     * @return ColumnDefinition
+     * @param  ?bool  $nullable
      */
     public function setNullable(?bool $nullable): ColumnDefinition
     {
@@ -266,7 +206,7 @@ class ColumnDefinition
     }
 
     /**
-     * @param mixed $defaultValue
+     * @param  mixed  $defaultValue
      * @return ColumnDefinition
      */
     public function setDefaultValue($defaultValue)
@@ -276,10 +216,6 @@ class ColumnDefinition
         return $this;
     }
 
-    /**
-     * @param string|null $comment
-     * @return ColumnDefinition
-     */
     public function setComment(?string $comment): ColumnDefinition
     {
         $this->comment = $comment;
@@ -288,8 +224,7 @@ class ColumnDefinition
     }
 
     /**
-     * @param string|null $collation
-     * @return ColumnDefinition
+     * @param  string|null  $collation
      */
     public function setCharacterSet(?string $characterSet): ColumnDefinition
     {
@@ -298,10 +233,6 @@ class ColumnDefinition
         return $this;
     }
 
-    /**
-     * @param string|null $collation
-     * @return ColumnDefinition
-     */
     public function setCollation(?string $collation): ColumnDefinition
     {
         $this->collation = $collation;
@@ -309,10 +240,6 @@ class ColumnDefinition
         return $this;
     }
 
-    /**
-     * @param bool $autoIncrementing
-     * @return ColumnDefinition
-     */
     public function setAutoIncrementing(bool $autoIncrementing): ColumnDefinition
     {
         $this->autoIncrementing = $autoIncrementing;
@@ -341,10 +268,6 @@ class ColumnDefinition
         return $this;
     }
 
-    /**
-     * @param bool $index
-     * @return ColumnDefinition
-     */
     public function setIndex(bool $index): ColumnDefinition
     {
         $this->index = $index;
@@ -352,10 +275,6 @@ class ColumnDefinition
         return $this;
     }
 
-    /**
-     * @param bool $primary
-     * @return ColumnDefinition
-     */
     public function setPrimary(bool $primary): ColumnDefinition
     {
         $this->primary = $primary;
@@ -363,10 +282,6 @@ class ColumnDefinition
         return $this;
     }
 
-    /**
-     * @param bool $unique
-     * @return ColumnDefinition
-     */
     public function setUnique(bool $unique): ColumnDefinition
     {
         $this->unique = $unique;
@@ -374,10 +289,6 @@ class ColumnDefinition
         return $this;
     }
 
-    /**
-     * @param bool $useCurrent
-     * @return ColumnDefinition
-     */
     public function setUseCurrent(bool $useCurrent): ColumnDefinition
     {
         $this->useCurrent = $useCurrent;
@@ -385,10 +296,6 @@ class ColumnDefinition
         return $this;
     }
 
-    /**
-     * @param bool $useCurrentOnUpdate
-     * @return ColumnDefinition
-     */
     public function setUseCurrentOnUpdate(bool $useCurrentOnUpdate): ColumnDefinition
     {
         $this->useCurrentOnUpdate = $useCurrentOnUpdate;
@@ -396,10 +303,6 @@ class ColumnDefinition
         return $this;
     }
 
-    /**
-     * @param bool $isUUID
-     * @return ColumnDefinition
-     */
     public function setIsUUID(bool $isUUID): ColumnDefinition
     {
         $this->isUUID = $isUUID;
@@ -481,10 +384,10 @@ class ColumnDefinition
                 'integer',
                 'mediumInteger',
                 'smallInteger',
-                'tinyInteger'
+                'tinyInteger',
             ];
             if (in_array($this->methodName, $availableUnsignedPrefixes)) {
-                return [$this->columnName, 'unsigned' . ucfirst($this->methodName), $this->methodParameters];
+                return [$this->columnName, 'unsigned'.ucfirst($this->methodName), $this->methodParameters];
             }
         }
 
@@ -495,13 +398,13 @@ class ColumnDefinition
     {
         [$finalColumnName, $finalMethodName, $finalMethodParameters] = $this->guessLaravelMethod();
 
-        $initialString = '$table->' . $finalMethodName . '(';
+        $initialString = '$table->'.$finalMethodName.'(';
         if ($finalColumnName !== null) {
             $initialString .= ValueToString::make($finalColumnName);
         }
         if (count($finalMethodParameters) > 0) {
             foreach ($finalMethodParameters as $param) {
-                $initialString .= ', ' . ValueToString::make($param);
+                $initialString .= ', '.ValueToString::make($param);
             }
         }
         $initialString .= ')';
@@ -537,7 +440,7 @@ class ColumnDefinition
             if (count($this->indexDefinitions) === 1 && config('laravel-migration-generator.definitions.use_defined_index_names')) {
                 $indexName = ValueToString::make($this->indexDefinitions[0]->getIndexName());
             }
-            $initialString .= '->index(' . $indexName . ')';
+            $initialString .= '->index('.$indexName.')';
         }
 
         if ($this->primary && ! $this->isPrimaryKeyMethod($finalMethodName)) {
@@ -547,7 +450,7 @@ class ColumnDefinition
                     $indexName = ValueToString::make($this->indexDefinitions[0]->getIndexName());
                 }
             }
-            $initialString .= '->primary(' . $indexName . ')';
+            $initialString .= '->primary('.$indexName.')';
         }
 
         if ($this->unique) {
@@ -555,19 +458,19 @@ class ColumnDefinition
             if (count($this->indexDefinitions) === 1 && config('laravel-migration-generator.definitions.use_defined_unique_key_index_names')) {
                 $indexName = ValueToString::make($this->indexDefinitions[0]->getIndexName());
             }
-            $initialString .= '->unique(' . $indexName . ')';
+            $initialString .= '->unique('.$indexName.')';
         }
 
         if ($this->storedAs !== null) {
-            $initialString .= '->storedAs(' . ValueToString::make(str_replace('"', '\"', $this->storedAs), false, false) . ')';
+            $initialString .= '->storedAs('.ValueToString::make(str_replace('"', '\"', $this->storedAs), false, false).')';
         }
 
         if ($this->virtualAs !== null) {
-            $initialString .= '->virtualAs(' . ValueToString::make(str_replace('"', '\"', $this->virtualAs), false, false) . ')';
+            $initialString .= '->virtualAs('.ValueToString::make(str_replace('"', '\"', $this->virtualAs), false, false).')';
         }
 
         if ($this->comment !== null && config('laravel-migration-generator.definitions.with_comments')) {
-            $initialString .= '->comment(' . ValueToString::make(str_replace('"', '\"', $this->comment), false, false) . ')';
+            $initialString .= '->comment('.ValueToString::make(str_replace('"', '\"', $this->comment), false, false).')';
         }
 
         return $initialString;

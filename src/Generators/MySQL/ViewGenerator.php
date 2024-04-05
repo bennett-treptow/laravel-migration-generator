@@ -15,7 +15,7 @@ class ViewGenerator extends BaseViewGenerator implements ViewGeneratorInterface
 
     public function resolveSchema()
     {
-        $structure = DB::select('SHOW CREATE VIEW `' . $this->definition()->getViewName() . '`');
+        $structure = DB::select('SHOW CREATE VIEW `'.$this->definition()->getViewName().'`');
         $structure = $structure[0];
         $structure = (array) $structure;
         if (isset($structure['Create View'])) {
@@ -32,7 +32,7 @@ class ViewGenerator extends BaseViewGenerator implements ViewGeneratorInterface
 
         if (preg_match_all('/isnull\((.+?)\)/', $schema, $matches)) {
             foreach ($matches[0] as $key => $match) {
-                $schema = str_replace($match, $matches[1][$key] . ' IS NULL', $schema);
+                $schema = str_replace($match, $matches[1][$key].' IS NULL', $schema);
             }
         }
         if (preg_match('/collate utf8mb4_unicode_ci/', $schema)) {

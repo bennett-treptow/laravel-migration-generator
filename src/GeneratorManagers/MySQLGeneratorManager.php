@@ -2,12 +2,12 @@
 
 namespace LaravelMigrationGenerator\GeneratorManagers;
 
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use LaravelMigrationGenerator\Definitions\TableDefinition;
-use LaravelMigrationGenerator\Generators\MySQL\ViewGenerator;
-use LaravelMigrationGenerator\Generators\MySQL\TableGenerator;
 use LaravelMigrationGenerator\GeneratorManagers\Interfaces\GeneratorManagerInterface;
+use LaravelMigrationGenerator\Generators\MySQL\TableGenerator;
+use LaravelMigrationGenerator\Generators\MySQL\ViewGenerator;
 
 class MySQLGeneratorManager extends BaseGeneratorManager implements GeneratorManagerInterface
 {
@@ -34,7 +34,7 @@ class MySQLGeneratorManager extends BaseGeneratorManager implements GeneratorMan
 
     public function addTableDefinition(TableDefinition $tableDefinition): BaseGeneratorManager
     {
-        $prefix = config('database.connections.' . DB::getDefaultConnection() . '.prefix', '');
+        $prefix = config('database.connections.'.DB::getDefaultConnection().'.prefix', '');
         if (! empty($prefix) && Str::startsWith($tableDefinition->getTableName(), $prefix)) {
             $tableDefinition->setTableName(Str::replaceFirst($prefix, '', $tableDefinition->getTableName()));
         }

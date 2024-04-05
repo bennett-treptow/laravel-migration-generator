@@ -18,7 +18,7 @@ class Formatter
 
     public function line(string $data, $indentTimes = 0)
     {
-        $this->lines[] = str_repeat($this->tabCharacter, $indentTimes) . $data;
+        $this->lines[] = str_repeat($this->tabCharacter, $indentTimes).$data;
 
         return function ($data) use ($indentTimes) {
             return $this->line($data, $indentTimes + 1);
@@ -34,7 +34,7 @@ class Formatter
                     return $item;
                 }
 
-                return str_repeat($this->tabCharacter, $extraIndent) . $item;
+                return str_repeat($this->tabCharacter, $extraIndent).$item;
             })->toArray();
         }
 
@@ -43,7 +43,7 @@ class Formatter
 
     public function replaceOnLine($toReplace, $body)
     {
-        if (preg_match('/^(\s+)?' . preg_quote($toReplace) . '/m', $body, $matches) !== false) {
+        if (preg_match('/^(\s+)?'.preg_quote($toReplace).'/m', $body, $matches) !== false) {
             $gap = $matches[1] ?? '';
             $numSpaces = strlen($this->tabCharacter);
             if ($numSpaces === 0) {
@@ -52,7 +52,7 @@ class Formatter
                 $startingTabIndent = (int) (strlen($gap) / $numSpaces);
             }
 
-            return preg_replace('/' . preg_quote($toReplace) . '/', $this->render($startingTabIndent), $body);
+            return preg_replace('/'.preg_quote($toReplace).'/', $this->render($startingTabIndent), $body);
         }
 
         return $body;

@@ -12,10 +12,10 @@ trait WritesViewsToFile
     public function stubNameVariables()
     {
         return [
-            'ViewName:Studly'    => Str::studly($this->viewName),
+            'ViewName:Studly' => Str::studly($this->viewName),
             'ViewName:Lowercase' => strtolower($this->viewName),
-            'ViewName'           => $this->viewName,
-            'Timestamp'          => app('laravel-migration-generator:time')->format('Y_m_d_His')
+            'ViewName' => $this->viewName,
+            'Timestamp' => app('laravel-migration-generator:time')->format('Y_m_d_His'),
         ];
     }
 
@@ -25,8 +25,8 @@ trait WritesViewsToFile
 
         $baseStubFileName = ConfigResolver::viewNamingScheme($driver);
         foreach ($this->stubNameVariables() as $variable => $replacement) {
-            if (preg_match("/\[" . $variable . "\]/i", $baseStubFileName) === 1) {
-                $baseStubFileName = preg_replace("/\[" . $variable . "\]/i", $replacement, $baseStubFileName);
+            if (preg_match("/\[".$variable."\]/i", $baseStubFileName) === 1) {
+                $baseStubFileName = preg_replace("/\[".$variable."\]/i", $replacement, $baseStubFileName);
             }
         }
 
@@ -37,7 +37,7 @@ trait WritesViewsToFile
     {
         $driver = static::driver();
 
-        if (file_exists($overridden = resource_path('stubs/vendor/laravel-migration-generator/' . $driver . '-view.stub'))) {
+        if (file_exists($overridden = resource_path('stubs/vendor/laravel-migration-generator/'.$driver.'-view.stub'))) {
             return $overridden;
         }
 
@@ -45,7 +45,7 @@ trait WritesViewsToFile
             return $overridden;
         }
 
-        return __DIR__ . '/../../../stubs/view.stub';
+        return __DIR__.'/../../../stubs/view.stub';
     }
 
     protected function generateStub($tabCharacter = '    ')
@@ -56,7 +56,7 @@ trait WritesViewsToFile
         $stub = file_get_contents($this->getStubPath());
         $stub = str_replace('[ViewName:Studly]', Str::studly($this->viewName), $stub);
         $stub = str_replace('[ViewName]', $this->viewName, $stub);
-        $stub = str_replace('[Schema]', $tab . $schema, $stub);
+        $stub = str_replace('[Schema]', $tab.$schema, $stub);
 
         return $stub;
     }

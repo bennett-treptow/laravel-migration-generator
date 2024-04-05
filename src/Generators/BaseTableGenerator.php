@@ -3,18 +3,18 @@
 namespace LaravelMigrationGenerator\Generators;
 
 use LaravelMigrationGenerator\Definitions\TableDefinition;
-use LaravelMigrationGenerator\Generators\Concerns\CleansUpMorphColumns;
 use LaravelMigrationGenerator\Generators\Concerns\CleansUpColumnIndices;
-use LaravelMigrationGenerator\Generators\Concerns\CleansUpTimestampsColumn;
 use LaravelMigrationGenerator\Generators\Concerns\CleansUpForeignKeyIndices;
+use LaravelMigrationGenerator\Generators\Concerns\CleansUpMorphColumns;
+use LaravelMigrationGenerator\Generators\Concerns\CleansUpTimestampsColumn;
 use LaravelMigrationGenerator\Generators\Interfaces\TableGeneratorInterface;
 
 abstract class BaseTableGenerator implements TableGeneratorInterface
 {
+    use CleansUpColumnIndices;
     use CleansUpForeignKeyIndices;
     use CleansUpMorphColumns;
     use CleansUpTimestampsColumn;
-    use CleansUpColumnIndices;
 
     protected array $rows = [];
 
@@ -23,8 +23,8 @@ abstract class BaseTableGenerator implements TableGeneratorInterface
     public function __construct(string $tableName, array $rows = [])
     {
         $this->definition = new TableDefinition([
-            'driver'    => static::driver(),
-            'tableName' => $tableName
+            'driver' => static::driver(),
+            'tableName' => $tableName,
         ]);
         $this->rows = $rows;
     }

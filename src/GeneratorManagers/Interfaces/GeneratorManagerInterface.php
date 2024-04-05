@@ -2,8 +2,8 @@
 
 namespace LaravelMigrationGenerator\GeneratorManagers\Interfaces;
 
-use LaravelMigrationGenerator\Definitions\ViewDefinition;
 use LaravelMigrationGenerator\Definitions\TableDefinition;
+use LaravelMigrationGenerator\Definitions\ViewDefinition;
 
 interface GeneratorManagerInterface
 {

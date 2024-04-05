@@ -8,12 +8,12 @@ class ValueToString
 {
     public static function castFloat($value)
     {
-        return 'float$:' . $value;
+        return 'float$:'.$value;
     }
 
     public static function castBinary($value)
     {
-        return 'binary$:' . $value;
+        return 'binary$:'.$value;
     }
 
     public static function isCastedValue($value)
@@ -27,7 +27,7 @@ class ValueToString
             return str_replace('float$:', '', $value);
         }
         if (Str::startsWith($value, 'binary$:')) {
-            return 'b\'' . str_replace('binary$:', '', $value) . '\'';
+            return 'b\''.str_replace('binary$:', '', $value).'\'';
         }
 
         return $value;
@@ -40,11 +40,11 @@ class ValueToString
             return 'null';
         } elseif (is_array($value)) {
             if ($singleOutArray && count($value) === 1) {
-                return $quote . $value[0] . $quote;
+                return $quote.$value[0].$quote;
             }
 
-            return '[' . collect($value)->map(fn ($item) => $quote . $item . $quote)->implode(', ') . ']';
-        } elseif (is_integer($value) || is_float($value)) {
+            return '['.collect($value)->map(fn ($item) => $quote.$item.$quote)->implode(', ').']';
+        } elseif (is_int($value) || is_float($value)) {
             return $value;
         }
 
@@ -56,6 +56,6 @@ class ValueToString
             return $value;
         }
 
-        return $quote . $value . $quote;
+        return $quote.$value.$quote;
     }
 }

@@ -105,7 +105,7 @@ class IndexTokenizer extends BaseIndexTokenizer
                     $this->consume(); //consume ACTION
                     $actionMethod = 'restrict';
                 } elseif ($actionMethod === 'set') {
-                    $actionMethod = 'set ' . $this->consume(); //consume NULL or DEFAULT
+                    $actionMethod = 'set '.$this->consume(); //consume NULL or DEFAULT
                 }
                 $currentActions = $this->definition->getConstraintActions();
                 $currentActions[$actionType] = $actionMethod;

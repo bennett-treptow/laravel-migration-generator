@@ -6,7 +6,7 @@ use LaravelMigrationGenerator\Generators\BaseTableGenerator;
 
 /**
  * Trait CleansUpTimestampsColumn
- * @package LaravelMigrationGenerator\Generators\Concerns
+ *
  * @mixin BaseTableGenerator
  */
 trait CleansUpTimestampsColumn

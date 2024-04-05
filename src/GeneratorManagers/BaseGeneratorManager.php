@@ -2,11 +2,11 @@
 
 namespace LaravelMigrationGenerator\GeneratorManagers;
 
-use LaravelMigrationGenerator\Helpers\ConfigResolver;
-use LaravelMigrationGenerator\Definitions\ViewDefinition;
-use LaravelMigrationGenerator\Helpers\DependencyResolver;
 use LaravelMigrationGenerator\Definitions\TableDefinition;
+use LaravelMigrationGenerator\Definitions\ViewDefinition;
 use LaravelMigrationGenerator\GeneratorManagers\Interfaces\GeneratorManagerInterface;
+use LaravelMigrationGenerator\Helpers\ConfigResolver;
+use LaravelMigrationGenerator\Helpers\DependencyResolver;
 
 abstract class BaseGeneratorManager implements GeneratorManagerInterface
 {
@@ -89,7 +89,7 @@ abstract class BaseGeneratorManager implements GeneratorManagerInterface
     }
 
     /**
-     * @param array<TableDefinition> $tableDefinitions
+     * @param  array<TableDefinition>  $tableDefinitions
      * @return array<TableDefinition>
      */
     public function sortTables(array $tableDefinitions): array
@@ -106,8 +106,7 @@ abstract class BaseGeneratorManager implements GeneratorManagerInterface
     }
 
     /**
-     * @param array<TableDefinition> $tableDefinitions
-     * @param $basePath
+     * @param  array<TableDefinition>  $tableDefinitions
      */
     public function writeTableMigrations(array $tableDefinitions, $basePath)
     {
@@ -117,8 +116,7 @@ abstract class BaseGeneratorManager implements GeneratorManagerInterface
     }
 
     /**
-     * @param array<ViewDefinition> $viewDefinitions
-     * @param $basePath
+     * @param  array<ViewDefinition>  $viewDefinitions
      */
     public function writeViewMigrations(array $viewDefinitions, $basePath, $tableCount = 0)
     {
