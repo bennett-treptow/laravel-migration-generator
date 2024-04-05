@@ -2,18 +2,18 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
-use LaravelMigrationGenerator\Helpers\DependencyResolver;
+use LaravelMigrationGenerator\Definitions\ColumnDefinition;
 use LaravelMigrationGenerator\Definitions\IndexDefinition;
 use LaravelMigrationGenerator\Definitions\TableDefinition;
-use LaravelMigrationGenerator\Definitions\ColumnDefinition;
+use LaravelMigrationGenerator\Helpers\DependencyResolver;
+use Tests\TestCase;
 
 class DependencyResolverTest extends TestCase
 {
     public function test_it_can_find_simple_dependencies()
     {
         $tableDefinition = new TableDefinition([
-            'tableName'         => 'tests',
+            'tableName' => 'tests',
             'columnDefinitions' => [
                 (new ColumnDefinition())->setColumnName('id')->setMethodName('id')->setAutoIncrementing(true)->setPrimary(true),
                 (new ColumnDefinition())->setColumnName('name')->setMethodName('string')->setNullable(false),
@@ -22,13 +22,13 @@ class DependencyResolverTest extends TestCase
         ]);
 
         $foreignTableDefinition = new TableDefinition([
-            'tableName'         => 'test_items',
+            'tableName' => 'test_items',
             'columnDefinitions' => [
                 (new ColumnDefinition())->setColumnName('id')->setMethodName('id')->setAutoIncrementing(true)->setPrimary(true),
                 (new ColumnDefinition())->setColumnName('test_id')->setMethodName('bigInteger')->setNullable(false)->setUnsigned(true),
             ],
             'indexDefinitions' => [
-                (new IndexDefinition())->setIndexName('fk_test_id')->setIndexType('foreign')->setForeignReferencedColumns(['id'])->setForeignReferencedTable('tests')
+                (new IndexDefinition())->setIndexName('fk_test_id')->setIndexType('foreign')->setForeignReferencedColumns(['id'])->setForeignReferencedTable('tests'),
             ],
         ]);
 
@@ -42,26 +42,26 @@ class DependencyResolverTest extends TestCase
     public function test_it_finds_cyclical_dependencies()
     {
         $tableDefinition = new TableDefinition([
-            'tableName'         => 'tests',
-            'driver'            => 'mysql',
+            'tableName' => 'tests',
+            'driver' => 'mysql',
             'columnDefinitions' => [
                 (new ColumnDefinition())->setColumnName('id')->setMethodName('id')->setAutoIncrementing(true)->setPrimary(true),
                 (new ColumnDefinition())->setColumnName('test_item_id')->setMethodName('bigInteger')->setNullable(false)->setUnsigned(true),
             ],
             'indexDefinitions' => [
-                (new IndexDefinition())->setIndexName('fk_test_item_id')->setIndexColumns(['test_item_id'])->setIndexType('foreign')->setForeignReferencedColumns(['id'])->setForeignReferencedTable('test_items')
+                (new IndexDefinition())->setIndexName('fk_test_item_id')->setIndexColumns(['test_item_id'])->setIndexType('foreign')->setForeignReferencedColumns(['id'])->setForeignReferencedTable('test_items'),
             ],
         ]);
 
         $foreignTableDefinition = new TableDefinition([
-            'tableName'         => 'test_items',
-            'driver'            => 'mysql',
+            'tableName' => 'test_items',
+            'driver' => 'mysql',
             'columnDefinitions' => [
                 (new ColumnDefinition())->setColumnName('id')->setMethodName('id')->setAutoIncrementing(true)->setPrimary(true),
                 (new ColumnDefinition())->setColumnName('test_id')->setMethodName('bigInteger')->setNullable(false)->setUnsigned(true),
             ],
             'indexDefinitions' => [
-                (new IndexDefinition())->setIndexName('fk_test_id')->setIndexColumns(['test_id'])->setIndexType('foreign')->setForeignReferencedColumns(['id'])->setForeignReferencedTable('tests')
+                (new IndexDefinition())->setIndexName('fk_test_id')->setIndexColumns(['test_id'])->setIndexType('foreign')->setForeignReferencedColumns(['id'])->setForeignReferencedTable('tests'),
             ],
         ]);
 
@@ -71,5 +71,28 @@ class DependencyResolverTest extends TestCase
         $this->assertCount(4, $order);
         $this->assertEquals('$table->foreign(\'test_id\', \'fk_test_id\')->references(\'id\')->on(\'tests\');', $order[2]->formatter()->getSchema());
         $this->assertEquals('$table->foreign(\'test_item_id\', \'fk_test_item_id\')->references(\'id\')->on(\'test_items\');', $order[3]->formatter()->getSchema());
+    }
+
+    public function test_it_finds_self_referential_dependencies()
+    {
+        $tableDefinition = new TableDefinition([
+            'tableName' => 'tests',
+            'driver' => 'mysql',
+            'columnDefinitions' => [
+                (new ColumnDefinition())->setColumnName('id')->setMethodName('id')->setAutoIncrementing(true)->setPrimary(true),
+                (new ColumnDefinition())->setColumnName('parent_id')->setMethodName('integer')->setUnsigned(true)->setNullable(false),
+            ],
+            'indexDefinitions' => [
+                (new IndexDefinition())->setIndexName('fk_parent_id')->setIndexColumns(['parent_id'])->setIndexType('foreign')->setForeignReferencedColumns(['id'])->setForeignReferencedTable('tests'),
+            ],
+        ]);
+
+        $resolver = new DependencyResolver([$tableDefinition]);
+
+        $order = $resolver->getDependencyOrder();
+        $this->assertCount(1, $order);
+        $this->assertCount(2, $order[0]->getColumnDefinitions());
+        $this->assertCount(1, $order[0]->getIndexDefinitions());
+
     }
 }
