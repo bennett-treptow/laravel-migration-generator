@@ -4,16 +4,13 @@ namespace LaravelMigrationGenerator\Helpers;
 
 class Formatter
 {
-    private $lines = [];
+    private array $lines = [];
 
     private string $tabCharacter;
-
-    private bool $isSpace = true;
 
     public function __construct(string $tabCharacter = '    ')
     {
         $this->tabCharacter = $tabCharacter;
-        $this->isSpace = strpos($tabCharacter, "\t") === false;
     }
 
     public function line(string $data, $indentTimes = 0)

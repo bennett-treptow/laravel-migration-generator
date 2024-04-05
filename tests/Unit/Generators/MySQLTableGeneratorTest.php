@@ -47,7 +47,10 @@ class MySQLTableGeneratorTest extends TestCase
             'CONSTRAINT `fk_parent_id` FOREIGN KEY (`parent_id`) REFERENCES `tables` (`id`) ON DELETE CASCADE ON UPDATE CASCADE',
         ]);
 
-        dd($generator->definition()->formatter()->getSchema());
+        $schema = $generator->definition()->formatter()->getSchema();
+        $this->assertSchemaHas('$table->increments(\'id\');', $schema);
+        $this->assertSchemaHas('$table->unsignedInteger(\'parent_id\');', $schema);
+        $this->assertSchemaHas('$table->foreign(\'parent_id\', \'fk_parent_id\')->references(\'id\')->on(\'tables\')->onDelete(\'cascade\')->onUpdate(\'cascade\');', $schema);
     }
 
     private function cleanUpMigrations($path)
