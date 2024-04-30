@@ -2,9 +2,9 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
-use LaravelMigrationGenerator\Definitions\IndexDefinition;
 use LaravelMigrationGenerator\Definitions\ColumnDefinition;
+use LaravelMigrationGenerator\Definitions\IndexDefinition;
+use Tests\TestCase;
 
 class ColumnDefinitionTest extends TestCase
 {

@@ -2,9 +2,9 @@
 
 namespace LaravelMigrationGenerator\Helpers;
 
-use MJS\TopSort\Implementations\FixedArraySort;
 use LaravelMigrationGenerator\Definitions\IndexDefinition;
 use LaravelMigrationGenerator\Definitions\TableDefinition;
+use MJS\TopSort\Implementations\FixedArraySort;
 
 class DependencyResolver
 {
@@ -34,6 +34,9 @@ class DependencyResolver
         }
         foreach ($this->tableDefinitions as $tableDefinition) {
             foreach ($tableDefinition->getForeignKeyDefinitions() as $indexDefinition) {
+                if ($indexDefinition->getForeignReferencedTable() === $tableDefinition->getTableName()) {
+                    continue;
+                }
                 if (! in_array($indexDefinition->getForeignReferencedTable(), $dependencies[$tableDefinition->getTableName()])) {
                     $dependencies[$tableDefinition->getTableName()][] = $indexDefinition->getForeignReferencedTable();
                 }
@@ -81,17 +84,17 @@ class DependencyResolver
             }
 
             $definitions[] = new TableDefinition([
-                'tableName'         => $startDefinition->getTableName(),
-                'driver'            => $startDefinition->getDriver(),
+                'tableName' => $startDefinition->getTableName(),
+                'driver' => $startDefinition->getDriver(),
                 'columnDefinitions' => [],
-                'indexDefinitions'  => $indicesForStart->toArray()
+                'indexDefinitions' => $indicesForStart->toArray(),
             ]);
 
             $definitions[] = new TableDefinition([
-                'tableName'         => $endDefinition->getTableName(),
-                'driver'            => $endDefinition->getDriver(),
+                'tableName' => $endDefinition->getTableName(),
+                'driver' => $endDefinition->getDriver(),
                 'columnDefinitions' => [],
-                'indexDefinitions'  => $indicesForEnd->toArray()
+                'indexDefinitions' => $indicesForEnd->toArray(),
             ]);
         }
         $this->sorted = $definitions;

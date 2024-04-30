@@ -2,9 +2,9 @@
 
 namespace Tests\Unit\Generators;
 
-use Tests\TestCase;
 use Illuminate\Support\Facades\Config;
 use LaravelMigrationGenerator\Generators\MySQL\TableGenerator;
+use Tests\TestCase;
 
 class MySQLTableGeneratorTest extends TestCase
 {
@@ -12,7 +12,7 @@ class MySQLTableGeneratorTest extends TestCase
     {
         parent::tearDown();
 
-        $path = __DIR__ . '/../../migrations';
+        $path = __DIR__.'/../../migrations';
         $this->cleanUpMigrations($path);
     }
 
@@ -28,7 +28,7 @@ class MySQLTableGeneratorTest extends TestCase
             '`user_id` int(9) unsigned NOT NULL',
             '`note` varchar(255) NOT NULL',
             'KEY `fk_user_id_idx` (`user_id`)',
-            'CONSTRAINT `fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE'
+            'CONSTRAINT `fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE',
         ]);
 
         $schema = $generator->definition()->formatter()->getSchema();
@@ -38,10 +38,25 @@ class MySQLTableGeneratorTest extends TestCase
         $this->assertSchemaHas('$table->foreign(\'user_id\', \'fk_user_id\')->references(\'id\')->on(\'users\')->onDelete(\'cascade\')->onUpdate(\'cascade\');', $schema);
     }
 
+    public function test_self_referential_foreign_key()
+    {
+        $generator = TableGenerator::init('table', [
+            '`id` int(9) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY',
+            '`parent_id` int(9) unsigned NOT NULL',
+            'KEY `fk_parent_id_idx` (`parent_id`)',
+            'CONSTRAINT `fk_parent_id` FOREIGN KEY (`parent_id`) REFERENCES `tables` (`id`) ON DELETE CASCADE ON UPDATE CASCADE',
+        ]);
+
+        $schema = $generator->definition()->formatter()->getSchema();
+        $this->assertSchemaHas('$table->increments(\'id\');', $schema);
+        $this->assertSchemaHas('$table->unsignedInteger(\'parent_id\');', $schema);
+        $this->assertSchemaHas('$table->foreign(\'parent_id\', \'fk_parent_id\')->references(\'id\')->on(\'tables\')->onDelete(\'cascade\')->onUpdate(\'cascade\');', $schema);
+    }
+
     private function cleanUpMigrations($path)
     {
         if (is_dir($path)) {
-            foreach (glob($path . '/*.php') as $file) {
+            foreach (glob($path.'/*.php') as $file) {
                 unlink($file);
             }
             rmdir($path);
@@ -56,10 +71,10 @@ class MySQLTableGeneratorTest extends TestCase
             '`user_id` int(9) unsigned NOT NULL',
             '`note` varchar(255) NOT NULL',
             'KEY `fk_user_id_idx` (`user_id`)',
-            'CONSTRAINT `fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE'
+            'CONSTRAINT `fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE',
         ]);
 
-        $path = __DIR__ . '/../../migrations';
+        $path = __DIR__.'/../../migrations';
 
         if (! is_dir($path)) {
             mkdir($path, 0777, true);
@@ -67,7 +82,7 @@ class MySQLTableGeneratorTest extends TestCase
 
         $generator->definition()->formatter()->write($path);
 
-        $this->assertFileExists($path . '/0000_00_00_000000_create_table_table.php');
+        $this->assertFileExists($path.'/0000_00_00_000000_create_table_table.php');
     }
 
     public function test_cleans_up_regular_morphs()
@@ -76,7 +91,7 @@ class MySQLTableGeneratorTest extends TestCase
             '`id` int(9) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY',
             '`user_id` int(9) unsigned NOT NULL',
             '`user_type` varchar(255) NOT NULL',
-            '`note` varchar(255) NOT NULL'
+            '`note` varchar(255) NOT NULL',
         ]);
 
         $schema = $generator->definition()->formatter()->getSchema();
@@ -89,7 +104,7 @@ class MySQLTableGeneratorTest extends TestCase
             '`id` int(9) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY',
             '`user_id` varchar(255) NOT NULL',
             '`user_type` varchar(255) NOT NULL',
-            '`note` varchar(255) NOT NULL'
+            '`note` varchar(255) NOT NULL',
         ]);
 
         $schema = $generator->definition()->formatter()->getSchema();
@@ -102,7 +117,7 @@ class MySQLTableGeneratorTest extends TestCase
             '`id` int(9) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY',
             '`user_id` char(36) NOT NULL',
             '`user_type` varchar(255) NOT NULL',
-            '`note` varchar(255) NOT NULL'
+            '`note` varchar(255) NOT NULL',
         ]);
 
         $schema = $generator->definition()->formatter()->getSchema();
@@ -115,7 +130,7 @@ class MySQLTableGeneratorTest extends TestCase
             '`id` int(9) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY',
             '`user_id` char(36) DEFAULT NULL',
             '`user_type` varchar(255) DEFAULT NULL',
-            '`note` varchar(255) NOT NULL'
+            '`note` varchar(255) NOT NULL',
         ]);
 
         $schema = $generator->definition()->formatter()->getSchema();
@@ -126,7 +141,7 @@ class MySQLTableGeneratorTest extends TestCase
     {
         $generator = TableGenerator::init('table', [
             '`id` int(9) unsigned NOT NULL',
-            'PRIMARY KEY `id`'
+            'PRIMARY KEY `id`',
         ]);
 
         $schema = $generator->definition()->formatter()->getSchema();
@@ -137,7 +152,7 @@ class MySQLTableGeneratorTest extends TestCase
     {
         $generator = TableGenerator::init('table', [
             '`id` int(9) unsigned NOT NULL AUTO_INCREMENT',
-            'PRIMARY KEY `id`'
+            'PRIMARY KEY `id`',
         ]);
 
         $schema = $generator->definition()->formatter()->getSchema();
@@ -148,7 +163,7 @@ class MySQLTableGeneratorTest extends TestCase
     {
         $generator = TableGenerator::init('table', [
             '`id` bigint(12) unsigned NOT NULL AUTO_INCREMENT',
-            'PRIMARY KEY `id`'
+            'PRIMARY KEY `id`',
         ]);
 
         $schema = $generator->definition()->formatter()->getSchema();
@@ -160,7 +175,7 @@ class MySQLTableGeneratorTest extends TestCase
         $generator = TableGenerator::init('table', [
             'id int auto_increment primary key',
             'created_at timestamp not null default CURRENT_TIMESTAMP',
-            'updated_at timestamp null on update CURRENT_TIMESTAMP'
+            'updated_at timestamp null on update CURRENT_TIMESTAMP',
         ]);
         $schema = $generator->definition()->formatter()->getSchema();
         $this->assertSchemaHas('$table->timestamp(\'created_at\')->useCurrent()', $schema);
@@ -172,7 +187,7 @@ class MySQLTableGeneratorTest extends TestCase
         $generator = TableGenerator::init('table', [
             'id int auto_increment primary key',
             'created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
-            'updated_at timestamp null on update CURRENT_TIMESTAMP'
+            'updated_at timestamp null on update CURRENT_TIMESTAMP',
         ]);
         $schema = $generator->definition()->formatter()->getSchema();
         $this->assertSchemaHas('$table->timestamp(\'created_at\')->useCurrent()->useCurrentOnUpdate()', $schema);
@@ -185,7 +200,7 @@ class MySQLTableGeneratorTest extends TestCase
         $generator = TableGenerator::init('table', [
             'id int auto_increment primary key',
             'created_at datetime NOT NULL',
-            'updated_at datetime NOT NULL'
+            'updated_at datetime NOT NULL',
         ]);
         $schema = $generator->definition()->formatter()->getSchema();
         $this->assertSchemaHas('$table->dateTime(\'created_at\')', $schema);
@@ -200,7 +215,7 @@ class MySQLTableGeneratorTest extends TestCase
             'KEY `fk_import_id` (`import_id`)',
             'KEY `fk_import_service_id` (`import_service_id`)',
             'CONSTRAINT `fk_import_id` FOREIGN KEY (`import_id`) REFERENCES `imports` (`id`)',
-            'CONSTRAINT `fk_import_service_id` FOREIGN KEY (`import_service_id`) REFERENCES `import_services` (`id`)'
+            'CONSTRAINT `fk_import_service_id` FOREIGN KEY (`import_service_id`) REFERENCES `import_services` (`id`)',
         ]);
 
         $schema = $generator->definition()->formatter()->getSchema();

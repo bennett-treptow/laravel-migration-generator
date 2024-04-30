@@ -2,8 +2,8 @@
 
 namespace LaravelMigrationGenerator\Tokenizers\MySQL;
 
-use Illuminate\Support\Str;
 use Illuminate\Database\Schema\Builder;
+use Illuminate\Support\Str;
 use LaravelMigrationGenerator\Helpers\ValueToString;
 use LaravelMigrationGenerator\Tokenizers\BaseColumnTokenizer;
 
@@ -13,6 +13,7 @@ class ColumnTokenizer extends BaseColumnTokenizer
 
     /**
      * MySQL provides a ZEROFILL property for ints which is not an ANSI compliant modifier
+     *
      * @var bool
      */
     protected $zeroFill = false;
@@ -299,22 +300,22 @@ class ColumnTokenizer extends BaseColumnTokenizer
     private function resolveColumnMethod()
     {
         $mapped = [
-            'int'                => 'integer',
-            'tinyint'            => 'tinyInteger',
-            'smallint'           => 'smallInteger',
-            'mediumint'          => 'mediumInteger',
-            'bigint'             => 'bigInteger',
-            'varchar'            => 'string',
-            'tinytext'           => 'string',  //tinytext is not a valid Blueprint method currently
-            'mediumtext'         => 'mediumText',
-            'longtext'           => 'longText',
-            'blob'               => 'binary',
-            'datetime'           => 'dateTime',
+            'int' => 'integer',
+            'tinyint' => 'tinyInteger',
+            'smallint' => 'smallInteger',
+            'mediumint' => 'mediumInteger',
+            'bigint' => 'bigInteger',
+            'varchar' => 'string',
+            'tinytext' => 'string',  //tinytext is not a valid Blueprint method currently
+            'mediumtext' => 'mediumText',
+            'longtext' => 'longText',
+            'blob' => 'binary',
+            'datetime' => 'dateTime',
             'geometrycollection' => 'geometryCollection',
-            'linestring'         => 'lineString',
-            'multilinestring'    => 'multiLineString',
-            'multipolygon'       => 'multiPolygon',
-            'multipoint'         => 'multiPoint'
+            'linestring' => 'lineString',
+            'multilinestring' => 'multiLineString',
+            'multipolygon' => 'multiPolygon',
+            'multipoint' => 'multiPoint',
         ];
         if (isset($mapped[$this->columnDataType])) {
             $this->definition->setMethodName($mapped[$this->columnDataType]);

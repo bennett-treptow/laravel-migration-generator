@@ -2,13 +2,13 @@
 
 namespace LaravelMigrationGenerator\Commands;
 
-use Illuminate\Support\Arr;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
-use LaravelMigrationGenerator\Helpers\ConfigResolver;
-use LaravelMigrationGenerator\GeneratorManagers\MySQLGeneratorManager;
+use Illuminate\Support\Facades\DB;
 use LaravelMigrationGenerator\GeneratorManagers\Interfaces\GeneratorManagerInterface;
+use LaravelMigrationGenerator\GeneratorManagers\MySQLGeneratorManager;
+use LaravelMigrationGenerator\Helpers\ConfigResolver;
 
 class GenerateMigrationsCommand extends Command
 {
@@ -24,8 +24,8 @@ class GenerateMigrationsCommand extends Command
             $connection = Config::get('database.default');
         }
 
-        if (! Config::has('database.connections.' . $connection)) {
-            throw new \Exception('Could not find connection `' . $connection . '` in your config.');
+        if (! Config::has('database.connections.'.$connection)) {
+            throw new \Exception('Could not find connection `'.$connection.'` in your config.');
         }
 
         return $connection;
@@ -51,14 +51,14 @@ class GenerateMigrationsCommand extends Command
             return 1;
         }
 
-        $this->info('Using connection ' . $connection);
+        $this->info('Using connection '.$connection);
         DB::setDefaultConnection($connection);
 
-        $driver = Config::get('database.connections.' . $connection)['driver'];
+        $driver = Config::get('database.connections.'.$connection)['driver'];
 
         $manager = $this->resolveGeneratorManager($driver);
         if ($manager === false) {
-            $this->error('The `' . $driver . '` driver is not supported at this time.');
+            $this->error('The `'.$driver.'` driver is not supported at this time.');
 
             return 1;
         }
@@ -66,12 +66,12 @@ class GenerateMigrationsCommand extends Command
         $basePath = base_path($this->getPath($driver));
 
         if ($this->option('empty-path') || config('laravel-migration-generator.clear_output_path')) {
-            foreach (glob($basePath . '/*.php') as $file) {
+            foreach (glob($basePath.'/*.php') as $file) {
                 unlink($file);
             }
         }
 
-        $this->info('Using ' . $basePath . ' as the output path..');
+        $this->info('Using '.$basePath.' as the output path..');
 
         $tableNames = Arr::wrap($this->option('table'));
 
@@ -81,13 +81,12 @@ class GenerateMigrationsCommand extends Command
     }
 
     /**
-     * @param string $driver
      * @return false|GeneratorManagerInterface
      */
     protected function resolveGeneratorManager(string $driver)
     {
         $supported = [
-            'mysql' => MySQLGeneratorManager::class
+            'mysql' => MySQLGeneratorManager::class,
         ];
 
         if (! isset($supported[$driver])) {

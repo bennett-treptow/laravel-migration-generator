@@ -2,15 +2,14 @@
 
 namespace LaravelMigrationGenerator\Generators\MySQL;
 
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use LaravelMigrationGenerator\Generators\BaseTableGenerator;
-use LaravelMigrationGenerator\Tokenizers\MySQL\IndexTokenizer;
 use LaravelMigrationGenerator\Tokenizers\MySQL\ColumnTokenizer;
+use LaravelMigrationGenerator\Tokenizers\MySQL\IndexTokenizer;
 
 /**
  * Class TableGenerator
- * @package LaravelMigrationGenerator\Generators\MySQL
  */
 class TableGenerator extends BaseTableGenerator
 {
@@ -21,7 +20,7 @@ class TableGenerator extends BaseTableGenerator
 
     public function resolveStructure()
     {
-        $structure = DB::select('SHOW CREATE TABLE `' . $this->definition()->getTableName() . '`');
+        $structure = DB::select('SHOW CREATE TABLE `'.$this->definition()->getTableName().'`');
         $structure = $structure[0];
         $structure = (array) $structure;
         if (isset($structure['Create Table'])) {

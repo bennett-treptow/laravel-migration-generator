@@ -2,8 +2,8 @@
 
 namespace Tests\Unit\Tokenizers\MySQL;
 
-use Tests\TestCase;
 use LaravelMigrationGenerator\Tokenizers\MySQL\ColumnTokenizer;
+use Tests\TestCase;
 
 class ColumnTokenizerTest extends TestCase
 {

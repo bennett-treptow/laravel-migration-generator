@@ -2,8 +2,8 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
 use LaravelMigrationGenerator\Helpers\Formatter;
+use Tests\TestCase;
 
 class FormatterTest extends TestCase
 {
@@ -20,9 +20,9 @@ class FormatterTest extends TestCase
         $line = $formatter->line('$this->call(function(){');
         $line('$this->die();');
         $formatter->line('});');
-        $this->assertEquals(<<<STR
-        \$this->call(function(){
-            \$this->die();
+        $this->assertEquals(<<<'STR'
+        $this->call(function(){
+            $this->die();
         });
         STR, $formatter->render());
     }
@@ -33,12 +33,12 @@ class FormatterTest extends TestCase
         $formatter->line('Line');
         $formatter->line('Line 2');
 
-        $body = <<<STR
+        $body = <<<'STR'
     [Test]
 STR;
 
         $replaced = $formatter->replaceOnLine('[Test]', $body);
-        $shouldEqual = <<<STR
+        $shouldEqual = <<<'STR'
     Line
     Line 2
 STR;

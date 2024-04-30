@@ -2,8 +2,8 @@
 
 namespace Tests\Tokenizers\MySQL;
 
-use Tests\TestCase;
 use LaravelMigrationGenerator\Tokenizers\MySQL\IndexTokenizer;
+use Tests\TestCase;
 
 class IndexTokenizerTest extends TestCase
 {

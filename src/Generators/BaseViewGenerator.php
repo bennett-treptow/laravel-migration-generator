@@ -12,9 +12,9 @@ abstract class BaseViewGenerator implements ViewGeneratorInterface
     public function __construct(string $viewName, ?string $schema = null)
     {
         $this->definition = new ViewDefinition([
-            'driver'   => static::driver(),
+            'driver' => static::driver(),
             'viewName' => $viewName,
-            'schema'   => $schema
+            'schema' => $schema,
         ]);
     }
 

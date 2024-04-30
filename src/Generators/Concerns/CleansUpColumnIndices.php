@@ -6,7 +6,7 @@ use LaravelMigrationGenerator\Generators\BaseTableGenerator;
 
 /**
  * Trait CleansUpColumnIndices
- * @package LaravelMigrationGenerator\Generators\Concerns
+ *
  * @mixin BaseTableGenerator
  */
 trait CleansUpColumnIndices

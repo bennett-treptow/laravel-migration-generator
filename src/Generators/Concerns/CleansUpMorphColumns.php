@@ -8,7 +8,7 @@ use LaravelMigrationGenerator\Generators\BaseTableGenerator;
 
 /**
  * Trait CleansUpMorphColumns
- * @package LaravelMigrationGenerator\Generators\Concerns
+ *
  * @mixin BaseTableGenerator
  */
 trait CleansUpMorphColumns
@@ -58,7 +58,7 @@ trait CleansUpMorphColumns
 
                 foreach ($this->definition->getIndexDefinitions() as $index) {
                     $columns = $index->getIndexColumns();
-                    $morphColumns = [$columnName . '_id', $columnName . '_type'];
+                    $morphColumns = [$columnName.'_id', $columnName.'_type'];
 
                     if (count($columns) == count($morphColumns) && array_diff($columns, $morphColumns) === array_diff($morphColumns, $columns)) {
                         $index->markAsWritable(false);

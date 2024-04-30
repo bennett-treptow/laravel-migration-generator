@@ -13,6 +13,6 @@ trait WritesToFile
         $stub = $this->generateStub($tabCharacter);
 
         $fileName = $this->getStubFileName($index);
-        file_put_contents($basePath . '/' . $fileName, $stub);
+        file_put_contents($basePath.'/'.$fileName, $stub);
     }
 }
