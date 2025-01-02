@@ -33,7 +33,7 @@ abstract class BaseTokenizer
             }
         }
 
-        if (preg_match_all("/'(.+?)'/", $value, $matches)) {
+        if (preg_match_all("/'(.*?)'/", $value, $matches)) {
             foreach ($matches[0] as $quoteWithSpace) {
                 //we've got an enum or set that has spaces in the text
                 //so we'll convert to a different character so it doesn't get pruned
