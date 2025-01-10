@@ -922,6 +922,14 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('$table->enum(\'calculate\', [\'one\', \'and\', \'highest-or\', \'lowest^or\', \'sum%\', \'highest $ position or\', \'lowest+_<>?/ position or\', \'"quoted"\'])->comment("set the way we calculate a feature value. with high or low or the sort is by position")', $definition->render());
     }
 
+    public function test_it_tokenizes_enum_with_empty_string()
+    {
+        $columnTokenizer = ColumnTokenizer::parse('`text` enum(\'\',\'not-empty-string\',\'string with spaces\') DEFAULT \'\'');
+        $definition = $columnTokenizer->definition();
+
+        $this->assertEquals('$table->enum(\'text\', [\'\', \'not-empty-string\', \'string with spaces\'])->default(\'\')', $definition->render());
+    }
+
     //endregion
 
     //region POINT, MULTIPOINT
