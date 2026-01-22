@@ -254,4 +254,190 @@ class IndexTokenizerTest extends TestCase
     }
 
     //endregion
+
+    //region Fulltext Index
+    public function test_it_tokenizes_simple_fulltext_index()
+    {
+        $indexTokenizer = IndexTokenizer::parse('FULLTEXT KEY `posts_content_fulltext` (`content`)');
+        $indexDefinition = $indexTokenizer->definition();
+
+        $this->assertEquals('fulltext', $indexDefinition->getIndexType());
+        $this->assertFalse($indexDefinition->isMultiColumnIndex());
+        $this->assertEquals(['content'], $indexDefinition->getIndexColumns());
+        $this->assertEquals('posts_content_fulltext', $indexDefinition->getIndexName());
+
+        $this->assertEquals('$table->fullText([\'content\'], \'posts_content_fulltext\')', $indexDefinition->render());
+    }
+
+    public function test_it_tokenizes_fulltext_index_without_using_index_name()
+    {
+        config()->set('laravel-migration-generator.definitions.use_defined_index_names', false);
+        $indexTokenizer = IndexTokenizer::parse('FULLTEXT KEY `posts_content_fulltext` (`content`)');
+        $indexDefinition = $indexTokenizer->definition();
+
+        $this->assertEquals('fulltext', $indexDefinition->getIndexType());
+        $this->assertFalse($indexDefinition->isMultiColumnIndex());
+
+        $this->assertEquals('$table->fullText([\'content\'])', $indexDefinition->render());
+        config()->set('laravel-migration-generator.definitions.use_defined_index_names', true);
+    }
+
+    public function test_it_tokenizes_multi_column_fulltext_index()
+    {
+        $indexTokenizer = IndexTokenizer::parse('FULLTEXT KEY `posts_title_content_fulltext` (`title`,`content`)');
+        $indexDefinition = $indexTokenizer->definition();
+
+        $this->assertEquals('fulltext', $indexDefinition->getIndexType());
+        $this->assertTrue($indexDefinition->isMultiColumnIndex());
+        $this->assertCount(2, $indexDefinition->getIndexColumns());
+        $this->assertEqualsCanonicalizing(['title', 'content'], $indexDefinition->getIndexColumns());
+
+        $this->assertEquals('$table->fullText([\'title\', \'content\'], \'posts_title_content_fulltext\')', $indexDefinition->render());
+    }
+
+    public function test_it_tokenizes_multi_column_fulltext_index_without_using_index_name()
+    {
+        config()->set('laravel-migration-generator.definitions.use_defined_index_names', false);
+        $indexTokenizer = IndexTokenizer::parse('FULLTEXT KEY `posts_title_content_fulltext` (`title`,`content`)');
+        $indexDefinition = $indexTokenizer->definition();
+
+        $this->assertEquals('fulltext', $indexDefinition->getIndexType());
+        $this->assertTrue($indexDefinition->isMultiColumnIndex());
+        $this->assertCount(2, $indexDefinition->getIndexColumns());
+
+        $this->assertEquals('$table->fullText([\'title\', \'content\'])', $indexDefinition->render());
+        config()->set('laravel-migration-generator.definitions.use_defined_index_names', true);
+    }
+
+    //endregion
+
+    //region Spatial Index
+    public function test_it_tokenizes_simple_spatial_index()
+    {
+        $indexTokenizer = IndexTokenizer::parse('SPATIAL KEY `locations_coordinates_spatial` (`coordinates`)');
+        $indexDefinition = $indexTokenizer->definition();
+
+        $this->assertEquals('spatial', $indexDefinition->getIndexType());
+        $this->assertFalse($indexDefinition->isMultiColumnIndex());
+        $this->assertEquals(['coordinates'], $indexDefinition->getIndexColumns());
+        $this->assertEquals('locations_coordinates_spatial', $indexDefinition->getIndexName());
+
+        $this->assertEquals('$table->spatialIndex([\'coordinates\'], \'locations_coordinates_spatial\')', $indexDefinition->render());
+    }
+
+    public function test_it_tokenizes_spatial_index_without_using_index_name()
+    {
+        config()->set('laravel-migration-generator.definitions.use_defined_index_names', false);
+        $indexTokenizer = IndexTokenizer::parse('SPATIAL KEY `locations_coordinates_spatial` (`coordinates`)');
+        $indexDefinition = $indexTokenizer->definition();
+
+        $this->assertEquals('spatial', $indexDefinition->getIndexType());
+        $this->assertFalse($indexDefinition->isMultiColumnIndex());
+
+        $this->assertEquals('$table->spatialIndex([\'coordinates\'])', $indexDefinition->render());
+        config()->set('laravel-migration-generator.definitions.use_defined_index_names', true);
+    }
+
+    public function test_it_tokenizes_multi_column_spatial_index()
+    {
+        $indexTokenizer = IndexTokenizer::parse('SPATIAL KEY `locations_lat_lng_spatial` (`latitude`,`longitude`)');
+        $indexDefinition = $indexTokenizer->definition();
+
+        $this->assertEquals('spatial', $indexDefinition->getIndexType());
+        $this->assertTrue($indexDefinition->isMultiColumnIndex());
+        $this->assertCount(2, $indexDefinition->getIndexColumns());
+        $this->assertEqualsCanonicalizing(['latitude', 'longitude'], $indexDefinition->getIndexColumns());
+
+        $this->assertEquals('$table->spatialIndex([\'latitude\', \'longitude\'], \'locations_lat_lng_spatial\')', $indexDefinition->render());
+    }
+
+    public function test_it_tokenizes_multi_column_spatial_index_without_using_index_name()
+    {
+        config()->set('laravel-migration-generator.definitions.use_defined_index_names', false);
+        $indexTokenizer = IndexTokenizer::parse('SPATIAL KEY `locations_lat_lng_spatial` (`latitude`,`longitude`)');
+        $indexDefinition = $indexTokenizer->definition();
+
+        $this->assertEquals('spatial', $indexDefinition->getIndexType());
+        $this->assertTrue($indexDefinition->isMultiColumnIndex());
+        $this->assertCount(2, $indexDefinition->getIndexColumns());
+
+        $this->assertEquals('$table->spatialIndex([\'latitude\', \'longitude\'])', $indexDefinition->render());
+        config()->set('laravel-migration-generator.definitions.use_defined_index_names', true);
+    }
+
+    //endregion
+
+    //region Security - Index Name Escaping
+    public function test_it_escapes_single_quotes_in_index_names()
+    {
+        $indexTokenizer = IndexTokenizer::parse('KEY `idx_test\'s_index` (`email`)');
+        $indexDefinition = $indexTokenizer->definition();
+
+        $this->assertEquals('index', $indexDefinition->getIndexType());
+        // The rendered output should escape the single quote to prevent PHP injection
+        $this->assertEquals('$table->index([\'email\'], \'idx_test\\\'s_index\')', $indexDefinition->render());
+    }
+
+    public function test_it_escapes_single_quotes_in_fulltext_index_names()
+    {
+        $indexTokenizer = IndexTokenizer::parse('FULLTEXT KEY `idx_test\'s_fulltext` (`content`)');
+        $indexDefinition = $indexTokenizer->definition();
+
+        $this->assertEquals('fulltext', $indexDefinition->getIndexType());
+        // The rendered output should escape the single quote to prevent PHP injection
+        $this->assertEquals('$table->fullText([\'content\'], \'idx_test\\\'s_fulltext\')', $indexDefinition->render());
+    }
+
+    public function test_it_escapes_single_quotes_in_spatial_index_names()
+    {
+        $indexTokenizer = IndexTokenizer::parse('SPATIAL KEY `idx_test\'s_spatial` (`coordinates`)');
+        $indexDefinition = $indexTokenizer->definition();
+
+        $this->assertEquals('spatial', $indexDefinition->getIndexType());
+        // The rendered output should escape the single quote to prevent PHP injection
+        $this->assertEquals('$table->spatialIndex([\'coordinates\'], \'idx_test\\\'s_spatial\')', $indexDefinition->render());
+    }
+
+    public function test_it_escapes_single_quotes_in_column_names()
+    {
+        $indexTokenizer = IndexTokenizer::parse('KEY `test_index` (`col\'s_name`)');
+        $indexDefinition = $indexTokenizer->definition();
+
+        $this->assertEquals('index', $indexDefinition->getIndexType());
+        // The rendered output should escape the single quote in column name
+        $this->assertEquals('$table->index([\'col\\\'s_name\'], \'test_index\')', $indexDefinition->render());
+    }
+
+    public function test_it_escapes_backslashes_in_index_names()
+    {
+        $indexTokenizer = IndexTokenizer::parse('KEY `idx\\test` (`email`)');
+        $indexDefinition = $indexTokenizer->definition();
+
+        $this->assertEquals('index', $indexDefinition->getIndexType());
+        // Backslashes should be escaped
+        $this->assertEquals('$table->index([\'email\'], \'idx\\\\test\')', $indexDefinition->render());
+    }
+
+    public function test_it_escapes_backslashes_and_quotes_in_unique_index_names()
+    {
+        $indexTokenizer = IndexTokenizer::parse('UNIQUE KEY `idx\\\'test` (`email`)');
+        $indexDefinition = $indexTokenizer->definition();
+
+        $this->assertEquals('unique', $indexDefinition->getIndexType());
+        // Both backslashes and quotes should be escaped
+        $this->assertEquals('$table->unique([\'email\'], \'idx\\\\\\\'test\')', $indexDefinition->render());
+    }
+
+    public function test_it_escapes_single_quotes_in_foreign_key_index_names()
+    {
+        config()->set('laravel-migration-generator.definitions.use_defined_foreign_key_index_names', true);
+        $indexTokenizer = IndexTokenizer::parse('CONSTRAINT `fk_test\'s_key` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)');
+        $indexDefinition = $indexTokenizer->definition();
+
+        $this->assertEquals('foreign', $indexDefinition->getIndexType());
+        // The rendered output should escape the single quote
+        $this->assertEquals('$table->foreign(\'user_id\', \'fk_test\\\'s_key\')->references(\'id\')->on(\'users\')', $indexDefinition->render());
+    }
+
+    //endregion
 }
