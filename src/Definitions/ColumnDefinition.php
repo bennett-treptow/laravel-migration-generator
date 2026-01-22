@@ -13,11 +13,11 @@ class ColumnDefinition
 {
     use WritableTrait;
 
-    protected string $methodName;
+    protected string $methodName = '';
 
     protected array $methodParameters = [];
 
-    protected ?string $columnName;
+    protected ?string $columnName = null;
 
     protected bool $unsigned = false;
 

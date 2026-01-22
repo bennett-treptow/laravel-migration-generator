@@ -6,9 +6,9 @@ use LaravelMigrationGenerator\Formatters\TableFormatter;
 
 class TableDefinition
 {
-    protected string $tableName;
+    protected string $tableName = '';
 
-    protected string $driver;
+    protected string $driver = '';
 
     /** @var array<ColumnDefinition> */
     protected array $columnDefinitions = [];

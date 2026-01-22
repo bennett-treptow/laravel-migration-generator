@@ -11,7 +11,7 @@ class IndexDefinition
 
     public const TYPE_FOREIGN = 'foreign';
 
-    protected string $indexType;
+    protected string $indexType = '';
 
     protected ?string $indexName = null; //primary keys usually don't have a name
 
@@ -19,7 +19,7 @@ class IndexDefinition
 
     protected array $foreignReferencedColumns = [];
 
-    protected string $foreignReferencedTable;
+    protected string $foreignReferencedTable = '';
 
     protected array $constraintActions = [];
 
@@ -151,6 +151,20 @@ class IndexDefinition
             }
 
             return '$table->index('.ValueToString::make($this->indexColumns).$indexName.')';
+        } elseif ($this->indexType === 'fulltext') {
+            $indexName = '';
+            if (config('laravel-migration-generator.definitions.use_defined_index_names')) {
+                $indexName = ', \''.$this->getIndexName().'\'';
+            }
+
+            return '$table->fullText('.ValueToString::make($this->indexColumns).$indexName.')';
+        } elseif ($this->indexType === 'spatial') {
+            $indexName = '';
+            if (config('laravel-migration-generator.definitions.use_defined_index_names')) {
+                $indexName = ', \''.$this->getIndexName().'\'';
+            }
+
+            return '$table->spatialIndex('.ValueToString::make($this->indexColumns).$indexName.')';
         }
 
         return '';

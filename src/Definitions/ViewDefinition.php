@@ -6,11 +6,11 @@ use LaravelMigrationGenerator\Formatters\ViewFormatter;
 
 class ViewDefinition
 {
-    protected string $driver;
+    protected string $driver = '';
 
-    protected string $viewName;
+    protected string $viewName = '';
 
-    protected ?string $schema;
+    protected ?string $schema = null;
 
     public function __construct($attributes = [])
     {
