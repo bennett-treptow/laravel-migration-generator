@@ -32,10 +32,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-php-${{ matrix.php }}-
 
-      - name: Remove pint if not PHP 8.1
+      - name: Remove pint if not applicable
         run: |
-          if [ '${{ matrix.php }}' != '8.1' ]; then
-            composer remove laravel/pint --dev
+          if [ '${{ matrix.php }}' != '7.4' ]; then
+            composer remove laravel/pint --dev --no-update
           fi
 
       - name: Install dependencies
