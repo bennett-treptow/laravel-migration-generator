@@ -36,7 +36,7 @@ jobs:
         run: composer remove laravel/pint --dev --no-update
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --audit=ignore
+        run: composer install --prefer-dist --no-progress
 
       - name: Run test suite
         run: composer run test
