@@ -26,7 +26,7 @@ class IndexTokenizer extends BaseIndexTokenizer
     {
         $piece = $this->consume();
         $upper = strtoupper($piece);
-        if (in_array($upper, ['PRIMARY', 'UNIQUE', 'FULLTEXT'])) {
+        if (in_array($upper, ['PRIMARY', 'UNIQUE', 'FULLTEXT', 'SPATIAL'])) {
             $this->definition->setIndexType(strtolower($piece));
             $this->consume(); //just the word KEY
         } elseif ($upper === 'KEY') {

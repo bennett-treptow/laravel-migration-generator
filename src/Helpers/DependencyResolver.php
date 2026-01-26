@@ -34,11 +34,15 @@ class DependencyResolver
         }
         foreach ($this->tableDefinitions as $tableDefinition) {
             foreach ($tableDefinition->getForeignKeyDefinitions() as $indexDefinition) {
-                if ($indexDefinition->getForeignReferencedTable() === $tableDefinition->getTableName()) {
+                $referencedTable = $indexDefinition->getForeignReferencedTable();
+                if (empty($referencedTable)) {
                     continue;
                 }
-                if (! in_array($indexDefinition->getForeignReferencedTable(), $dependencies[$tableDefinition->getTableName()])) {
-                    $dependencies[$tableDefinition->getTableName()][] = $indexDefinition->getForeignReferencedTable();
+                if ($referencedTable === $tableDefinition->getTableName()) {
+                    continue;
+                }
+                if (! in_array($referencedTable, $dependencies[$tableDefinition->getTableName()])) {
+                    $dependencies[$tableDefinition->getTableName()][] = $referencedTable;
                 }
             }
         }

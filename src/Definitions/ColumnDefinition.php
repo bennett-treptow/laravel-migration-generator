@@ -13,11 +13,11 @@ class ColumnDefinition
 {
     use WritableTrait;
 
-    protected string $methodName;
+    protected string $methodName = '';
 
     protected array $methodParameters = [];
 
-    protected ?string $columnName;
+    protected ?string $columnName = null;
 
     protected bool $unsigned = false;
 
@@ -462,15 +462,15 @@ class ColumnDefinition
         }
 
         if ($this->storedAs !== null) {
-            $initialString .= '->storedAs('.ValueToString::make(str_replace('"', '\"', $this->storedAs), false, false).')';
+            $initialString .= '->storedAs('.ValueToString::make($this->storedAs, false, false).')';
         }
 
         if ($this->virtualAs !== null) {
-            $initialString .= '->virtualAs('.ValueToString::make(str_replace('"', '\"', $this->virtualAs), false, false).')';
+            $initialString .= '->virtualAs('.ValueToString::make($this->virtualAs, false, false).')';
         }
 
         if ($this->comment !== null && config('laravel-migration-generator.definitions.with_comments')) {
-            $initialString .= '->comment('.ValueToString::make(str_replace('"', '\"', $this->comment), false, false).')';
+            $initialString .= '->comment('.ValueToString::make($this->comment, false, false).')';
         }
 
         return $initialString;

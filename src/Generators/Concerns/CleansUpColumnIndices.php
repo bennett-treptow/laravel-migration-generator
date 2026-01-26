@@ -32,7 +32,8 @@ trait CleansUpColumnIndices
                         } elseif ($indexType === 'index' && ! $isMultiColumnIndex) {
                             $isForeignKeyIndex = false;
                             foreach ($this->definition()->getIndexDefinitions() as $innerIndex) {
-                                if ($innerIndex->getIndexType() === 'foreign' && ! $innerIndex->isMultiColumnIndex() && $innerIndex->getIndexColumns()[0] == $column->getColumnName()) {
+                                $innerIndexColumns = $innerIndex->getIndexColumns();
+                                if ($innerIndex->getIndexType() === 'foreign' && ! $innerIndex->isMultiColumnIndex() && ! empty($innerIndexColumns) && $innerIndexColumns[0] == $column->getColumnName()) {
                                     $isForeignKeyIndex = true;
 
                                     break;

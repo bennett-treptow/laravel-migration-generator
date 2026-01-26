@@ -11,7 +11,7 @@ class IndexDefinition
 
     public const TYPE_FOREIGN = 'foreign';
 
-    protected string $indexType;
+    protected string $indexType = '';
 
     protected ?string $indexName = null; //primary keys usually don't have a name
 
@@ -19,7 +19,7 @@ class IndexDefinition
 
     protected array $foreignReferencedColumns = [];
 
-    protected string $foreignReferencedTable;
+    protected string $foreignReferencedTable = '';
 
     protected array $constraintActions = [];
 
@@ -116,12 +116,20 @@ class IndexDefinition
         return count($this->indexColumns) > 1;
     }
 
+    /**
+     * Get the escaped index name for safe inclusion in generated PHP code.
+     */
+    protected function getEscapedIndexName(): string
+    {
+        return ValueToString::escape($this->getIndexName() ?? '');
+    }
+
     public function render(): string
     {
         if ($this->indexType === 'foreign') {
             $indexName = '';
             if (config('laravel-migration-generator.definitions.use_defined_foreign_key_index_names')) {
-                $indexName = ', \''.$this->getIndexName().'\'';
+                $indexName = ', \''.$this->getEscapedIndexName().'\'';
             }
 
             $base = '$table->foreign('.ValueToString::make($this->indexColumns, true).$indexName.')->references('.ValueToString::make($this->foreignReferencedColumns, true).')->on('.ValueToString::make($this->foreignReferencedTable).')';
@@ -133,24 +141,38 @@ class IndexDefinition
         } elseif ($this->indexType === 'primary') {
             $indexName = '';
             if (config('laravel-migration-generator.definitions.use_defined_primary_key_index_names') && $this->getIndexName() !== null) {
-                $indexName = ', \''.$this->getIndexName().'\'';
+                $indexName = ', \''.$this->getEscapedIndexName().'\'';
             }
 
             return '$table->primary('.ValueToString::make($this->indexColumns).$indexName.')';
         } elseif ($this->indexType === 'unique') {
             $indexName = '';
             if (config('laravel-migration-generator.definitions.use_defined_unique_key_index_names')) {
-                $indexName = ', \''.$this->getIndexName().'\'';
+                $indexName = ', \''.$this->getEscapedIndexName().'\'';
             }
 
             return '$table->unique('.ValueToString::make($this->indexColumns).$indexName.')';
         } elseif ($this->indexType === 'index') {
             $indexName = '';
             if (config('laravel-migration-generator.definitions.use_defined_index_names')) {
-                $indexName = ', \''.$this->getIndexName().'\'';
+                $indexName = ', \''.$this->getEscapedIndexName().'\'';
             }
 
             return '$table->index('.ValueToString::make($this->indexColumns).$indexName.')';
+        } elseif ($this->indexType === 'fulltext') {
+            $indexName = '';
+            if (config('laravel-migration-generator.definitions.use_defined_index_names')) {
+                $indexName = ', \''.$this->getEscapedIndexName().'\'';
+            }
+
+            return '$table->fullText('.ValueToString::make($this->indexColumns).$indexName.')';
+        } elseif ($this->indexType === 'spatial') {
+            $indexName = '';
+            if (config('laravel-migration-generator.definitions.use_defined_index_names')) {
+                $indexName = ', \''.$this->getEscapedIndexName().'\'';
+            }
+
+            return '$table->spatialIndex('.ValueToString::make($this->indexColumns).$indexName.')';
         }
 
         return '';

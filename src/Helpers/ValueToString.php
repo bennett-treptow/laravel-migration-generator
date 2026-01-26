@@ -33,6 +33,26 @@ class ValueToString
         return $value;
     }
 
+    /**
+     * Escape a string value for safe inclusion in generated PHP code.
+     * Prevents PHP injection through crafted index/column names.
+     *
+     * @param  string  $value  The value to escape
+     * @param  bool  $singleQuote  Whether the string will be wrapped in single quotes (true) or double quotes (false)
+     */
+    public static function escape(string $value, bool $singleQuote = true): string
+    {
+        // Escape backslashes first
+        $escaped = str_replace('\\', '\\\\', $value);
+
+        // Then escape the quote character being used as delimiter
+        if ($singleQuote) {
+            return str_replace('\'', '\\\'', $escaped);
+        } else {
+            return str_replace('"', '\\"', $escaped);
+        }
+    }
+
     public static function make($value, $singleOutArray = false, $singleQuote = true)
     {
         $quote = $singleQuote ? '\'' : '"';
@@ -40,10 +60,10 @@ class ValueToString
             return 'null';
         } elseif (is_array($value)) {
             if ($singleOutArray && count($value) === 1) {
-                return $quote.$value[0].$quote;
+                return $quote.static::escape($value[0], $singleQuote).$quote;
             }
 
-            return '['.collect($value)->map(fn ($item) => $quote.$item.$quote)->implode(', ').']';
+            return '['.collect($value)->map(fn ($item) => $quote.static::escape($item, $singleQuote).$quote)->implode(', ').']';
         } elseif (is_int($value) || is_float($value)) {
             return $value;
         }
@@ -56,6 +76,6 @@ class ValueToString
             return $value;
         }
 
-        return $quote.$value.$quote;
+        return $quote.static::escape($value, $singleQuote).$quote;
     }
 }
