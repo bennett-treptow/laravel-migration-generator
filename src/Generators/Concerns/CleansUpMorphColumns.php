@@ -20,7 +20,7 @@ trait CleansUpMorphColumns
         foreach ($this->definition()->getColumnDefinitions() as &$column) {
             if (Str::endsWith($columnName = $column->getColumnName(), ['_id', '_type'])) {
                 $pieces = explode('_', $columnName);
-                $type = array_pop($pieces); //pop off id or type
+                $type = array_pop($pieces); // pop off id or type
                 $morphColumn = implode('_', $pieces);
                 $morphColumns[$morphColumn][$type] = $column;
             }
@@ -34,22 +34,22 @@ trait CleansUpMorphColumns
                 $typeField = $fields['type'];
 
                 if (! ($idField->isUUID() || Str::contains($idField->getMethodName(), 'integer'))) {
-                    //should only be a uuid field or integer
+                    // should only be a uuid field or integer
                     continue;
                 }
                 if ($typeField->getMethodName() != 'string') {
-                    //should only be a string field
+                    // should only be a string field
                     continue;
                 }
 
                 if ($idField->isUUID()) {
-                    //UUID morph
+                    // UUID morph
                     $idField
                         ->setMethodName('uuidMorphs')
                         ->setMethodParameters([])
                         ->setColumnName($columnName);
                 } else {
-                    //regular morph
+                    // regular morph
                     $idField
                         ->setMethodName('morphs')
                         ->setColumnName($columnName);

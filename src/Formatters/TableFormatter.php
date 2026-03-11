@@ -23,7 +23,7 @@ class TableFormatter
         $schema = $this->getSchema($tabCharacter);
         $stub = file_get_contents($this->getStubPath());
         if (strpos($stub, '[TableUp]') !== false) {
-            //uses new syntax
+            // uses new syntax
             $stub = Formatter::replace($tabCharacter, '[TableUp]', $this->stubTableUp($tabCharacter), $stub);
             $stub = Formatter::replace($tabCharacter, '[TableDown]', $this->stubTableDown($tabCharacter), $stub);
         }

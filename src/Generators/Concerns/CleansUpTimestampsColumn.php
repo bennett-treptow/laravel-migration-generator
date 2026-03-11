@@ -24,7 +24,7 @@ trait CleansUpTimestampsColumn
             if (count($timestampColumns) === 2) {
                 foreach ($timestampColumns as $timestampColumn) {
                     if ($timestampColumn->useCurrent() || $timestampColumn->useCurrentOnUpdate()) {
-                        //don't convert to a `timestamps()` method if useCurrent is used
+                        // don't convert to a `timestamps()` method if useCurrent is used
 
                         return;
                     }

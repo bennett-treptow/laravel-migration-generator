@@ -15,8 +15,8 @@ class DependencyResolverTest extends TestCase
         $tableDefinition = new TableDefinition([
             'tableName' => 'tests',
             'columnDefinitions' => [
-                (new ColumnDefinition())->setColumnName('id')->setMethodName('id')->setAutoIncrementing(true)->setPrimary(true),
-                (new ColumnDefinition())->setColumnName('name')->setMethodName('string')->setNullable(false),
+                (new ColumnDefinition)->setColumnName('id')->setMethodName('id')->setAutoIncrementing(true)->setPrimary(true),
+                (new ColumnDefinition)->setColumnName('name')->setMethodName('string')->setNullable(false),
             ],
             'indexDefinitions' => [],
         ]);
@@ -24,11 +24,11 @@ class DependencyResolverTest extends TestCase
         $foreignTableDefinition = new TableDefinition([
             'tableName' => 'test_items',
             'columnDefinitions' => [
-                (new ColumnDefinition())->setColumnName('id')->setMethodName('id')->setAutoIncrementing(true)->setPrimary(true),
-                (new ColumnDefinition())->setColumnName('test_id')->setMethodName('bigInteger')->setNullable(false)->setUnsigned(true),
+                (new ColumnDefinition)->setColumnName('id')->setMethodName('id')->setAutoIncrementing(true)->setPrimary(true),
+                (new ColumnDefinition)->setColumnName('test_id')->setMethodName('bigInteger')->setNullable(false)->setUnsigned(true),
             ],
             'indexDefinitions' => [
-                (new IndexDefinition())->setIndexName('fk_test_id')->setIndexType('foreign')->setForeignReferencedColumns(['id'])->setForeignReferencedTable('tests'),
+                (new IndexDefinition)->setIndexName('fk_test_id')->setIndexType('foreign')->setForeignReferencedColumns(['id'])->setForeignReferencedTable('tests'),
             ],
         ]);
 
@@ -45,11 +45,11 @@ class DependencyResolverTest extends TestCase
             'tableName' => 'tests',
             'driver' => 'mysql',
             'columnDefinitions' => [
-                (new ColumnDefinition())->setColumnName('id')->setMethodName('id')->setAutoIncrementing(true)->setPrimary(true),
-                (new ColumnDefinition())->setColumnName('test_item_id')->setMethodName('bigInteger')->setNullable(false)->setUnsigned(true),
+                (new ColumnDefinition)->setColumnName('id')->setMethodName('id')->setAutoIncrementing(true)->setPrimary(true),
+                (new ColumnDefinition)->setColumnName('test_item_id')->setMethodName('bigInteger')->setNullable(false)->setUnsigned(true),
             ],
             'indexDefinitions' => [
-                (new IndexDefinition())->setIndexName('fk_test_item_id')->setIndexColumns(['test_item_id'])->setIndexType('foreign')->setForeignReferencedColumns(['id'])->setForeignReferencedTable('test_items'),
+                (new IndexDefinition)->setIndexName('fk_test_item_id')->setIndexColumns(['test_item_id'])->setIndexType('foreign')->setForeignReferencedColumns(['id'])->setForeignReferencedTable('test_items'),
             ],
         ]);
 
@@ -57,11 +57,11 @@ class DependencyResolverTest extends TestCase
             'tableName' => 'test_items',
             'driver' => 'mysql',
             'columnDefinitions' => [
-                (new ColumnDefinition())->setColumnName('id')->setMethodName('id')->setAutoIncrementing(true)->setPrimary(true),
-                (new ColumnDefinition())->setColumnName('test_id')->setMethodName('bigInteger')->setNullable(false)->setUnsigned(true),
+                (new ColumnDefinition)->setColumnName('id')->setMethodName('id')->setAutoIncrementing(true)->setPrimary(true),
+                (new ColumnDefinition)->setColumnName('test_id')->setMethodName('bigInteger')->setNullable(false)->setUnsigned(true),
             ],
             'indexDefinitions' => [
-                (new IndexDefinition())->setIndexName('fk_test_id')->setIndexColumns(['test_id'])->setIndexType('foreign')->setForeignReferencedColumns(['id'])->setForeignReferencedTable('tests'),
+                (new IndexDefinition)->setIndexName('fk_test_id')->setIndexColumns(['test_id'])->setIndexType('foreign')->setForeignReferencedColumns(['id'])->setForeignReferencedTable('tests'),
             ],
         ]);
 
@@ -79,11 +79,11 @@ class DependencyResolverTest extends TestCase
             'tableName' => 'tests',
             'driver' => 'mysql',
             'columnDefinitions' => [
-                (new ColumnDefinition())->setColumnName('id')->setMethodName('id')->setAutoIncrementing(true)->setPrimary(true),
-                (new ColumnDefinition())->setColumnName('parent_id')->setMethodName('integer')->setUnsigned(true)->setNullable(false),
+                (new ColumnDefinition)->setColumnName('id')->setMethodName('id')->setAutoIncrementing(true)->setPrimary(true),
+                (new ColumnDefinition)->setColumnName('parent_id')->setMethodName('integer')->setUnsigned(true)->setNullable(false),
             ],
             'indexDefinitions' => [
-                (new IndexDefinition())->setIndexName('fk_parent_id')->setIndexColumns(['parent_id'])->setIndexType('foreign')->setForeignReferencedColumns(['id'])->setForeignReferencedTable('tests'),
+                (new IndexDefinition)->setIndexName('fk_parent_id')->setIndexColumns(['parent_id'])->setIndexType('foreign')->setForeignReferencedColumns(['id'])->setForeignReferencedTable('tests'),
             ],
         ]);
 

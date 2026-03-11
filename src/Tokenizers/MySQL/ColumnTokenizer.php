@@ -27,10 +27,10 @@ class ColumnTokenizer extends BaseColumnTokenizer
             $this->consumeZeroFill();
         }
         if ($this->isTextType()) {
-            //possibly has a character set
+            // possibly has a character set
             $this->consumeCharacterSet();
 
-            //has collation data most likely
+            // has collation data most likely
             $this->consumeCollation();
         }
 
@@ -53,7 +53,7 @@ class ColumnTokenizer extends BaseColumnTokenizer
         return $this;
     }
 
-    //region Consumers
+    // region Consumers
 
     protected function consumeColumnName()
     {
@@ -104,17 +104,17 @@ class ColumnTokenizer extends BaseColumnTokenizer
     {
         $piece = $this->consume();
         if (strtoupper($piece) === 'NOT') {
-            $this->consume(); //next is NULL
+            $this->consume(); // next is NULL
             $this->definition->setNullable(false);
         } elseif (strtoupper($piece) === 'NULL') {
             $this->definition->setNullable(true);
         } else {
-            //something else
+            // something else
             $this->putBack($piece);
         }
 
         if (Str::contains($this->columnDataType, 'text')) {
-            //text column types are explicitly nullable unless set to NOT NULL
+            // text column types are explicitly nullable unless set to NOT NULL
             if ($this->definition->isNullable() === null) {
                 $this->definition->setNullable(true);
             }
@@ -144,7 +144,7 @@ class ColumnTokenizer extends BaseColumnTokenizer
                     if (Str::contains(strtoupper($this->columnDataType), 'INT')) {
                         $this->definition->setDefaultValue((int) $this->definition->getDefaultValue());
                     } else {
-                        //floats get converted to strings improperly, gotta do a string cast
+                        // floats get converted to strings improperly, gotta do a string cast
                         $this->definition->setDefaultValue(ValueToString::castFloat($this->definition->getDefaultValue()));
                     }
                 } else {
@@ -178,7 +178,7 @@ class ColumnTokenizer extends BaseColumnTokenizer
 
             $this->definition->setCharacterSet($this->consume());
         } else {
-            //something else
+            // something else
             $this->putBack($piece);
         }
     }
@@ -187,7 +187,7 @@ class ColumnTokenizer extends BaseColumnTokenizer
     {
         $piece = $this->consume();
         if (strtoupper($piece) === 'COLLATE') {
-            //next piece is the collation type
+            // next piece is the collation type
             $this->definition->setCollation($this->consume());
         } else {
             $this->putBack($piece);
@@ -294,9 +294,9 @@ class ColumnTokenizer extends BaseColumnTokenizer
         }
     }
 
-    //endregion
+    // endregion
 
-    //region Resolvers
+    // region Resolvers
     private function resolveColumnMethod()
     {
         $mapped = [
@@ -306,7 +306,7 @@ class ColumnTokenizer extends BaseColumnTokenizer
             'mediumint' => 'mediumInteger',
             'bigint' => 'bigInteger',
             'varchar' => 'string',
-            'tinytext' => 'string',  //tinytext is not a valid Blueprint method currently
+            'tinytext' => 'string',  // tinytext is not a valid Blueprint method currently
             'mediumtext' => 'mediumText',
             'longtext' => 'longText',
             'blob' => 'binary',
@@ -320,7 +320,7 @@ class ColumnTokenizer extends BaseColumnTokenizer
         if (isset($mapped[$this->columnDataType])) {
             $this->definition->setMethodName($mapped[$this->columnDataType]);
         } else {
-            //do some custom resolution
+            // do some custom resolution
             $this->definition->setMethodName($this->columnDataType);
         }
     }
@@ -328,7 +328,7 @@ class ColumnTokenizer extends BaseColumnTokenizer
     private function resolveColumnConstraints(array $constraints)
     {
         if ($this->columnDataType === 'char' && count($constraints) === 1 && $constraints[0] == 36) {
-            //uuid for mysql
+            // uuid for mysql
             $this->definition->setIsUUID(true);
 
             return;
@@ -337,11 +337,11 @@ class ColumnTokenizer extends BaseColumnTokenizer
             $this->definition->setMethodParameters([array_map(fn ($item) => trim($item, '\''), $constraints)]);
         } else {
             if (Str::contains(strtoupper($this->columnDataType), 'INT')) {
-                $this->definition->setMethodParameters([]); //laravel does not like display field widths
+                $this->definition->setMethodParameters([]); // laravel does not like display field widths
             } else {
                 if ($this->definition->getMethodName() === 'string') {
                     if (count($constraints) === 1) {
-                        //has a width set
+                        // has a width set
                         if ($constraints[0] == Builder::$defaultStringLength) {
                             $this->definition->setMethodParameters([]);
 
@@ -354,7 +354,7 @@ class ColumnTokenizer extends BaseColumnTokenizer
         }
     }
 
-    //endregion
+    // endregion
 
     protected function isTextType()
     {

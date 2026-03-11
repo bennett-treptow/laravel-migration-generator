@@ -35,7 +35,7 @@ class TableDefinition
             if (count($definitions = $this->getIndexDefinitions()) > 0) {
                 $first = collect($definitions)->first();
 
-                //a fk only table from dependency resolution
+                // a fk only table from dependency resolution
                 return $this->getTableName().'_'.$first->getIndexName();
             }
         }

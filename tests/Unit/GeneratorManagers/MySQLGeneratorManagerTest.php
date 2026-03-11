@@ -30,22 +30,22 @@ class MySQLGeneratorManagerTest extends TestCase
                 'tableName' => 'tests',
                 'driver' => 'mysql',
                 'columnDefinitions' => [
-                    (new ColumnDefinition())->setColumnName('id')->setMethodName('id')->setAutoIncrementing(true)->setPrimary(true),
-                    (new ColumnDefinition())->setColumnName('test_item_id')->setMethodName('bigInteger')->setNullable(false)->setUnsigned(true),
+                    (new ColumnDefinition)->setColumnName('id')->setMethodName('id')->setAutoIncrementing(true)->setPrimary(true),
+                    (new ColumnDefinition)->setColumnName('test_item_id')->setMethodName('bigInteger')->setNullable(false)->setUnsigned(true),
                 ],
                 'indexDefinitions' => [
-                    (new IndexDefinition())->setIndexName('fk_test_item_id')->setIndexColumns(['test_item_id'])->setIndexType('foreign')->setForeignReferencedColumns(['id'])->setForeignReferencedTable('test_items'),
+                    (new IndexDefinition)->setIndexName('fk_test_item_id')->setIndexColumns(['test_item_id'])->setIndexType('foreign')->setForeignReferencedColumns(['id'])->setForeignReferencedTable('test_items'),
                 ],
             ]),
             new TableDefinition([
                 'tableName' => 'test_items',
                 'driver' => 'mysql',
                 'columnDefinitions' => [
-                    (new ColumnDefinition())->setColumnName('id')->setMethodName('id')->setAutoIncrementing(true)->setPrimary(true),
-                    (new ColumnDefinition())->setColumnName('test_id')->setMethodName('bigInteger')->setNullable(false)->setUnsigned(true),
+                    (new ColumnDefinition)->setColumnName('id')->setMethodName('id')->setAutoIncrementing(true)->setPrimary(true),
+                    (new ColumnDefinition)->setColumnName('test_id')->setMethodName('bigInteger')->setNullable(false)->setUnsigned(true),
                 ],
                 'indexDefinitions' => [
-                    (new IndexDefinition())->setIndexName('fk_test_id')->setIndexColumns(['test_id'])->setIndexType('foreign')->setForeignReferencedColumns(['id'])->setForeignReferencedTable('tests'),
+                    (new IndexDefinition)->setIndexName('fk_test_id')->setIndexColumns(['test_id'])->setIndexType('foreign')->setForeignReferencedColumns(['id'])->setForeignReferencedTable('tests'),
                 ],
             ]),
         ]);
@@ -63,21 +63,21 @@ class MySQLGeneratorManagerTest extends TestCase
             $mock->shouldReceive('init');
         });
 
-        $definition = (new TableDefinition())->setTableName('wp_posts');
+        $definition = (new TableDefinition)->setTableName('wp_posts');
         $mocked->addTableDefinition($definition);
         $this->assertEquals('posts', $definition->getTableName());
 
-        $definition = (new TableDefinition())->setTableName('posts');
+        $definition = (new TableDefinition)->setTableName('posts');
         $mocked->addTableDefinition($definition);
         $this->assertEquals('posts', $definition->getTableName());
 
         config()->set('database.connections.'.$connection.'.prefix', '');
 
-        $definition = (new TableDefinition())->setTableName('wp_posts');
+        $definition = (new TableDefinition)->setTableName('wp_posts');
         $mocked->addTableDefinition($definition);
         $this->assertEquals('wp_posts', $definition->getTableName());
 
-        $definition = (new TableDefinition())->setTableName('posts');
+        $definition = (new TableDefinition)->setTableName('posts');
         $mocked->addTableDefinition($definition);
         $this->assertEquals('posts', $definition->getTableName());
     }

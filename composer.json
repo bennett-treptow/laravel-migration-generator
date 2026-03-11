@@ -1,56 +1,56 @@
 {
-    "name": "bennett-treptow/laravel-migration-generator",
-    "description": "Generate migrations from existing database structures",
-    "minimum-stability": "stable",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Bennett Treptow",
-            "email": "me@btreptow.com"
-        }
-    ],
-    "require": {
-        "php": "^7.4|^8.0|^8.1|^8.2|^8.3|^8.4",
-        "illuminate/support": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
-        "illuminate/console": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
-        "illuminate/database": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
-        "illuminate/config": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
-        "marcj/topsort": "^2.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "LaravelMigrationGenerator\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Tests\\": "tests/"
-        }
-    },
-    "require-dev": {
-        "orchestra/testbench": "^6.17|^8.0|^9.0|^10.0",
-        "laravel/pint": "^1.15"
-    },
-    "scripts": {
-        "post-autoload-dump": [
-            "@php ./vendor/bin/testbench package:discover --ansi"
-        ],
-        "test": [
-            "vendor/bin/phpunit"
-        ],
-        "lint": "vendor/bin/pint"
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "LaravelMigrationGenerator\\LaravelMigrationGeneratorProvider"
-            ]
-        }
-    },
-    "prefer-stable": true,
-    "config": {
-        "audit": {
-          "block-insecure": false
-        }
+  "name": "bennett-treptow/laravel-migration-generator",
+  "description": "Generate migrations from existing database structures",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Bennett Treptow",
+      "email": "me@btreptow.com"
     }
+  ],
+  "require": {
+    "php": "^7.4|^8.0|^8.1|^8.2|^8.3|^8.4",
+    "illuminate/support": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
+    "illuminate/console": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
+    "illuminate/database": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
+    "illuminate/config": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
+    "marcj/topsort": "^2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "LaravelMigrationGenerator\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "require-dev": {
+    "orchestra/testbench": "^6.17|^8.0|^9.0|^10.0",
+    "laravel/pint": "^1.15"
+  },
+  "scripts": {
+    "post-autoload-dump": [
+      "@php ./vendor/bin/testbench package:discover --ansi"
+    ],
+    "test": [
+      "vendor/bin/phpunit"
+    ],
+    "lint": "vendor/bin/pint"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "LaravelMigrationGenerator\\LaravelMigrationGeneratorProvider"
+      ]
+    }
+  },
+  "prefer-stable": true,
+  "config": {
+    "audit": {
+      "block-insecure": false
+    }
+  }
 }

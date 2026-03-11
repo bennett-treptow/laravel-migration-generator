@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 class ValueToStringTest extends TestCase
 {
-    //region Basic Functionality
+    // region Basic Functionality
     public function test_it_returns_null_for_null_value()
     {
         $this->assertEquals('null', ValueToString::make(null));
@@ -48,9 +48,9 @@ class ValueToStringTest extends TestCase
         $this->assertEquals("['one', 'two']", ValueToString::make(['one', 'two'], true));
     }
 
-    //endregion
+    // endregion
 
-    //region Escape Functionality
+    // region Escape Functionality
     public function test_escape_escapes_single_quotes_by_default()
     {
         $this->assertEquals("test\\'s value", ValueToString::escape("test's value"));
@@ -81,9 +81,9 @@ class ValueToStringTest extends TestCase
         $this->assertEquals('', ValueToString::escape(''));
     }
 
-    //endregion
+    // endregion
 
-    //region Security Tests - PHP Injection Prevention
+    // region Security Tests - PHP Injection Prevention
     public function test_make_escapes_single_quotes_in_string()
     {
         $malicious = "test'); phpinfo();//";
@@ -141,9 +141,9 @@ class ValueToStringTest extends TestCase
         $this->assertEquals("['col\\'1', 'col\\'2']", $result);
     }
 
-    //endregion
+    // endregion
 
-    //region Cast Value Tests
+    // region Cast Value Tests
     public function test_cast_float_creates_casted_value()
     {
         $result = ValueToString::castFloat('3.14');
@@ -187,5 +187,5 @@ class ValueToStringTest extends TestCase
         $this->assertEquals("b'0101'", $result);
     }
 
-    //endregion
+    // endregion
 }

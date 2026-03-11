@@ -61,7 +61,7 @@ class ColumnDefinition
         }
     }
 
-    //region Getters
+    // region Getters
 
     public function getMethodName(): string
     {
@@ -83,9 +83,6 @@ class ColumnDefinition
         return $this->unsigned;
     }
 
-    /**
-     * @return ?bool
-     */
     public function isNullable(): ?bool
     {
         return $this->nullable;
@@ -163,9 +160,9 @@ class ColumnDefinition
         return $this->isUUID;
     }
 
-    //endregion
+    // endregion
 
-    //region Setters
+    // region Setters
 
     public function setMethodName(string $methodName): ColumnDefinition
     {
@@ -195,9 +192,6 @@ class ColumnDefinition
         return $this;
     }
 
-    /**
-     * @param  ?bool  $nullable
-     */
     public function setNullable(?bool $nullable): ColumnDefinition
     {
         $this->nullable = $nullable;
@@ -310,7 +304,7 @@ class ColumnDefinition
         return $this;
     }
 
-    //endregion
+    // endregion
 
     protected function isNullableMethod($methodName)
     {
@@ -330,7 +324,7 @@ class ColumnDefinition
     protected function guessLaravelMethod()
     {
         if ($this->primary && $this->unsigned && $this->autoIncrementing) {
-            //some sort of increments field
+            // some sort of increments field
             if ($this->methodName === 'bigInteger') {
                 if ($this->columnName === 'id') {
                     return [null, 'id', []];
@@ -373,7 +367,7 @@ class ColumnDefinition
             return [null, 'rememberToken', []];
         }
         if ($this->isUUID() && $this->methodName !== 'uuidMorphs') {
-            //only override if not already uuidMorphs
+            // only override if not already uuidMorphs
             return [$this->columnName, 'uuid', []];
         }
 

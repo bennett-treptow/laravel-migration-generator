@@ -93,6 +93,6 @@ class GenerateMigrationsCommand extends Command
             return false;
         }
 
-        return new $supported[$driver]();
+        return new $supported[$driver];
     }
 }

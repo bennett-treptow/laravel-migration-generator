@@ -26,8 +26,8 @@ class TableGenerator extends BaseTableGenerator
         if (isset($structure['Create Table'])) {
             $lines = explode("\n", $structure['Create Table']);
 
-            array_shift($lines); //get rid of first line
-            array_pop($lines); //get rid of last line
+            array_shift($lines); // get rid of first line
+            array_pop($lines); // get rid of last line
 
             $lines = array_map(fn ($item) => trim($item), $lines);
             $this->rows = $lines;

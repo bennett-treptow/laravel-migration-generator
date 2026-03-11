@@ -3,7 +3,7 @@
 return [
     'run_after_migrations' => env('LMG_RUN_AFTER_MIGRATIONS', false),
     'clear_output_path' => env('LMG_CLEAR_OUTPUT_PATH', false),
-    //default configs
+    // default configs
     'table_naming_scheme' => env('LMG_TABLE_NAMING_SCHEME', '[IndexedTimestamp]_create_[TableName]_table.php'),
     'view_naming_scheme' => env('LMG_VIEW_NAMING_SCHEME', '[IndexedTimestamp]_create_[ViewName]_view.php'),
     'path' => env('LMG_OUTPUT_PATH', 'tests/database/migrations'),
@@ -21,8 +21,8 @@ return [
         'use_defined_datatype_on_timestamp' => env('LMG_USE_DEFINED_DATATYPE_ON_TIMESTAMP', false),
     ],
 
-    //now driver specific configs
-    //null = use default
+    // now driver specific configs
+    // null = use default
     'mysql' => [
         'table_naming_scheme' => env('LMG_MYSQL_TABLE_NAMING_SCHEME', null),
         'view_naming_scheme' => env('LMG_MYSQL_VIEW_NAMING_SCHEME', null),

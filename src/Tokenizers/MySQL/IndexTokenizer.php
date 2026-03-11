@@ -28,7 +28,7 @@ class IndexTokenizer extends BaseIndexTokenizer
         $upper = strtoupper($piece);
         if (in_array($upper, ['PRIMARY', 'UNIQUE', 'FULLTEXT', 'SPATIAL'])) {
             $this->definition->setIndexType(strtolower($piece));
-            $this->consume(); //just the word KEY
+            $this->consume(); // just the word KEY
         } elseif ($upper === 'KEY') {
             $this->definition->setIndexType('index');
         } elseif ($upper === 'CONSTRAINT') {
@@ -54,7 +54,7 @@ class IndexTokenizer extends BaseIndexTokenizer
     {
         $piece = $this->consume();
         if (strtoupper($piece) === 'FOREIGN') {
-            $this->consume(); //KEY
+            $this->consume(); // KEY
 
             $columns = [];
             $token = $this->consume();
@@ -70,7 +70,7 @@ class IndexTokenizer extends BaseIndexTokenizer
             }
             $this->definition->setIndexColumns($columns);
 
-            $this->consume(); //REFERENCES
+            $this->consume(); // REFERENCES
 
             $referencedTable = $this->parseColumn($this->consume());
             $this->definition->setForeignReferencedTable($referencedTable);
@@ -91,6 +91,9 @@ class IndexTokenizer extends BaseIndexTokenizer
 
             $this->consumeConstraintActions();
         } else {
+            // Not a FOREIGN KEY constraint (e.g., CHECK constraint)
+            // Set type to 'check' so render() returns empty string
+            $this->definition->setIndexType('check');
             $this->putBack($piece);
         }
     }
@@ -99,13 +102,13 @@ class IndexTokenizer extends BaseIndexTokenizer
     {
         while ($token = $this->consume()) {
             if (strtoupper($token) === 'ON') {
-                $actionType = strtolower($this->consume()); //UPDATE
-                $actionMethod = strtolower($this->consume()); //CASCADE | NO ACTION | SET NULL | SET DEFAULT
+                $actionType = strtolower($this->consume()); // UPDATE
+                $actionMethod = strtolower($this->consume()); // CASCADE | NO ACTION | SET NULL | SET DEFAULT
                 if ($actionMethod === 'no') {
-                    $this->consume(); //consume ACTION
+                    $this->consume(); // consume ACTION
                     $actionMethod = 'restrict';
                 } elseif ($actionMethod === 'set') {
-                    $actionMethod = 'set '.$this->consume(); //consume NULL or DEFAULT
+                    $actionMethod = 'set '.$this->consume(); // consume NULL or DEFAULT
                 }
                 $currentActions = $this->definition->getConstraintActions();
                 $currentActions[$actionType] = $actionMethod;

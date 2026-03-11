@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 class ColumnTokenizerTest extends TestCase
 {
-    //region VARCHAR
+    // region VARCHAR
     public function test_it_tokenizes_a_not_null_varchar_column()
     {
         $columnTokenizer = ColumnTokenizer::parse('`email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL');
@@ -181,9 +181,9 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('$table->char(\'country\', 2)->default(\'US\')', $columnDefinition->render());
     }
 
-    //endregion
+    // endregion
 
-    //region TEXT & Variants
+    // region TEXT & Variants
     public function test_it_tokenizes_a_not_null_tinytext_column()
     {
         $columnTokenizer = ColumnTokenizer::parse('`notes` tinytext NOT NULL');
@@ -296,9 +296,9 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('$table->longText(\'notes\')->nullable()', $columnDefinition->render());
     }
 
-    //endregion
+    // endregion
 
-    //region INT & Variants
+    // region INT & Variants
     public function test_it_tokenizes_a_not_null_smallint_without_param_column()
     {
         $columnTokenizer = ColumnTokenizer::parse('`cats` smallint NOT NULL');
@@ -383,9 +383,9 @@ class ColumnTokenizerTest extends TestCase
         config()->set('laravel-migration-generator.definitions.prefer_unsigned_prefix', true);
     }
 
-    //endregion
+    // endregion
 
-    //region FLOAT
+    // region FLOAT
     public function test_it_tokenizes_float_without_params_column()
     {
         $columnTokenizer = ColumnTokenizer::parse('`parameter` float NOT NULL');
@@ -502,9 +502,9 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('$table->float(\'parameter\', 4, 2)->default(1.00)', $columnDefinition->render());
     }
 
-    //endregion
+    // endregion
 
-    //region DECIMAL
+    // region DECIMAL
     public function test_it_tokenizes_a_not_null_decimal_column()
     {
         $columnTokenizer = ColumnTokenizer::parse('`amount` decimal(9,2) NOT NULL');
@@ -573,9 +573,9 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('$table->unsignedDecimal(\'amount\', 9, 2)->default(1.00)', $columnDefinition->render());
     }
 
-    //endregion
+    // endregion
 
-    //region DOUBLE
+    // region DOUBLE
     public function test_it_tokenizes_a_not_null_double_column()
     {
         $columnTokenizer = ColumnTokenizer::parse('`amount` double(9,2) NOT NULL');
@@ -644,9 +644,9 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('$table->double(\'amount\', 9, 2)->unsigned()->default(1.00)', $columnDefinition->render());
     }
 
-    //endregion
+    // endregion
 
-    //region DATETIME
+    // region DATETIME
     public function test_it_tokenizes_a_not_null_datetime_column()
     {
         $columnTokenizer = ColumnTokenizer::parse('`sent_at` datetime NOT NULL');
@@ -743,9 +743,9 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('$table->dateTime(\'sent_at\')->useCurrent()->useCurrentOnUpdate()', $columnDefinition->render());
     }
 
-    //endregion
+    // endregion
 
-    //region TIMESTAMP
+    // region TIMESTAMP
     public function test_it_tokenizes_a_not_null_timestamp_column()
     {
         $columnTokenizer = ColumnTokenizer::parse('`sent_at` timestamp NOT NULL');
@@ -826,9 +826,9 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('$table->timestamp(\'sent_at\')->nullable()->default(\'2000-01-01 00:00:01\')', $columnDefinition->render());
     }
 
-    //endregion
+    // endregion
 
-    //region ENUM
+    // region ENUM
     public function test_it_tokenizes_enum_column()
     {
         $columnTokenizer = ColumnTokenizer::parse('`status_flag` enum(\'1\',\'2\',\'3\',\'4\')');
@@ -930,9 +930,9 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('$table->enum(\'text\', [\'\', \'not-empty-string\', \'string with spaces\'])->default(\'\')', $definition->render());
     }
 
-    //endregion
+    // endregion
 
-    //region POINT, MULTIPOINT
+    // region POINT, MULTIPOINT
     public function test_it_tokenizes_point_column()
     {
         $columnTokenizer = ColumnTokenizer::parse('`point` point NOT NULL');
@@ -955,9 +955,9 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('$table->multiPoint(\'point\')', $columnDefinition->render());
     }
 
-    //endregion
+    // endregion
 
-    //region POLYGON, MULTIPOLYGON
+    // region POLYGON, MULTIPOLYGON
     public function test_it_tokenizes_polygon_column()
     {
         $columnTokenizer = ColumnTokenizer::parse('`polygon` polygon NOT NULL');
@@ -980,9 +980,9 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('$table->multiPolygon(\'polygon\')', $columnDefinition->render());
     }
 
-    //endregion,
+    // endregion,
 
-    //region GEOMETRY
+    // region GEOMETRY
     public function test_it_tokenizes_geometry_column()
     {
         $columnTokenizer = ColumnTokenizer::parse('`geometry` geometry NOT NULL');
@@ -1003,9 +1003,9 @@ class ColumnTokenizerTest extends TestCase
         $this->assertCount(0, $columnDefinition->getMethodParameters());
     }
 
-    //endregion
+    // endregion
 
-    //region SET
+    // region SET
     public function test_it_tokenizes_set_column()
     {
         $columnTokenizer = ColumnTokenizer::parse('`set_field` set(\'1\',\'2\',\'3\') COLLATE utf8mb4_unicode_ci DEFAULT NULL');
@@ -1020,9 +1020,9 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('$table->set(\'set_field\', [\'1\', \'2\', \'3\'])->nullable()', $columnDefinition->render());
     }
 
-    //endregion
+    // endregion
 
-    //region UUID
+    // region UUID
     public function test_it_tokenizes_uuid_column()
     {
         $columnTokenizer = ColumnTokenizer::parse('`uuid_col` char(36) COLLATE utf8mb4_unicode_ci NOT NULL');
@@ -1037,9 +1037,9 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('$table->uuid(\'uuid_col\')', $columnDefinition->render());
     }
 
-    //endregion
+    // endregion
 
-    //region DATE, YEAR, TIME
+    // region DATE, YEAR, TIME
     public function test_it_tokenizes_date_column()
     {
         $columnTokenizer = ColumnTokenizer::parse('`birth_date` date NOT NULL');
@@ -1082,9 +1082,9 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('$table->time(\'birth_time\')', $columnDefinition->render());
     }
 
-    //endregion
+    // endregion
 
-    //region LINESTRING, MULTILINESTRING
+    // region LINESTRING, MULTILINESTRING
     public function test_it_tokenizes_linestring_column()
     {
         $columnTokenizer = ColumnTokenizer::parse('`str` linestring NOT NULL');
@@ -1113,7 +1113,7 @@ class ColumnTokenizerTest extends TestCase
         $this->assertEquals('$table->multiLineString(\'str\')', $columnDefinition->render());
     }
 
-    //endregion
+    // endregion
 
     public function test_it_tokenizes_generated_as_column()
     {

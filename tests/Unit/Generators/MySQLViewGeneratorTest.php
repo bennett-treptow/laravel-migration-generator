@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 class MySQLViewGeneratorTest extends TestCase
 {
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         parent::tearDown();
 
