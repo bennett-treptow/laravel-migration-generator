@@ -2,6 +2,7 @@
 
 namespace LaravelMigrationGenerator\Generators\Concerns;
 
+use LaravelMigrationGenerator\Definitions\IndexDefinition;
 use LaravelMigrationGenerator\Generators\BaseTableGenerator;
 
 /**
@@ -14,7 +15,7 @@ trait CleansUpColumnIndices
     protected function cleanUpColumnsWithIndices(): void
     {
         foreach ($this->definition()->getIndexDefinitions() as &$index) {
-            /** @var \LaravelMigrationGenerator\Definitions\IndexDefinition $index */
+            /** @var IndexDefinition $index */
             if (! $index->isWritable()) {
                 continue;
             }

@@ -47,7 +47,7 @@ class DependencyResolver
             }
         }
 
-        $sorter = new FixedArraySort();
+        $sorter = new FixedArraySort;
         $circulars = [];
         $sorter->setCircularInterceptor(function ($nodes) use (&$circulars) {
             $circulars[] = [$nodes[count($nodes) - 2], $nodes[count($nodes) - 1]];

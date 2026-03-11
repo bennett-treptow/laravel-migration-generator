@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 class IndexTokenizerTest extends TestCase
 {
-    //region Simple Index
+    // region Simple Index
     public function test_it_tokenizes_simple_index()
     {
         $indexTokenizer = IndexTokenizer::parse('KEY `password_resets_email_index` (`email`)');
@@ -32,9 +32,9 @@ class IndexTokenizerTest extends TestCase
         config()->set('laravel-migration-generator.definitions.use_defined_index_names', true);
     }
 
-    //endregion
+    // endregion
 
-    //region Primary Key
+    // region Primary Key
     public function test_it_tokenizes_simple_primary_key()
     {
         $indexTokenizer = IndexTokenizer::parse('PRIMARY KEY (`id`)');
@@ -59,9 +59,9 @@ class IndexTokenizerTest extends TestCase
         $this->assertEquals('$table->primary([\'email\', \'token\'])', $indexDefinition->render());
     }
 
-    //endregion
+    // endregion
 
-    //region Unique Key
+    // region Unique Key
     public function test_it_tokenizes_simple_unique_key()
     {
         $indexTokenizer = IndexTokenizer::parse('UNIQUE KEY `users_email_unique` (`email`)');
@@ -114,9 +114,9 @@ class IndexTokenizerTest extends TestCase
         config()->set('laravel-migration-generator.definitions.use_defined_unique_key_index_names', true);
     }
 
-    //endregion
+    // endregion
 
-    //region Foreign Constraints
+    // region Foreign Constraints
     public function test_it_tokenizes_foreign_key()
     {
         $indexTokenizer = IndexTokenizer::parse('CONSTRAINT `fk_bank_accounts_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)');
@@ -253,9 +253,9 @@ class IndexTokenizerTest extends TestCase
         $this->assertEquals('$table->foreign(\'user_id\', \'fk_bank_accounts_user_id\')->references(\'id\')->on(\'users\')->onUpdate(\'set DEFAULT\')', $indexDefinition->render());
     }
 
-    //endregion
+    // endregion
 
-    //region Fulltext Index
+    // region Fulltext Index
     public function test_it_tokenizes_simple_fulltext_index()
     {
         $indexTokenizer = IndexTokenizer::parse('FULLTEXT KEY `posts_content_fulltext` (`content`)');
@@ -309,9 +309,9 @@ class IndexTokenizerTest extends TestCase
         config()->set('laravel-migration-generator.definitions.use_defined_index_names', true);
     }
 
-    //endregion
+    // endregion
 
-    //region Spatial Index
+    // region Spatial Index
     public function test_it_tokenizes_simple_spatial_index()
     {
         $indexTokenizer = IndexTokenizer::parse('SPATIAL KEY `locations_coordinates_spatial` (`coordinates`)');
@@ -365,9 +365,30 @@ class IndexTokenizerTest extends TestCase
         config()->set('laravel-migration-generator.definitions.use_defined_index_names', true);
     }
 
-    //endregion
+    // endregion
 
-    //region Security - Index Name Escaping
+    // region CHECK Constraints
+    public function test_it_ignores_check_constraints()
+    {
+        $indexTokenizer = IndexTokenizer::parse('CONSTRAINT `example_table_chk_1` CHECK (json_valid(`data`))');
+        $indexDefinition = $indexTokenizer->definition();
+
+        $this->assertEquals('check', $indexDefinition->getIndexType());
+        $this->assertEquals('', $indexDefinition->render());
+    }
+
+    public function test_it_ignores_check_constraints_with_expression()
+    {
+        $indexTokenizer = IndexTokenizer::parse('CONSTRAINT `orders_chk_1` CHECK ((`amount` > 0))');
+        $indexDefinition = $indexTokenizer->definition();
+
+        $this->assertEquals('check', $indexDefinition->getIndexType());
+        $this->assertEquals('', $indexDefinition->render());
+    }
+
+    // endregion
+
+    // region Security - Index Name Escaping
     public function test_it_escapes_single_quotes_in_index_names()
     {
         $indexTokenizer = IndexTokenizer::parse('KEY `idx_test\'s_index` (`email`)');
@@ -439,5 +460,5 @@ class IndexTokenizerTest extends TestCase
         $this->assertEquals('$table->foreign(\'user_id\', \'fk_test\\\'s_key\')->references(\'id\')->on(\'users\')', $indexDefinition->render());
     }
 
-    //endregion
+    // endregion
 }

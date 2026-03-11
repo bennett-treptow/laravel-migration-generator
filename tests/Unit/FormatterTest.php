@@ -9,14 +9,14 @@ class FormatterTest extends TestCase
 {
     public function test_can_format_single_line()
     {
-        $formatter = new Formatter();
+        $formatter = new Formatter;
         $formatter->line('Test');
         $this->assertEquals('Test', $formatter->render());
     }
 
     public function test_can_chain()
     {
-        $formatter = new Formatter();
+        $formatter = new Formatter;
         $line = $formatter->line('$this->call(function(){');
         $line('$this->die();');
         $formatter->line('});');
@@ -29,7 +29,7 @@ class FormatterTest extends TestCase
 
     public function test_can_get_current_line_indent_level()
     {
-        $formatter = new Formatter();
+        $formatter = new Formatter;
         $formatter->line('Line');
         $formatter->line('Line 2');
 

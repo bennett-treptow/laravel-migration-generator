@@ -13,7 +13,7 @@ class IndexDefinition
 
     protected string $indexType = '';
 
-    protected ?string $indexName = null; //primary keys usually don't have a name
+    protected ?string $indexName = null; // primary keys usually don't have a name
 
     protected array $indexColumns = [];
 
@@ -32,7 +32,7 @@ class IndexDefinition
         }
     }
 
-    //region Getters
+    // region Getters
 
     public function getIndexType(): string
     {
@@ -64,8 +64,8 @@ class IndexDefinition
         return $this->constraintActions;
     }
 
-    //endregion
-    //region Setters
+    // endregion
+    // region Setters
 
     public function setIndexType(string $indexType): IndexDefinition
     {
@@ -109,7 +109,7 @@ class IndexDefinition
         return $this;
     }
 
-    //endregion
+    // endregion
 
     public function isMultiColumnIndex()
     {

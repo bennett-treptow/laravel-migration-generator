@@ -24,7 +24,7 @@ abstract class BaseTokenizer
             $value = str_replace($matches[1].' \'\'', $matches[1].' '.self::EMPTY_STRING_REPLACER, $value);
         }
 
-        //first get rid of any single quoted stuff with '' around it
+        // first get rid of any single quoted stuff with '' around it
         if (preg_match_all('/\'\'(.+?)\'\'/', $value, $matches)) {
             foreach ($matches[0] as $key => $singleQuoted) {
                 $toReplace = $singleQuoted;
@@ -35,8 +35,8 @@ abstract class BaseTokenizer
 
         if (preg_match_all("/'(.*?)'/", $value, $matches)) {
             foreach ($matches[0] as $quoteWithSpace) {
-                //we've got an enum or set that has spaces in the text
-                //so we'll convert to a different character so it doesn't get pruned
+                // we've got an enum or set that has spaces in the text
+                // so we'll convert to a different character so it doesn't get pruned
                 $toReplace = $quoteWithSpace;
                 $value = str_replace($toReplace, str_replace(' ', self::SPACE_REPLACER, $toReplace), $value);
                 $prune = true;

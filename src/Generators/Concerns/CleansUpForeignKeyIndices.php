@@ -2,6 +2,7 @@
 
 namespace LaravelMigrationGenerator\Generators\Concerns;
 
+use LaravelMigrationGenerator\Definitions\IndexDefinition;
 use LaravelMigrationGenerator\Generators\BaseTableGenerator;
 
 /**
@@ -15,19 +16,19 @@ trait CleansUpForeignKeyIndices
     {
         $indexDefinitions = $this->definition()->getIndexDefinitions();
         foreach ($indexDefinitions as $index) {
-            /** @var \LaravelMigrationGenerator\Definitions\IndexDefinition $index */
+            /** @var IndexDefinition $index */
             if ($index->getIndexType() === 'index') {
-                //look for corresponding foreign key for this index
+                // look for corresponding foreign key for this index
                 $columns = $index->getIndexColumns();
                 $indexName = $index->getIndexName();
 
                 foreach ($indexDefinitions as $innerIndex) {
-                    /** @var \LaravelMigrationGenerator\Definitions\IndexDefinition $innerIndex */
+                    /** @var IndexDefinition $innerIndex */
                     if ($innerIndex->getIndexName() !== $indexName) {
                         if ($innerIndex->getIndexType() === 'foreign') {
                             $cols = $innerIndex->getIndexColumns();
                             if (count(array_intersect($columns, $cols)) === count($columns)) {
-                                //has same columns
+                                // has same columns
                                 $index->markAsWritable(false);
 
                                 break;

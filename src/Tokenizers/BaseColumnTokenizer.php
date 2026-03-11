@@ -11,7 +11,7 @@ abstract class BaseColumnTokenizer extends BaseTokenizer implements ColumnTokeni
 
     public function __construct(string $value)
     {
-        $this->definition = new ColumnDefinition();
+        $this->definition = new ColumnDefinition;
         parent::__construct($value);
     }
 

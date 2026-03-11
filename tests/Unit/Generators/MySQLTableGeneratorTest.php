@@ -8,7 +8,7 @@ use Tests\TestCase;
 
 class MySQLTableGeneratorTest extends TestCase
 {
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         parent::tearDown();
 
